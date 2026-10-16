@@ -1,0 +1,40 @@
+# ====================
+# Maven / Java
+# ====================
+target/
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.log
+
+# Maven wrapper (excepto el JAR necesario)
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# ====================
+# IntelliJ IDEA
+# ====================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.ai/
+
+# ====================
+# NetBeans
+# ====================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ====================
+# VS Code
+# ====================
+.vscode/
+*.code-workspace
