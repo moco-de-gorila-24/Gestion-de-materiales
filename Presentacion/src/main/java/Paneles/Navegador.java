@@ -8,6 +8,7 @@ import javax.swing.*;
 public class Navegador {
     FramePrincipal framePrincipal;
     PanelMenuPricipal panelMenuPricipal;
+    PanelRegistrarCliente panelRegistrarCliente;
     DialogTelefono dialogTelefono;
 
     public void cambiarPanel(JPanel panel) {
@@ -29,6 +30,13 @@ public class Navegador {
             panelMenuPricipal = new PanelMenuPricipal(this);
         }
         cambiarPanel(panelMenuPricipal);
+    }
+
+    public void mostrarPanelRegistrarCliente(){
+        if(panelRegistrarCliente == null){
+            panelRegistrarCliente = new PanelRegistrarCliente(this);
+        }
+        cambiarPanel(panelRegistrarCliente);
     }
 
     public void mostrarDialogoBuscarCliente() {
