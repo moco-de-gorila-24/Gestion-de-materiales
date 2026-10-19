@@ -4,6 +4,8 @@ import Componentes.Button;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class PanelMenuPricipal extends JPanel {
     private final Navegador navegador;
@@ -34,6 +36,12 @@ public class PanelMenuPricipal extends JPanel {
         gbc.insets = new Insets(0, 0, 0, 0);
         add(button, gbc);
 
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegador.mostrarDialogoBuscarCliente();
+            }
+        });
     }
 
 }

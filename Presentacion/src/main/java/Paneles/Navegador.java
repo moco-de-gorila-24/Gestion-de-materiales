@@ -1,5 +1,6 @@
 package Paneles;
 
+import Dialogs.DialogTelefono;
 import FramePrincipal.FramePrincipal;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import javax.swing.*;
 public class Navegador {
     FramePrincipal framePrincipal;
     PanelMenuPricipal panelMenuPricipal;
+    DialogTelefono dialogTelefono;
 
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -27,5 +29,12 @@ public class Navegador {
             panelMenuPricipal = new PanelMenuPricipal(this);
         }
         cambiarPanel(panelMenuPricipal);
+    }
+
+    public void mostrarDialogoBuscarCliente() {
+        if(dialogTelefono == null){
+            dialogTelefono = new DialogTelefono(framePrincipal, this);
+        }
+        dialogTelefono.setVisible(true);
     }
 }
