@@ -13,12 +13,11 @@ public class PanelRegistrarPedido extends JPanel {
     private final Color gris = new Color(119, 119, 119);
     private final Color oscuro = new Color(34, 34, 34);
 
-    // Componentes (públicos dentro de la clase para usarlos después)
     private JTextField txtBuscar = new JTextField();
     private Button btnBuscar = new Button("Buscar");
     private JComboBox<String> cmbFiltro = new JComboBox<>(new String[]{"filtrar"});
-    private JPanel panelProductos = new JPanel();   // aquí se agregarán los productos
-    private JPanel panelCarrito = new JPanel();     // aquí se agregarán los del carrito
+    private JPanel panelProductos = new JPanel();
+    private JPanel panelCarrito = new JPanel();
     private JLabel lblSubtotal = new JLabel("$0.00");
     private Button btnCancelar = new Button("Cancelar");
     private Button btnSiguiente = new Button("Siguiente");
@@ -103,6 +102,13 @@ public class PanelRegistrarPedido extends JPanel {
                 if(opcion == 0){
                     navegador.mostrarPanelMenuPrincipal();
                 }
+            }
+        });
+
+        btnSiguiente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegador.mostrarVerificarDisponibilidad();
             }
         });
     }
