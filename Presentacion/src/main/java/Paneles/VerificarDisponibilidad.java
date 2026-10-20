@@ -2,40 +2,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.presentacion;
+package Paneles;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class VerificarDisponibilidad extends JFrame {
-
+public class VerificarDisponibilidad extends JPanel {
+    private final Navegador navegador;
     private Color grisFondo = new Color(115, 115, 115);
     private Color grisClaro = new Color(225, 225, 225);
     private Color negro = new Color(30, 30, 30);
 
-    public VerificarDisponibilidad() {
-        configurarVentana();
+    public VerificarDisponibilidad(Navegador navegador) {
+        this.navegador = navegador;
         crearPantalla();
-    }
-
-    private void configurarVentana() {
-        setTitle("F3 - Verificar Disponibilidad");
-        setSize(1250, 700);
-        setMinimumSize(new Dimension(950, 550));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     private void crearPantalla() {
@@ -124,14 +117,6 @@ public class VerificarDisponibilidad extends JFrame {
         JButton botonRegresar = crearBoton("Regresar", negro);
         JButton botonSiguiente = crearBoton("Siguiente", grisFondo);
 
-        botonRegresar.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,"Aquí se conectará la pantalla anterior.");
-        });
-
-        botonSiguiente.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,"Aquí se conectará la siguiente pantalla.");
-        });
-
         JPanel panelInferior = new JPanel(new BorderLayout());
         panelInferior.setOpaque(false);
 
@@ -150,7 +135,14 @@ public class VerificarDisponibilidad extends JFrame {
         principal.add(centro, BorderLayout.CENTER);
         principal.add(panelInferior, BorderLayout.SOUTH);
 
-        setContentPane(principal);
+        botonRegresar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegador.mostrarPanelRegistrarPedido();
+            }
+        });
+        add(principal);
+
     }
 
     private JPanel crearFila(
