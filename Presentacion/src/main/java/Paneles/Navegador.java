@@ -7,6 +7,8 @@ import FramePrincipal.FramePrincipal;
 import Paneles.ordenEntrega;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -15,6 +17,8 @@ public class Navegador {
     DialogTelefono dialogTelefono;
     ordenEntrega ordenEntrega;
     DialogPedidoConfirmado pedidoConfirmado;
+    PanelRegistrarPedido panelRegistrarPedido;
+    PanelDetalleProyecto panelDetalleProyecto;
 
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -70,5 +74,18 @@ public class Navegador {
         }   
         pedidoConfirmado.setVisible(true);    
     }
-    
+
+    public void mostrarPanelRegistrarPedido(){
+        if(panelRegistrarPedido == null){
+            panelRegistrarPedido = new PanelRegistrarPedido(this);
+        }
+        cambiarPanel(panelRegistrarPedido);
+    }
+
+    public void mostrarPanelDetalleProyecto() {
+        if(panelDetalleProyecto == null){
+            panelDetalleProyecto = new PanelDetalleProyecto(this);
+        }
+        cambiarPanel(panelDetalleProyecto);
+    }
 }

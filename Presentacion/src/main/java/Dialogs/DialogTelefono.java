@@ -4,6 +4,8 @@ import Paneles.Navegador;
 import Componentes.Button;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DialogTelefono extends JDialog {
     private final Navegador navegador;
@@ -66,8 +68,13 @@ public class DialogTelefono extends JDialog {
 
 
         btnRegresar.addActionListener(e -> dispose());
-//        btnConfirmar.addActionListener(e -> confirmar());
-//        getRootPane().setDefaultButton(btnConfirmar);   // Enter = confirmar
+        btnConfirmar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                navegador.mostrarPanelRegistrarPedido();
+            }
+        });
 
         setResizable(false);
         pack();
