@@ -1,7 +1,10 @@
 package Paneles;
 
+import Dialogs.DialogPedidoConfirmado;
+import Dialogs.DialogRegistroDireccion;
 import Dialogs.DialogTelefono;
 import FramePrincipal.FramePrincipal;
+import Paneles.ordenEntrega;
 
 import javax.swing.*;
 
@@ -10,6 +13,8 @@ public class Navegador {
     PanelMenuPricipal panelMenuPricipal;
     PanelRegistrarCliente panelRegistrarCliente;
     DialogTelefono dialogTelefono;
+    ordenEntrega ordenEntrega;
+    DialogPedidoConfirmado pedidoConfirmado;
 
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -45,4 +50,25 @@ public class Navegador {
         }
         dialogTelefono.setVisible(true);
     }
+
+    public String mostrarFormularioDireccion() {
+        DialogRegistroDireccion dialog = new DialogRegistroDireccion(framePrincipal, this);
+        dialog.setVisible(true);
+        return dialog.getSeleccionada();
+    }
+    
+    public void mostrarOrdenEntrega() {
+        if(ordenEntrega == null) {
+            ordenEntrega = new ordenEntrega(this);
+        }
+        cambiarPanel(ordenEntrega);
+    }
+    
+    public void mostrarDialogoPedidoConfirmado() {
+        if(pedidoConfirmado == null) {
+            pedidoConfirmado = new DialogPedidoConfirmado(framePrincipal, this);
+        }   
+        pedidoConfirmado.setVisible(true);    
+    }
+    
 }

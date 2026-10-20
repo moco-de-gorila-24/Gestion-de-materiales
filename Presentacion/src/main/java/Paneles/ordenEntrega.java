@@ -16,8 +16,8 @@ public class ordenEntrega extends javax.swing.JPanel {
      * Creates new form ordenEntrega
      */
     public ordenEntrega(Navegador navegador) {
-        initComponents();
         this.navegador = navegador;
+        initComponents();
     }
 
     /**
@@ -194,6 +194,11 @@ public class ordenEntrega extends javax.swing.JPanel {
         btnConfirar.setBackground(new java.awt.Color(153, 255, 153));
         btnConfirar.setForeground(new java.awt.Color(0, 0, 0));
         btnConfirar.setText("Confirmar pedido");
+        btnConfirar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -241,11 +246,17 @@ public class ordenEntrega extends javax.swing.JPanel {
 
     private void btnEditarDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarDireccionActionPerformed
         // TODO add your handling code here:
+        String direccion = navegador.mostrarFormularioDireccion();
     }//GEN-LAST:event_btnEditarDireccionActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRegresarActionPerformed
+
+    private void btnConfirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirarActionPerformed
+        // TODO add your handling code here:
+        navegador.mostrarDialogoPedidoConfirmado();
+    }//GEN-LAST:event_btnConfirarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
