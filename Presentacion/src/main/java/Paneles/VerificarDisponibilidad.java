@@ -17,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 public class VerificarDisponibilidad extends JPanel {
@@ -26,9 +27,9 @@ public class VerificarDisponibilidad extends JPanel {
     private Color negro = new Color(30, 30, 30);
 
     public VerificarDisponibilidad(Navegador navegador) {
-        this.navegador = navegador;
+       this.navegador = navegador;
+        setLayout(new BorderLayout());
         crearPantalla();
-        setVisible(true);
     }
 
     private void crearPantalla() {
@@ -111,7 +112,12 @@ public class VerificarDisponibilidad extends JPanel {
         // Panel central para mantener la tabla en la pantalla
         JPanel centro = new JPanel(new BorderLayout());
         centro.setBackground(grisFondo);
-        centro.add(tabla, BorderLayout.CENTER);
+        
+        JScrollPane scrollTabla = new JScrollPane(tabla);
+
+        scrollTabla.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollTabla.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        centro.add(scrollTabla, BorderLayout.CENTER);
 
         // Botones inferiores
         JButton botonRegresar = crearBoton("Regresar", negro);
@@ -141,7 +147,7 @@ public class VerificarDisponibilidad extends JPanel {
                 navegador.mostrarPanelRegistrarPedido();
             }
         });
-        add(principal);
+        add(principal, BorderLayout.CENTER);
 
     }
 
