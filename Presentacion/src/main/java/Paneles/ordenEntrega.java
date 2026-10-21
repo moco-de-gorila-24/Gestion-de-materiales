@@ -250,7 +250,7 @@ public class ordenEntrega extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditarDireccionActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        // TODO add your handling code here:
+        navegador.mostrarVerificarDisponibilidad();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnConfirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirarActionPerformed

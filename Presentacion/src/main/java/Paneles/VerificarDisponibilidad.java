@@ -20,6 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+/**
+ *
+ * @author jorge
+ */
 public class VerificarDisponibilidad extends JPanel {
     private final Navegador navegador;
     private Color grisFondo = new Color(115, 115, 115);
@@ -87,24 +91,10 @@ public class VerificarDisponibilidad extends JPanel {
         tabla.add(encabezadosTabla);
 
         // Primera fila: bloques
-        JPanel filaBloques = crearFila(
-                "Bloque de construcción",
-                "50",
-                "Kg",
-                "500",
-                true,
-                new String[]{"---"}
-        );
+        JPanel filaBloques = crearFila("Bloque de construcción", "50", "Kg", "500", true, new String[]{"---"});
 
         // Segunda fila: cemento CEMEX
-        JPanel filaCemento = crearFila(
-                "Cemento CEMEX",
-                "10",
-                "Kg",
-                "9",
-                false,
-                new String[]{"Cemento PANAM"}
-        );
+        JPanel filaCemento = crearFila("Cemento CEMEX", "10", "Kg", "9", false, new String[]{"Cemento PANAM"});
 
         tabla.add(filaBloques);
         tabla.add(filaCemento);
@@ -147,6 +137,11 @@ public class VerificarDisponibilidad extends JPanel {
                 navegador.mostrarPanelRegistrarPedido();
             }
         });
+        
+        botonSiguiente.addActionListener(e -> {
+            navegador.mostrarOrdenEntrega();
+        });
+        
         add(principal, BorderLayout.CENTER);
 
     }
