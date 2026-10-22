@@ -1,6 +1,7 @@
 package Paneles;
 
 
+import control.Navegador;
 import Componentes.Button;
 
 import javax.swing.*;

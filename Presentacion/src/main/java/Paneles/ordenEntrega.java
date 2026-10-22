@@ -4,6 +4,8 @@
  */
 package Paneles;
 
+import control.Navegador;
+
 /**
  *
  * @author cinca

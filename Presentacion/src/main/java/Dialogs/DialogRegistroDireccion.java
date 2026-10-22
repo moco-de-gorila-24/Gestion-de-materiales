@@ -6,7 +6,7 @@ package Dialogs;
 
 import javax.swing.JDialog;
 import Componentes.Button;
-import Paneles.Navegador;
+import control.Navegador;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

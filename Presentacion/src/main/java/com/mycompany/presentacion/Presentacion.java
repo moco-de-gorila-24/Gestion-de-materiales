@@ -1,6 +1,6 @@
 package com.mycompany.presentacion;
 
-import Paneles.Navegador;
+import control.Navegador;
 
 /**
  *

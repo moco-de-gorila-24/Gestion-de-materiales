@@ -1,6 +1,6 @@
 package FramePrincipal;
 
-import Paneles.Navegador;
+import control.Navegador;
 
 import javax.swing.*;
 import java.awt.*;

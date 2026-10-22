@@ -1,6 +1,6 @@
 package Dialogs;
 
-import Paneles.Navegador;
+import control.Navegador;
 import Componentes.Button;
 import javax.swing.*;
 import java.awt.*;

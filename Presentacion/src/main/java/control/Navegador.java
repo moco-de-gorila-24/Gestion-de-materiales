@@ -1,9 +1,15 @@
-package Paneles;
+package control;
 
 import Dialogs.DialogPedidoConfirmado;
 import Dialogs.DialogRegistroDireccion;
 import Dialogs.DialogTelefono;
 import FramePrincipal.FramePrincipal;
+import Paneles.PanelDetalleProyecto;
+import Paneles.PanelMenuPricipal;
+import Paneles.PanelRegistrarCliente;
+import Paneles.PanelRegistrarPedido;
+import Paneles.VerificarDisponibilidad;
+import Paneles.ordenEntrega;
 
 import javax.swing.*;
 
