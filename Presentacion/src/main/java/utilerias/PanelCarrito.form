@@ -62,13 +62,15 @@
                           <Component id="btnEliminar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblCosto" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblUnidad" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="txtCantidad" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnAgregarMas" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblCosto" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblUnidad" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnAgregarMas" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <Component id="pnlImg" min="-2" max="-2" attributes="0"/>

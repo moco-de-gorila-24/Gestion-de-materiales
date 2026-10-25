@@ -5,7 +5,9 @@
 package utilerias;
 
 /**
- *
+ * Panel que muestra los detalles del producto dentro del carrito. El usuario
+ * puede aumentar o disminuir la cantidad del producto.
+ * 
  * @author cinca
  */
 public class PanelCarrito extends javax.swing.JPanel {
@@ -135,13 +137,14 @@ public class PanelCarrito extends javax.swing.JPanel {
                             .addComponent(lblNombre)
                             .addComponent(btnEliminar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(lblCosto)
-                            .addComponent(lblUnidad)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAgregarMas)
-                            .addComponent(jButton1)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(lblCosto)
+                                .addComponent(lblUnidad)
+                                .addComponent(btnAgregarMas)
+                                .addComponent(jButton1))))
                     .addComponent(pnlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(23, Short.MAX_VALUE))
         );

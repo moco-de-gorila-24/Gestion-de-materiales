@@ -6,6 +6,8 @@ package utilerias;
 
 /**
  *
+ * Panel que contiene los detalles del producto antes de agregar al carrito.
+ * 
  * @author cinca
  */
 public class PanelProducto extends javax.swing.JPanel {

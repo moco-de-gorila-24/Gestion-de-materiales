@@ -6,6 +6,9 @@ package utilerias;
 
 /**
  *
+ * Panel que se muestra en la pantalla de detalles del proyecto donde el usuario
+ * selecciona la longitud.
+ * 
  * @author cinca
  */
 public class PanelPaquete extends javax.swing.JPanel {
