@@ -4,6 +4,8 @@
  */
 package utilerias;
 
+import control.Navegador;
+
 /**
  * Panel que muestra los detalles del producto dentro del carrito. El usuario
  * puede aumentar o disminuir la cantidad del producto.
@@ -11,11 +13,12 @@ package utilerias;
  * @author cinca
  */
 public class PanelCarrito extends javax.swing.JPanel {
-
+    private final Navegador navegador;
     /**
      * Creates new form PanelCarrito
      */
-    public PanelCarrito() {
+    public PanelCarrito(Navegador navegador) {
+        this.navegador = navegador;
         initComponents();
     }
 

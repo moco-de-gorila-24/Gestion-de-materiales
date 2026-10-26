@@ -13,6 +13,9 @@ import Paneles.PanelRegistrarCliente;
 import Paneles.PanelRegistrarPedido;
 import Paneles.VerificarDisponibilidad;
 import Paneles.ordenEntrega;
+import utilerias.PanelCarrito;
+import utilerias.PanelPaquete;
+import utilerias.PanelProducto;
 
 import javax.swing.*;
 
@@ -28,6 +31,9 @@ public class Navegador {
     VerificarDisponibilidad verificarDisponibilidad;
     CotizacionSuministro cotizacion;
     DialogSeleccionTipoEntrega dialogTipoEntrega;
+    PanelCarrito panelCarrito;
+    PanelProducto panelProducto;
+    PanelPaquete panelPaquete;
 
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -110,6 +116,30 @@ public class Navegador {
             cotizacion = new CotizacionSuministro(this);
         }
         cambiarPanel(cotizacion);
+    }
+
+    public JPanel mostrarProductos(){
+        if(panelProducto == null){
+            panelProducto = new PanelProducto(this);
+        }
+        cambiarPanel(panelProducto);
+        return panelProducto;
+    }
+
+    public JPanel mostrarCarrito(){
+        if(panelCarrito == null){
+            panelCarrito = new PanelCarrito(this);
+        }
+        cambiarPanel(panelCarrito);
+        return panelCarrito;
+    }
+
+    public JPanel mostrarPaquete(){
+        if(panelPaquete == null){
+            panelPaquete = new PanelPaquete(this);
+        }
+        cambiarPanel(panelPaquete);
+        return panelPaquete;
     }
     
     public void mostrarDialogoFechas() {

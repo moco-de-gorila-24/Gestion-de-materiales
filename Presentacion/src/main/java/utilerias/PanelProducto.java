@@ -4,6 +4,8 @@
  */
 package utilerias;
 
+import control.Navegador;
+
 /**
  *
  * Panel que contiene los detalles del producto antes de agregar al carrito.
@@ -11,11 +13,12 @@ package utilerias;
  * @author cinca
  */
 public class PanelProducto extends javax.swing.JPanel {
-
+    private final Navegador navegador;
     /**
      * Creates new form PanelProducto
      */
-    public PanelProducto() {
+    public PanelProducto(Navegador navegador) {
+        this.navegador = navegador;
         initComponents();
     }
 

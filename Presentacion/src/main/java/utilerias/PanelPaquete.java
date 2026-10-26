@@ -4,6 +4,10 @@
  */
 package utilerias;
 
+import control.Navegador;
+
+import java.lang.annotation.Native;
+
 /**
  *
  * Panel que se muestra en la pantalla de detalles del proyecto donde el usuario
@@ -12,11 +16,12 @@ package utilerias;
  * @author cinca
  */
 public class PanelPaquete extends javax.swing.JPanel {
-
+    private final Navegador navegador;
     /**
      * Creates new form PanelPaquete
      */
-    public PanelPaquete() {
+    public PanelPaquete(Navegador navegador) {
+        this.navegador = navegador;
         initComponents();
     }
 
