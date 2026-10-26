@@ -33,7 +33,7 @@ public class PanelProducto extends javax.swing.JPanel {
 
         pnlImg = new javax.swing.JPanel();
         lblImg = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelNombre = new javax.swing.JLabel();
         lblCosto = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         btnAgregar = new javax.swing.JButton();
@@ -60,9 +60,9 @@ public class PanelProducto extends javax.swing.JPanel {
                 .addContainerGap(54, Short.MAX_VALUE))
         );
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Nombre del producto");
+        jLabelNombre.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabelNombre.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelNombre.setText("Nombre del producto");
 
         lblCosto.setForeground(new java.awt.Color(0, 0, 0));
         lblCosto.setText("costo");
@@ -96,7 +96,7 @@ public class PanelProducto extends javax.swing.JPanel {
                         .addComponent(lblUnidad)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(jLabelNombre)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 287, Short.MAX_VALUE)
                         .addComponent(btnAgregar)
                         .addGap(22, 22, 22))))
@@ -108,7 +108,7 @@ public class PanelProducto extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(jLabelNombre)
                             .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -120,10 +120,18 @@ public class PanelProducto extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public void setDatos(String nombre, double costo, String unidad, int cantidad) {
+        jLabelNombre.setText(nombre);
+        lblCosto.setText(String.valueOf(costo));
+        lblUnidad.setText(unidad);
+        lblUnidad.setText(unidad);
+    }
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelNombre;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblCosto;
     private javax.swing.JLabel lblImg;

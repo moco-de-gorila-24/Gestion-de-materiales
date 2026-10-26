@@ -1,28 +1,20 @@
 package control;
 
-import Dialogs.DialogFechasEntrega;
-import Dialogs.DialogPedidoConfirmado;
-import Dialogs.DialogRegistroDireccion;
-import Dialogs.DialogSeleccionTipoEntrega;
-import Dialogs.DialogTelefono;
+import Dialogs.*;
 import FramePrincipal.FramePrincipal;
-import Paneles.CotizacionSuministro;
-import Paneles.PanelDetalleProyecto;
-import Paneles.PanelMenuPricipal;
-import Paneles.PanelRegistrarCliente;
-import Paneles.PanelRegistrarPedido;
-import Paneles.VerificarDisponibilidad;
-import Paneles.ordenEntrega;
-import utilerias.PanelCarrito;
-import utilerias.PanelPaquete;
-import utilerias.PanelProducto;
-
+import Paneles.*;
+import almacenDatos.Almacen;
+import dtos.MaterialDTO;
+import utilerias.*;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Navegador {
     FramePrincipal framePrincipal;
     PanelMenuPricipal panelMenuPricipal;
     PanelRegistrarCliente panelRegistrarCliente;
+    DialogRegistroDireccion dialogRegistroDireccion;
     DialogTelefono dialogTelefono;
     ordenEntrega ordenEntrega;
     DialogPedidoConfirmado pedidoConfirmado;
@@ -71,9 +63,11 @@ public class Navegador {
     }
 
     public String mostrarFormularioDireccion() {
-        DialogRegistroDireccion dialog = new DialogRegistroDireccion(framePrincipal, this);
-        dialog.setVisible(true);
-        return dialog.getSeleccionada();
+        if(dialogRegistroDireccion == null){
+            dialogRegistroDireccion = new DialogRegistroDireccion(framePrincipal, this);
+        }
+        dialogRegistroDireccion.setVisible(true);
+        return dialogRegistroDireccion.getSeleccionada();
     }
     
     public void mostrarOrdenEntrega() {
@@ -122,8 +116,24 @@ public class Navegador {
         if(panelProducto == null){
             panelProducto = new PanelProducto(this);
         }
+
         cambiarPanel(panelProducto);
+        cargarProductos();
         return panelProducto;
+    }
+
+    public void cargarProductos(){
+        Almacen almacen = new Almacen();
+        int productos = almacen.obtenerMateriales().toArray().length;
+        List<MaterialDTO> materiales = almacen.obtenerMateriales();
+
+        for (int i = 0; i < productos; i++) {
+            panelProducto.setDatos(materiales.getFirst().getNombre(),
+                    materiales.get(i).getPrecioUnitario(),
+                    materiales.get(i).getUnidadMedida(),
+                    materiales.get(i).getCantidadDisponible());
+
+        }
     }
 
     public JPanel mostrarCarrito(){
@@ -145,6 +155,10 @@ public class Navegador {
     public void mostrarDialogoFechas() {
         DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this);
         dialogFechas.setVisible(true);
+    }
+
+    public void setDatosCarrito(String nombre, double costo, String unidad, int cantidad){
+        panelCarrito.setDatos(nombre, costo, unidad, cantidad);
     }
     
     public void mostrarSeleccionTipoEntrega() {

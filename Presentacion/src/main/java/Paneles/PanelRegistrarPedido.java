@@ -18,10 +18,6 @@ public class PanelRegistrarPedido extends JPanel {
     private final Color gris = new Color(119, 119, 119);
     private final Color oscuro = new Color(34, 34, 34);
 
-    private JTable tablaCatalogo;
-    private DefaultTableModel modeloCatalogo;
-    private JTable tablaPropuesta;
-    private DefaultTableModel modeloPropuesta;
     private JTextField txtBuscar = new JTextField();
     private Button btnBuscar = new Button("Buscar");
     private JComboBox<String> cmbFiltro = new JComboBox<>(new String[]{"filtrar"});
@@ -36,6 +32,8 @@ public class PanelRegistrarPedido extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBackground(gris);
         setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        panelProductos.setLayout(new BoxLayout(panelProductos, BoxLayout.Y_AXIS));
+        panelCarrito.setLayout(new BoxLayout(panelCarrito, BoxLayout.Y_AXIS));
 
         // Arriba: título + buscador
         JLabel titulo = new JLabel("Registrar Pedido", SwingConstants.CENTER);
@@ -56,40 +54,10 @@ public class PanelRegistrarPedido extends JPanel {
         contFiltro.setOpaque(false);
         contFiltro.add(cmbFiltro);
 
-        String[] columnas = {"Producto", "Descripcion", "Seleccionar"};
-
-        modeloCatalogo = new DefaultTableModel(columnas, 0) {
-            @Override
-            public boolean isCellEditable(int fila, int columna) {
-                return false;
-            }
-        };
-
-        modeloCatalogo.addRow(new Object[]{"cemento", "bulto de cemento marca cemex"});
-        modeloCatalogo.addRow(new Object[]{"pega marmol", "saquito de pega marmol marca niasa"});
-        modeloCatalogo.addRow(new Object[]{"tambo de electricidad", "tambo de electricidad electrica"});
-        tablaCatalogo = new JTable(modeloCatalogo);
-        tablaCatalogo.setRowHeight(60);
-
-        String[] columnasPropuesta = {"Producto", "Cantidad", "Eliminar"};
-
-        modeloPropuesta = new DefaultTableModel(columnasPropuesta, 0) {
-            @Override
-            public boolean isCellEditable(int fila, int columna) {
-                return false;
-            }
-        };
-
-        tablaPropuesta = new JTable(modeloPropuesta);
-        tablaPropuesta.setRowHeight(60);
-        //Nota: podria hacer para que cada que seleccione un producto se agregue de uno en uno pero no es como quisiera
-
-        modeloPropuesta.addRow(new Object[]{"pedro","",""});
-
         JPanel izquierda = new JPanel(new BorderLayout(0, 10));
         izquierda.setOpaque(false);
         izquierda.add(contFiltro, BorderLayout.NORTH);
-        izquierda.add(new JScrollPane(tablaCatalogo), BorderLayout.CENTER);
+        izquierda.add(new JScrollPane(panelProductos), BorderLayout.CENTER);
 
         // Centro derecha: carrito + subtotal
         JLabel tituloCarrito = new JLabel("Carrito", SwingConstants.CENTER);
@@ -107,8 +75,13 @@ public class PanelRegistrarPedido extends JPanel {
         JPanel derecha = new JPanel(new BorderLayout(0, 10));
         derecha.setOpaque(false);
         derecha.add(tituloCarrito, BorderLayout.NORTH);
-        derecha.add(new JScrollPane(tablaPropuesta), BorderLayout.CENTER);
+        derecha.add(new JScrollPane(panelCarrito), BorderLayout.CENTER);
         derecha.add(pieCarrito, BorderLayout.SOUTH);
+
+        panelProductos.add(navegador.mostrarProductos());
+        navegador.cargarProductos();
+        panelCarrito.add(navegador.mostrarCarrito());
+        navegador.setDatosCarrito("si", 100.00, "", 1);
 
         JPanel centro = new JPanel(new GridLayout(1, 2, 20, 0));
         centro.setOpaque(false);
@@ -141,19 +114,6 @@ public class PanelRegistrarPedido extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 navegador.mostrarVerificarDisponibilidad();
-            }
-        });
-
-        tablaCatalogo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila = tablaCatalogo.rowAtPoint(e.getPoint());
-                int columna = tablaCatalogo.columnAtPoint(e.getPoint());
-
-                if (fila != -1 && columna == 3) { // solo la columna 2
-                    Object valor = tablaCatalogo.getValueAt(fila, columna);
-                    System.out.println("Clic en columna 2, valor: " + valor + "columna" + columna);
-                }
             }
         });
     }

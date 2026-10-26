@@ -21,7 +21,6 @@ public class PanelCarrito extends javax.swing.JPanel {
         this.navegador = navegador;
         initComponents();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -178,6 +177,21 @@ public class PanelCarrito extends javax.swing.JPanel {
     private void btnRestarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestarProductoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRestarProductoActionPerformed
+
+    public void setDatos(String nombre, double costo, String unidad, int cantidad) {
+        lblNombre.setText(nombre);
+        lblCosto.setText(String.format("%.2f", costo));
+        lblUnidad.setText(unidad);
+        txtCantidad.setText(String.valueOf(cantidad));
+    }
+
+    public int getCantidad() {
+        try {
+            return Integer.parseInt(txtCantidad.getText().trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
