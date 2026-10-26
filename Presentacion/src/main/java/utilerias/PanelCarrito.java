@@ -37,7 +37,7 @@ public class PanelCarrito extends javax.swing.JPanel {
         btnEliminar = new javax.swing.JButton();
         txtCantidad = new javax.swing.JTextField();
         btnAgregarMas = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnRestarProducto = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -94,10 +94,20 @@ public class PanelCarrito extends javax.swing.JPanel {
         btnAgregarMas.setBackground(new java.awt.Color(153, 255, 153));
         btnAgregarMas.setForeground(new java.awt.Color(0, 0, 0));
         btnAgregarMas.setText("+");
+        btnAgregarMas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarMasActionPerformed(evt);
+            }
+        });
 
-        jButton1.setBackground(new java.awt.Color(255, 153, 153));
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("-");
+        btnRestarProducto.setBackground(new java.awt.Color(255, 153, 153));
+        btnRestarProducto.setForeground(new java.awt.Color(0, 0, 0));
+        btnRestarProducto.setText("-");
+        btnRestarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRestarProductoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -119,7 +129,7 @@ public class PanelCarrito extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnEliminar)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnRestarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -144,7 +154,7 @@ public class PanelCarrito extends javax.swing.JPanel {
                                 .addComponent(lblCosto)
                                 .addComponent(lblUnidad)
                                 .addComponent(btnAgregarMas)
-                                .addComponent(jButton1))))
+                                .addComponent(btnRestarProducto))))
                     .addComponent(pnlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
@@ -158,11 +168,19 @@ public class PanelCarrito extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadActionPerformed
 
+    private void btnAgregarMasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarMasActionPerformed
+
+    private void btnRestarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestarProductoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRestarProductoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarMas;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnRestarProducto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblCosto;
     private javax.swing.JLabel lblImg;

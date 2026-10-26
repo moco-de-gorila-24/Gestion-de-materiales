@@ -15,6 +15,7 @@ public class ClienteDTO {
     private String apellidoMa;
     private String telefono;
 
+
     public ClienteDTO(int id, String nombre, String apellidoPa, String apellidoMa, String telefono) {
         this.id = id;
         this.nombre = nombre;

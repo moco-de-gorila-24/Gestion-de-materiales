@@ -16,6 +16,9 @@ public class MaterialDTO {
     private String unidadMedida;
     private int cantidadDisponible;
 
+    public MaterialDTO() {
+    }
+
     public MaterialDTO(int idMaterial, String nombre, String marca, float precioUnitario, String unidadMedida, int cantidadDisponible) {
         this.idMaterial = idMaterial;
         this.nombre = nombre;
