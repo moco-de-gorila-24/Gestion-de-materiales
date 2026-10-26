@@ -9,7 +9,7 @@
     <artifactId>Presentacion</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>com.mycompany.presentacion.Presentacion</exec.mainClass>
     </properties>
     <dependencies>
