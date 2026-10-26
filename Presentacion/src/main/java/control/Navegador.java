@@ -4,6 +4,7 @@ import Dialogs.DialogPedidoConfirmado;
 import Dialogs.DialogRegistroDireccion;
 import Dialogs.DialogTelefono;
 import FramePrincipal.FramePrincipal;
+import Paneles.CotizacionSuministro;
 import Paneles.PanelDetalleProyecto;
 import Paneles.PanelMenuPricipal;
 import Paneles.PanelRegistrarCliente;
@@ -23,6 +24,7 @@ public class Navegador {
     PanelRegistrarPedido panelRegistrarPedido;
     PanelDetalleProyecto panelDetalleProyecto;
     VerificarDisponibilidad verificarDisponibilidad;
+    CotizacionSuministro cotizacion;
 
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -99,4 +101,12 @@ public class Navegador {
         }
         cambiarPanel( verificarDisponibilidad);
     }
+    
+    public void mostrarCotizacionSuministro() {
+        if(cotizacion == null){
+            cotizacion = new CotizacionSuministro(this);
+        }
+        cambiarPanel(cotizacion);
+    }
+    
 }
