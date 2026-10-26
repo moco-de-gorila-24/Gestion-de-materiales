@@ -140,7 +140,7 @@ public class VerificarDisponibilidad extends JPanel {
         });
         
         botonSiguiente.addActionListener(e -> {
-            navegador.mostrarOrdenEntrega();
+            navegador.mostrarSeleccionTipoEntrega();
         });
         
         add(principal, BorderLayout.CENTER);

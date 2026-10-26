@@ -1,7 +1,9 @@
 package control;
 
+import Dialogs.DialogFechasEntrega;
 import Dialogs.DialogPedidoConfirmado;
 import Dialogs.DialogRegistroDireccion;
+import Dialogs.DialogSeleccionTipoEntrega;
 import Dialogs.DialogTelefono;
 import FramePrincipal.FramePrincipal;
 import Paneles.CotizacionSuministro;
@@ -25,6 +27,7 @@ public class Navegador {
     PanelDetalleProyecto panelDetalleProyecto;
     VerificarDisponibilidad verificarDisponibilidad;
     CotizacionSuministro cotizacion;
+    DialogSeleccionTipoEntrega dialogTipoEntrega;
 
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -99,7 +102,7 @@ public class Navegador {
         if(verificarDisponibilidad == null){
             verificarDisponibilidad = new VerificarDisponibilidad(this);
         }
-        cambiarPanel( verificarDisponibilidad);
+        cambiarPanel(verificarDisponibilidad);
     }
     
     public void mostrarCotizacionSuministro() {
@@ -107,6 +110,18 @@ public class Navegador {
             cotizacion = new CotizacionSuministro(this);
         }
         cambiarPanel(cotizacion);
+    }
+    
+    public void mostrarDialogoFechas() {
+        DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this);
+        dialogFechas.setVisible(true);
+    }
+    
+    public void mostrarSeleccionTipoEntrega() {
+        if(dialogTipoEntrega == null){
+           dialogTipoEntrega = new DialogSeleccionTipoEntrega(framePrincipal, this);
+        }   
+        dialogTipoEntrega.setVisible(true);
     }
     
 }

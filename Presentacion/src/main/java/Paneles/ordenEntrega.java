@@ -5,6 +5,7 @@
 package Paneles;
 
 import control.Navegador;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -212,6 +213,11 @@ public class ordenEntrega extends javax.swing.JPanel {
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(194, 65, 12));
         btnCancelar.setText("Cancelar pedido");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         btnConfirar.setBackground(new java.awt.Color(194, 65, 12));
         btnConfirar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -281,6 +287,20 @@ public class ordenEntrega extends javax.swing.JPanel {
         // TODO add your handling code here:
         navegador.mostrarDialogoPedidoConfirmado();
     }//GEN-LAST:event_btnConfirarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        // TODO add your handling code here:
+        Object[] opciones = {"Si, cancelar pedido", "Regresar"};
+        int respuesta = JOptionPane.showOptionDialog(
+                this, "¿Desea cancelar el pedido?", "Cancelar pedido",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                opciones, opciones[1]);         
+
+        if (respuesta == 0) {          // eligio cancelar el peido
+            navegador.mostrarPanelMenuPrincipal();
+        }
+        
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

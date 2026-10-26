@@ -5,6 +5,7 @@
 package Paneles;
 
 import control.Navegador;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -35,7 +36,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPedido = new javax.swing.JTable();
-        btnRegresar = new javax.swing.JButton();
+        btnCancelarPropuesta = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnContinuar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -75,13 +76,13 @@ public class CotizacionSuministro extends javax.swing.JPanel {
         ));
         jScrollPane2.setViewportView(tblPedido);
 
-        btnRegresar.setBackground(new java.awt.Color(255, 255, 255));
-        btnRegresar.setFont(new java.awt.Font("Corbel", 1, 14)); // NOI18N
-        btnRegresar.setForeground(new java.awt.Color(194, 65, 12));
-        btnRegresar.setText("Cancelar propuesta");
-        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelarPropuesta.setBackground(new java.awt.Color(255, 255, 255));
+        btnCancelarPropuesta.setFont(new java.awt.Font("Corbel", 1, 14)); // NOI18N
+        btnCancelarPropuesta.setForeground(new java.awt.Color(194, 65, 12));
+        btnCancelarPropuesta.setText("Cancelar propuesta");
+        btnCancelarPropuesta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarActionPerformed(evt);
+                btnCancelarPropuestaActionPerformed(evt);
             }
         });
 
@@ -156,7 +157,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnRegresar)
+                        .addComponent(btnCancelarPropuesta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnModificar)
                         .addGap(171, 171, 171)
@@ -183,34 +184,44 @@ public class CotizacionSuministro extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnContinuar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCancelarPropuesta, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        navegador.mostrarVerificarDisponibilidad();
-    }//GEN-LAST:event_btnRegresarActionPerformed
+    private void btnCancelarPropuestaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPropuestaActionPerformed
+        Object[] opciones = {"Si, cancelar propuesta", "Regresar"};
+        int respuesta = JOptionPane.showOptionDialog(
+                this, "¿Desea cancelar la propuesta?", "Cancelar propuesta",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                opciones, opciones[1]);         
+
+        if (respuesta == 0) {          // eligio cancelar propuesta
+            navegador.mostrarPanelMenuPrincipal();
+        }
+    }//GEN-LAST:event_btnCancelarPropuestaActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
         // TODO add your handling code here:
-        navegador.mostrarDialogoPedidoConfirmado();
+        navegador.mostrarOrdenEntrega();
     }//GEN-LAST:event_btnContinuarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         // TODO add your handling code here:
+        navegador.mostrarPanelRegistrarPedido();
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnConsultarFechasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarFechasActionPerformed
         // TODO add your handling code here:
+        navegador.mostrarDialogoFechas();
     }//GEN-LAST:event_btnConsultarFechasActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelarPropuesta;
     private javax.swing.JButton btnConsultarFechas;
     private javax.swing.JButton btnContinuar;
     private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnRegresar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
