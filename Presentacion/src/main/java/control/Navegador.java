@@ -4,6 +4,7 @@ import Dialogs.*;
 import FramePrincipal.FramePrincipal;
 import Paneles.*;
 import almacenDatos.Almacen;
+import dtos.DetallePedidoDTO;
 import dtos.MaterialDTO;
 import utilerias.*;
 import javax.swing.*;
@@ -27,6 +28,8 @@ public class Navegador {
     PanelProducto panelProducto;
     PanelPaquete panelPaquete;
 
+    private final List<DetallePedidoDTO> detallesCarrito = new ArrayList<>();
+    
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
         framePrincipal.revalidate();
@@ -85,9 +88,7 @@ public class Navegador {
     }
 
     public void mostrarPanelRegistrarPedido(){
-        if(panelRegistrarPedido == null){
-            panelRegistrarPedido = new PanelRegistrarPedido(this);
-        }
+        panelRegistrarPedido = new PanelRegistrarPedido(this);
         cambiarPanel(panelRegistrarPedido);
     }
 
@@ -159,6 +160,39 @@ public class Navegador {
 
     public void setDatosCarrito(String nombre, double costo, String unidad, int cantidad){
         panelCarrito.setDatos(nombre, costo, unidad, cantidad);
+    }
+    
+    public List<DetallePedidoDTO> getDetallesCarrito() {
+        return detallesCarrito;
+    }
+    
+    public void agregarAlCarrito(MaterialDTO material, int cantidad) {
+        if (material == null || cantidad <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < detallesCarrito.size(); i++) {
+            DetallePedidoDTO detalle = detallesCarrito.get(i);
+
+            if (detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
+
+                int nuevaCantidad = detalle.getCantidad() + cantidad;
+                detalle.setCantidad(nuevaCantidad);
+                detalle.setImporte(nuevaCantidad * detalle.getPrecioUnitario());
+
+                return;
+            }
+        }
+
+        detallesCarrito.add(new DetallePedidoDTO(material, cantidad, material.getPrecioUnitario(), material.getPrecioUnitario() * cantidad));
+    }
+    
+    public void eliminarDelCarrito(DetallePedidoDTO detalle) {
+        detallesCarrito.remove(detalle);
+    }
+    
+    public void limpiarCarrito() {
+        detallesCarrito.clear();
     }
     
     public void mostrarSeleccionTipoEntrega() {
