@@ -105,9 +105,7 @@ public class Navegador {
     }
 
     public void mostrarVerificarDisponibilidad(){
-        if(verificarDisponibilidad == null){
-            verificarDisponibilidad = new VerificarDisponibilidad(this);
-        }
+        verificarDisponibilidad = new VerificarDisponibilidad(this);
         cambiarPanel(verificarDisponibilidad);
     }
     
@@ -145,7 +143,12 @@ public class Navegador {
     }
 
     public void agregarCarrito(MaterialDTO m) {
+        if (m == null) {
+            return;
+        }
         carrito.merge(m, 1, Integer::sum);
+        agregarAlCarrito(m, 1);
+
         refrescarCarrito();
     }
 
@@ -221,7 +224,9 @@ public class Navegador {
     }
     
     public void limpiarCarrito() {
+        carrito.clear();
         detallesCarrito.clear();
+        refrescarCarrito();
     }
     
     public void mostrarSeleccionTipoEntrega() {
