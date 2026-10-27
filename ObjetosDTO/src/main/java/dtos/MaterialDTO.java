@@ -15,6 +15,7 @@ public class MaterialDTO {
     private float precioUnitario;
     private String unidadMedida;
     private int cantidadDisponible;
+    private String tipo;
 
     public MaterialDTO() {
     }
@@ -26,6 +27,35 @@ public class MaterialDTO {
         this.precioUnitario = precioUnitario;
         this.unidadMedida = unidadMedida;
         this.cantidadDisponible = cantidadDisponible;
+        this.tipo = obtenerTipo(nombre);
+    }
+
+    public MaterialDTO(int idMaterial, String nombre, String marca, float precioUnitario, String unidadMedida, int cantidadDisponible, String tipo) {
+        this.idMaterial = idMaterial;
+        this.nombre = nombre;
+        this.marca = marca;
+        this.precioUnitario = precioUnitario;
+        this.unidadMedida = unidadMedida;
+        this.cantidadDisponible = cantidadDisponible;
+        this.tipo = tipo;
+    }
+
+    private static String obtenerTipo(String nombre) {
+        String nombreMin = nombre == null ? "" : nombre.toLowerCase();
+
+        if (nombreMin.contains("cemento") || nombreMin.contains("mortero")) {
+            return "Cemento";
+        }
+
+        if (nombreMin.contains("block") || nombreMin.contains("bloque")) {
+            return "Block";
+        }
+
+        if (nombreMin.contains("varilla")) {
+            return "Varilla";
+        }
+
+        return "Otro";
     }
 
     public int getIdMaterial() {
@@ -75,6 +105,12 @@ public class MaterialDTO {
     public void setCantidadDisponible(int cantidadDisponible) {
         this.cantidadDisponible = cantidadDisponible;
     }
-    
-    
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }
