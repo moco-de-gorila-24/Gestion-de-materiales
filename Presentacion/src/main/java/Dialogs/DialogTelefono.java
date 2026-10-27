@@ -1,5 +1,6 @@
 package Dialogs;
 
+import control.ControlValidaciones;
 import control.Navegador;
 import Componentes.Button;
 import javax.swing.*;
@@ -9,6 +10,7 @@ import java.awt.event.ActionListener;
 
 public class DialogTelefono extends JDialog {
     private final Navegador navegador;
+    private ControlValidaciones controlValidaciones;
     private final JTextField campoTelefono = new JTextField(10);
 
     public DialogTelefono(JFrame owner, Navegador navegador) {
@@ -66,13 +68,25 @@ public class DialogTelefono extends JDialog {
         gbc.insets = new Insets(0, 0, 25, 0);
         add(panelBotones, gbc);
 
-
         btnRegresar.addActionListener(e -> dispose());
         btnConfirmar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                navegador.mostrarPanelRegistrarPedido();
+                if(!controlValidaciones.validarTextoVacio(campoTelefono.getText())){
+                    JOptionPane.showMessageDialog(null, "El campo no puede quedar vacio");
+                }
+                else if (!controlValidaciones.validarTelefono(campoTelefono.getText())){
+                    JOptionPane.showMessageDialog(null, "El telefono debe ser un numero de 10 digitos");
+                }
+                else if(!controlValidaciones.clienteExiste(campoTelefono.getText())){
+                    dispose();
+                    navegador.mostrarPanelRegistrarCliente();
+                }
+                else{
+                    dispose();
+                    navegador.mostrarPanelRegistrarPedido();
+                }
+
             }
         });
 
