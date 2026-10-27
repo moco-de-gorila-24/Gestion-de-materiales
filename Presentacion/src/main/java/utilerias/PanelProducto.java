@@ -5,6 +5,11 @@
 package utilerias;
 
 import control.Navegador;
+import dtos.MaterialDTO;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
@@ -17,9 +22,17 @@ public class PanelProducto extends javax.swing.JPanel {
     /**
      * Creates new form PanelProducto
      */
+    private MaterialDTO material;
+
     public PanelProducto(Navegador navegador) {
         this.navegador = navegador;
         initComponents();
+
+        btnAgregar.addActionListener(e -> {
+            if (material != null) {
+                navegador.agregarCarrito(material);
+            }
+        });
     }
 
     /**
@@ -120,11 +133,17 @@ public class PanelProducto extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public void setMaterial(MaterialDTO m) {
+        this.material = m;
+        setDatos(m.getNombre(), m.getPrecioUnitario(),
+                m.getUnidadMedida(), m.getCantidadDisponible());
+    }
+
     public void setDatos(String nombre, double costo, String unidad, int cantidad) {
         jLabelNombre.setText(nombre);
-        lblCosto.setText(String.valueOf(costo));
+        lblCosto.setText(String.valueOf(cantidad));
         lblUnidad.setText(unidad);
-        lblUnidad.setText(unidad);
+
     }
 
 

@@ -78,10 +78,8 @@ public class PanelRegistrarPedido extends JPanel {
         derecha.add(new JScrollPane(panelCarrito), BorderLayout.CENTER);
         derecha.add(pieCarrito, BorderLayout.SOUTH);
 
-        panelProductos.add(navegador.mostrarProductos());
-        navegador.cargarProductos();
-        panelCarrito.add(navegador.mostrarCarrito());
-        navegador.setDatosCarrito("si", 100.00, "", 1);
+        navegador.vincularCarrito(panelCarrito);
+        navegador.cargarProductos(panelProductos);
 
         JPanel centro = new JPanel(new GridLayout(1, 2, 20, 0));
         centro.setOpaque(false);

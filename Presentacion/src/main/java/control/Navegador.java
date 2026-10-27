@@ -8,8 +8,11 @@ import dtos.DetallePedidoDTO;
 import dtos.MaterialDTO;
 import utilerias.*;
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -27,6 +30,8 @@ public class Navegador {
     PanelCarrito panelCarrito;
     PanelProducto panelProducto;
     PanelPaquete panelPaquete;
+    private JPanel contenedorCarrito;
+    private  Map<MaterialDTO, Integer> carrito = new LinkedHashMap<>();
 
     private final List<DetallePedidoDTO> detallesCarrito = new ArrayList<>();
     
@@ -117,24 +122,48 @@ public class Navegador {
         if(panelProducto == null){
             panelProducto = new PanelProducto(this);
         }
-
         cambiarPanel(panelProducto);
-        cargarProductos();
         return panelProducto;
     }
 
-    public void cargarProductos(){
-        Almacen almacen = new Almacen();
-        int productos = almacen.obtenerMateriales().toArray().length;
-        List<MaterialDTO> materiales = almacen.obtenerMateriales();
+    public void vincularCarrito(JPanel destino) {
+        this.contenedorCarrito = destino;
+    }
 
-        for (int i = 0; i < productos; i++) {
-            panelProducto.setDatos(materiales.getFirst().getNombre(),
-                    materiales.get(i).getPrecioUnitario(),
-                    materiales.get(i).getUnidadMedida(),
-                    materiales.get(i).getCantidadDisponible());
-
+    public void cargarProductos(JPanel destino) {
+        destino.removeAll();
+        for (MaterialDTO m : Almacen.obtenerMateriales()) {
+            PanelProducto tarjeta = new PanelProducto(this);
+            tarjeta.setMaterial(m);   // la tarjeta guarda su producto
+            tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+                    tarjeta.getPreferredSize().height));
+            destino.add(tarjeta);
+            destino.add(Box.createVerticalStrut(8));
         }
+        destino.revalidate();
+        destino.repaint();
+    }
+
+    public void agregarCarrito(MaterialDTO m) {
+        carrito.merge(m, 1, Integer::sum);
+        refrescarCarrito();
+    }
+
+    private void refrescarCarrito() {
+        if (contenedorCarrito == null) return;
+        contenedorCarrito.removeAll();
+        for (Map.Entry<MaterialDTO, Integer> e : carrito.entrySet()) {
+            MaterialDTO m = e.getKey();
+            PanelCarrito tarjeta = new PanelCarrito(this);
+            tarjeta.setDatos(m.getNombre(), m.getPrecioUnitario(),
+                    m.getUnidadMedida(), e.getValue());
+            tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+                    tarjeta.getPreferredSize().height));
+            contenedorCarrito.add(tarjeta);
+            contenedorCarrito.add(Box.createVerticalStrut(8));
+        }
+        contenedorCarrito.revalidate();
+        contenedorCarrito.repaint();
     }
 
     public JPanel mostrarCarrito(){
