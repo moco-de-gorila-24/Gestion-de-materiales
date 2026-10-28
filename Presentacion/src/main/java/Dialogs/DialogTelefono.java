@@ -83,6 +83,7 @@ public class DialogTelefono extends JDialog {
                     navegador.mostrarPanelRegistrarCliente();
                 }
                 else{
+                    campoTelefono.setText("");
                     dispose();
                     navegador.mostrarPanelRegistrarPedido();
                 }

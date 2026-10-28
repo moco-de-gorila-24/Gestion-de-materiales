@@ -30,7 +30,7 @@ public class ControlValidaciones {
         Almacen almacen = new Almacen();
         ClienteDTO clienteDTO = almacen.obtenerCliente();
 
-        if(telefono.trim() == clienteDTO.getTelefono()){
+        if(telefono.trim().equals(clienteDTO.getTelefono()) ){
             return true;
         }
         return false;

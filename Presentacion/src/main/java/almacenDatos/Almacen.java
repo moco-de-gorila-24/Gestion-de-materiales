@@ -43,7 +43,7 @@ public class Almacen {
     }
     
     public static ClienteDTO obtenerCliente() {
-        return new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "6444209828");
+        return new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890");
     }
     
     public static PedidoDTO obtenerPedido() {

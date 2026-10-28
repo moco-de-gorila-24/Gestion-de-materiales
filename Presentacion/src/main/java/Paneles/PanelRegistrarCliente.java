@@ -99,6 +99,10 @@ public class PanelRegistrarCliente extends JPanel {
                 else if(!controlValidaciones.validarTelefono(fieldTelefono.getText())){
                     JOptionPane.showMessageDialog(null, "Debe ingresar un numero de 10 digitos");
                 }
+                else{
+                    JOptionPane.showMessageDialog(null, "Cliente registrado con exito");
+                    navegador.mostrarPanelRegistrarPedido();
+                }
 
             }
         });
