@@ -1,19 +1,22 @@
 package Paneles;
 
+import control.ControlValidaciones;
 import control.Navegador;
 import Componentes.Button;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class PanelRegistrarCliente extends JPanel {
     private final Navegador navegador;
+    ControlValidaciones controlValidaciones;
 
     public PanelRegistrarCliente(Navegador navegador) {
         this.navegador = navegador;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
 
         JLabel labelTitulo = new JLabel("Registrar Cliente", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("Arial", Font.BOLD, 45));
@@ -79,6 +82,26 @@ public class PanelRegistrarCliente extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         add(buttonRegresar, gbc);
 
+        buttonRegistrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!controlValidaciones.validarTextoVacio(fieldNombre.getText()) ||
+                    !controlValidaciones.validarTextoVacio(fieldApellidoPaterno.getText()) ||
+                    !controlValidaciones.validarTextoVacio(fieldApellidoMaterno.getText()) ||
+                    !controlValidaciones.validarTextoVacio(fieldTelefono.getText())){
+                    JOptionPane.showMessageDialog(null, "No pueden haber espacios vacios");
+                }
+                else if (!controlValidaciones.validarSoloTexto(fieldNombre.getText()) ||
+                    !controlValidaciones.validarSoloTexto(fieldApellidoPaterno.getText()) ||
+                    !controlValidaciones.validarSoloTexto(fieldApellidoMaterno.getText())){
+                    JOptionPane.showMessageDialog(null, "Debe ingresar unicamente texto");
+                }
+                else if(!controlValidaciones.validarTelefono(fieldTelefono.getText())){
+                    JOptionPane.showMessageDialog(null, "Debe ingresar un numero de 10 digitos");
+                }
+
+            }
+        });
         setVisible(true);
     }
 }

@@ -1,6 +1,6 @@
 package Dialogs;
 
-import control.ControlValidacion;
+import control.ControlValidaciones;
 import control.Navegador;
 import Componentes.Button;
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class DialogTelefono extends JDialog {
     private final Navegador navegador;
-    ControlValidacion controlValidacion;
+    private ControlValidaciones controlValidaciones;
     private final JTextField campoTelefono = new JTextField(10);
 
     public DialogTelefono(JFrame owner, Navegador navegador) {
@@ -68,23 +68,25 @@ public class DialogTelefono extends JDialog {
         gbc.insets = new Insets(0, 0, 25, 0);
         add(panelBotones, gbc);
 
-
         btnRegresar.addActionListener(e -> dispose());
         btnConfirmar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if (!ControlValidacion.validarEspacioVacio(campoTelefono)) {
-                    JOptionPane.showMessageDialog(null, "No puede dejar este campo vacío");
+                if(!controlValidaciones.validarTextoVacio(campoTelefono.getText())){
+                    JOptionPane.showMessageDialog(null, "El campo no puede quedar vacio");
                 }
-                else if (!ControlValidacion.validarTelefono(campoTelefono.getText())) {
-                    JOptionPane.showMessageDialog(null, "El teléfono debe tener 10 dígitos");
+                else if (!controlValidaciones.validarTelefono(campoTelefono.getText())){
+                    JOptionPane.showMessageDialog(null, "El telefono debe ser un numero de 10 digitos");
                 }
-                else {
+                else if(!controlValidaciones.clienteExiste(campoTelefono.getText())){
                     dispose();
-                    campoTelefono.setText(" ");
+                    navegador.mostrarPanelRegistrarCliente();
+                }
+                else{
+                    dispose();
                     navegador.mostrarPanelRegistrarPedido();
                 }
+
             }
         });
 

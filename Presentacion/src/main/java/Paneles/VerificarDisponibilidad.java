@@ -4,14 +4,20 @@
  */
 package Paneles;
 
+import almacenDatos.Almacen;
 import control.Navegador;
+import dtos.DetallePedidoDTO;
+import dtos.MaterialDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,13 +32,15 @@ import javax.swing.SwingConstants;
  * @author jorge
  */
 public class VerificarDisponibilidad extends JPanel {
+
     private final Navegador navegador;
-    private Color grisFondo = new Color(115, 115, 115);
-    private Color grisClaro = new Color(225, 225, 225);
-    private Color negro = new Color(30, 30, 30);
+    private final Color grisFondo = new Color(115, 115, 115);
+    private final Color negro = new Color(30, 30, 30);
+    private final JPanel filas = new JPanel();
 
     public VerificarDisponibilidad(Navegador navegador) {
-       this.navegador = navegador;
+        this.navegador = navegador;
+
         setLayout(new BorderLayout());
         crearPantalla();
     }
@@ -42,19 +50,12 @@ public class VerificarDisponibilidad extends JPanel {
         principal.setBackground(grisFondo);
         principal.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
-        // Titulo de la pantalla
-        JLabel titulo = new JLabel(
-                "F3 - Verificar Disponibilidad",
-                SwingConstants.CENTER
-        );
+        JLabel titulo = new JLabel("Verificar Disponibilidad", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 30));
         titulo.setForeground(Color.WHITE);
 
-        JLabel subtitulo = new JLabel(
-                "Pantalla para verificar disponibilidad",
-                SwingConstants.CENTER
-        );
-        subtitulo.setFont(new Font("Arial", Font.PLAIN, 18));
+        JLabel subtitulo = new JLabel("Revisa las existencias y sustituye materiales si es necesario.", SwingConstants.CENTER);
+        subtitulo.setFont(new Font("Arial", Font.PLAIN, 16));
         subtitulo.setForeground(Color.WHITE);
 
         JPanel encabezado = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -62,177 +63,243 @@ public class VerificarDisponibilidad extends JPanel {
         encabezado.add(titulo);
         encabezado.add(subtitulo);
 
-        // Panel que contiene la tabla de materiales
-        JPanel tabla = new JPanel(new GridLayout(3, 1, 0, 0));
+        JPanel tabla = new JPanel(new BorderLayout());
         tabla.setBackground(Color.WHITE);
-        tabla.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 2));
+        tabla.setBorder(
+                BorderFactory.createLineBorder(new Color(80, 80, 80), 2)
+        );
 
-        // Encabezados de las columnas
-        JPanel encabezadosTabla = new JPanel(new GridLayout(1, 8));
-        encabezadosTabla.setBackground(Color.WHITE);
+        JPanel encabezados = new JPanel(new GridLayout(1, 7));
 
         String[] columnas = {
-            "Materiales",
-            "Cantidad solicitada",
+            "Material",
+            "Solicitada",
             "Unidad",
             "Disponible",
             "Estado",
             "Sustitución",
-            "Acción",
-            "Eliminar"
+            "Acción"
         };
 
         for (int i = 0; i < columnas.length; i++) {
             JLabel etiqueta = new JLabel(columnas[i], SwingConstants.CENTER);
-            etiqueta.setFont(new Font("Arial", Font.BOLD, 14));
+            etiqueta.setFont(new Font("Arial", Font.BOLD, 13));
             etiqueta.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
-            encabezadosTabla.add(etiqueta);
+            encabezados.add(etiqueta);
         }
 
-        tabla.add(encabezadosTabla);
+        filas.setLayout(new GridLayout(0, 7));
+        filas.setBackground(Color.WHITE);
 
-        // Primera fila: bloques
-        JPanel filaBloques = crearFila("Bloque de construcción", "50", "Kg", "500", true, new String[]{"---"});
+        tabla.add(encabezados, BorderLayout.NORTH);
+        tabla.add(filas, BorderLayout.CENTER);
 
-        // Segunda fila: cemento CEMEX
-        JPanel filaCemento = crearFila("Cemento CEMEX", "10", "Kg", "9", false, new String[]{"Cemento PANAM"});
+        actualizarFilas();
 
-        tabla.add(filaBloques);
-        tabla.add(filaCemento);
-
-        // Panel central para mantener la tabla en la pantalla
-        JPanel centro = new JPanel(new BorderLayout());
-        centro.setBackground(grisFondo);
-        
         JScrollPane scrollTabla = new JScrollPane(tabla);
 
-        scrollTabla.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollTabla.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        centro.add(scrollTabla, BorderLayout.CENTER);
+        // Limita el alto de la tabla.
+        scrollTabla.setPreferredSize(new Dimension(1000, 180));
 
-        // Botones inferiores
+        // La tabla no se estira por toda la pantalla.
+        JPanel centro = new JPanel(new BorderLayout());
+        centro.setBackground(grisFondo);
+        centro.add(scrollTabla, BorderLayout.NORTH);
+
         JButton botonRegresar = crearBoton("Regresar", negro);
         JButton botonSiguiente = crearBoton("Siguiente", grisFondo);
 
-        JPanel panelInferior = new JPanel(new BorderLayout());
-        panelInferior.setOpaque(false);
+        JPanel inferior = new JPanel(new BorderLayout());
+        inferior.setOpaque(false);
 
-        JPanel panelRegresar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelRegresar.setOpaque(false);
-        panelRegresar.add(botonRegresar);
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        izquierda.setOpaque(false);
+        izquierda.add(botonRegresar);
 
-        JPanel panelSiguiente = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelSiguiente.setOpaque(false);
-        panelSiguiente.add(botonSiguiente);
+        JPanel derecha = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        derecha.setOpaque(false);
+        derecha.add(botonSiguiente);
 
-        panelInferior.add(panelRegresar, BorderLayout.WEST);
-        panelInferior.add(panelSiguiente, BorderLayout.EAST);
+        inferior.add(izquierda, BorderLayout.WEST);
+        inferior.add(derecha, BorderLayout.EAST);
 
         principal.add(encabezado, BorderLayout.NORTH);
         principal.add(centro, BorderLayout.CENTER);
-        principal.add(panelInferior, BorderLayout.SOUTH);
+        principal.add(inferior, BorderLayout.SOUTH);
 
-        botonRegresar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                navegador.mostrarPanelRegistrarPedido();
-            }
-        });
-        
-        botonSiguiente.addActionListener(e -> {
-            navegador.mostrarSeleccionTipoEntrega();
-        });
-        
         add(principal, BorderLayout.CENTER);
 
+        botonRegresar.addActionListener(e -> {
+            navegador.mostrarPanelRegistrarPedido();
+        });
+
+        botonSiguiente.addActionListener(e -> {
+            List<DetallePedidoDTO> detalles = navegador.getDetallesCarrito();
+
+            if (detalles.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El carrito no contiene materiales.");
+                return;
+            }
+
+            // Verifica todos los materiales antes de continuar.
+            for (int i = 0; i < detalles.size(); i++) {
+                DetallePedidoDTO detalle = detalles.get(i);
+                MaterialDTO material = detalle.getMaterial();
+
+                if (material == null || detalle.getCantidad() > material.getCantidadDisponible()) {
+
+                    JOptionPane.showMessageDialog(this, "No hay existencias suficientes de "
+                        + (material == null ? "uno de los materiales." : material.getNombre()
+                        + " - " + material.getMarca()
+                        + ". Solicitado: " + detalle.getCantidad()
+                        + ", disponible: " + material.getCantidadDisponible())
+                        + "\nSustituye el material antes de continuar."
+                    );
+                    return;
+                }
+            }
+
+            navegador.mostrarSeleccionTipoEntrega();
+        });
     }
 
-    private JPanel crearFila(
-            String material,
-            String cantidad,
-            String unidad,
-            String disponible,
-            boolean disponibleCompleto,
-            String[] sustitutos) {
+    private void actualizarFilas() {
+        filas.removeAll();
 
-        JPanel fila = new JPanel(new GridLayout(1, 8));
-        fila.setBackground(Color.WHITE);
+        List<DetallePedidoDTO> detalles = navegador.getDetallesCarrito();
+        List<MaterialDTO> materialesAlmacen = Almacen.obtenerMateriales();
 
-        // Nombre del material
-        JLabel nombre = new JLabel(
-                "<html><center>" + material + "</center></html>",
-                SwingConstants.CENTER
-        );
-        nombre.setFont(new Font("Arial", Font.BOLD, 13));
-        fila.add(nombre);
+        if (detalles.isEmpty()) {
+            filas.setLayout(new BorderLayout());
 
-        // Cantidad solicitada
-        JLabel cantidadLabel = new JLabel(cantidad,SwingConstants.CENTER);
-        cantidadLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-        fila.add(cantidadLabel);
+            JLabel vacio = new JLabel("No hay materiales en el carrito. Regresa y agrega materiales.", SwingConstants.CENTER);
 
-        // Unidad de medida
-        JLabel unidadLabel = new JLabel(unidad,SwingConstants.CENTER);
-        unidadLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-        fila.add(unidadLabel);
-
-        // Cantidad disponible
-        JLabel disponibleLabel = new JLabel(disponible,SwingConstants.CENTER);
-        disponibleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-        fila.add(disponibleLabel);
-
-        // Estado del material
-        JLabel estado = new JLabel(disponibleCompleto ? "Disponible" : "Insuficiente",SwingConstants.CENTER);
-        estado.setFont(new Font("Arial", Font.PLAIN, 13));
-
-        if (disponibleCompleto) {
-            estado.setForeground(new Color(35, 145, 65));
-        } else {
-            estado.setForeground(new Color(205, 45, 30));
+            filas.add(vacio, BorderLayout.CENTER);
+            filas.revalidate();
+            filas.repaint();
+            return;
         }
 
-        fila.add(estado);
+        filas.setLayout(new GridLayout(0, 7));
 
-        // Selector de sustitución
-        JComboBox<String> selector = new JComboBox<>(sustitutos);
-        fila.add(selector);
+        for (int i = 0; i < detalles.size(); i++) {
+            DetallePedidoDTO detalle = detalles.get(i);
+            MaterialDTO material = detalle.getMaterial();
 
-        // Botón para sustituir
-        JButton sustituir = crearBoton("Sustituir material",new Color(90, 90, 90));
+            int disponible = material.getCantidadDisponible();
+            boolean suficiente = detalle.getCantidad() <= disponible;
 
-        sustituir.setFont(new Font("Arial", Font.BOLD, 11));
-        sustituir.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,"La sustitución se implementará posteriormente.");
-        });
+            agregarCelda(filas, material.getNombre() + " (" + material.getMarca() + ")");
+            agregarCelda(filas,String.valueOf(detalle.getCantidad()));
+            agregarCelda(filas,material.getUnidadMedida());
+            agregarCelda(filas,String.valueOf(disponible));
 
-        fila.add(sustituir);
+            JLabel estado = new JLabel(suficiente ? "Disponible" : "Insuficiente", SwingConstants.CENTER);
 
-        // Botón para eliminar
-        JButton eliminar = crearBoton("Eliminar", negro);
-        eliminar.setFont(new Font("Arial", Font.BOLD, 12));
+            estado.setForeground(suficiente ? new Color(35, 145, 65) : new Color(205, 45, 30));
+            estado.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
 
-        eliminar.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,"La eliminación se implementará posteriormente.");
-        });
+            filas.add(estado);
 
-        fila.add(eliminar);
+            JComboBox<MaterialDTO> selector = new JComboBox<>();
 
-        // Separación visual de las filas
-        fila.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(210, 210, 210)));
+            List<MaterialDTO> sustitutos = new ArrayList<>();
 
-        return fila;
+            // Busca materiales del mismo tipo que cubran toda la cantidad solicitada.
+            for (int j = 0; j < materialesAlmacen.size(); j++) {
+                MaterialDTO candidato = materialesAlmacen.get(j);
+
+                boolean mismoTipo = candidato.getTipo() != null && material.getTipo() != null && candidato.getTipo().equalsIgnoreCase(material.getTipo());
+                boolean diferente = candidato.getIdMaterial() != material.getIdMaterial();
+                boolean stockSuficiente = candidato.getCantidadDisponible() >= detalle.getCantidad();
+
+                if (mismoTipo && diferente && stockSuficiente) {
+                    sustitutos.add(candidato);
+                    selector.addItem(candidato);
+                }
+            }
+
+            selector.setRenderer((list, value, index, isSelected, cellHasFocus) -> {
+                    JLabel etiqueta = new JLabel();
+
+                    if (value != null) {
+                        etiqueta.setText(value.getNombre() + " - " + value.getMarca() + " (stock: " + value.getCantidadDisponible() + ")");
+                    }
+
+                    if (isSelected) {
+                        etiqueta.setOpaque(true);
+                        etiqueta.setBackground(list.getSelectionBackground());
+                        etiqueta.setForeground(list.getSelectionForeground());
+                    }
+
+                    return etiqueta;
+                }
+            );
+
+            if (sustitutos.isEmpty()) {
+                selector.addItem(null);
+                selector.setEnabled(false);
+            }
+
+            selector.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
+
+            filas.add(selector);
+
+            JButton sustituir = crearBoton("Sustituir", new Color(90, 90, 90));
+
+            sustituir.setFont(new Font("Arial", Font.BOLD, 11));
+
+            // Permite sustituir incluso si el material original
+            // tiene suficiente existencia.
+            sustituir.setEnabled(!sustitutos.isEmpty());
+
+            sustituir.addActionListener(e -> {
+                MaterialDTO nuevo = (MaterialDTO) selector.getSelectedItem();
+
+                if (nuevo == null) {
+                    JOptionPane.showMessageDialog(this, "Selecciona un material sustituto.");
+                    return;
+                }
+
+                if (nuevo.getCantidadDisponible() < detalle.getCantidad()) {
+                    JOptionPane.showMessageDialog(this, "El sustituto no tiene existencias suficientes.");
+                    return;
+                }
+
+                detalle.setMaterial(nuevo);
+                detalle.setPrecioUnitario(nuevo.getPrecioUnitario());
+                detalle.setImporte(nuevo.getPrecioUnitario() * detalle.getCantidad());
+
+                // Reconstruye el panel para mostrar el material sustituido.
+                removeAll();
+                crearPantalla();
+                revalidate();
+                repaint();
+            });
+
+            filas.add(sustituir);
+        }
+
+        filas.revalidate();
+        filas.repaint();
+    }
+
+    private void agregarCelda(JPanel panel, String texto) {
+        JLabel etiqueta = new JLabel(texto, SwingConstants.CENTER);
+        etiqueta.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
+        panel.add(etiqueta);
     }
 
     private JButton crearBoton(String texto, Color fondo) {
         JButton boton = new JButton(texto);
+
         boton.setBackground(fondo);
         boton.setForeground(Color.WHITE);
-        boton.setFont(new Font("Arial", Font.BOLD, 16));
+        boton.setFont(new Font("Arial", Font.BOLD, 14));
         boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        boton.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
         boton.setOpaque(true);
 
         return boton;
     }
-
 }
