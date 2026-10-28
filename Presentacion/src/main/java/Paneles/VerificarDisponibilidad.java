@@ -65,9 +65,7 @@ public class VerificarDisponibilidad extends JPanel {
 
         JPanel tabla = new JPanel(new BorderLayout());
         tabla.setBackground(Color.WHITE);
-        tabla.setBorder(
-                BorderFactory.createLineBorder(new Color(80, 80, 80), 2)
-        );
+        tabla.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 2));
 
         JPanel encabezados = new JPanel(new GridLayout(1, 7));
 
@@ -98,10 +96,9 @@ public class VerificarDisponibilidad extends JPanel {
 
         JScrollPane scrollTabla = new JScrollPane(tabla);
 
-        // Limita el alto de la tabla.
         scrollTabla.setPreferredSize(new Dimension(1000, 180));
 
-        // La tabla no se estira por toda la pantalla.
+        // La tabla no se estira por la pantalla.
         JPanel centro = new JPanel(new BorderLayout());
         centro.setBackground(grisFondo);
         centro.add(scrollTabla, BorderLayout.NORTH);
@@ -141,7 +138,7 @@ public class VerificarDisponibilidad extends JPanel {
                 return;
             }
 
-            // Verifica todos los materiales antes de continuar.
+            // Verifica todos los materiales.
             for (int i = 0; i < detalles.size(); i++) {
                 DetallePedidoDTO detalle = detalles.get(i);
                 MaterialDTO material = detalle.getMaterial();
@@ -205,13 +202,17 @@ public class VerificarDisponibilidad extends JPanel {
 
             List<MaterialDTO> sustitutos = new ArrayList<>();
 
-            // Busca materiales del mismo tipo que cubran toda la cantidad solicitada.
+            // Busca materiales del mismo tipo.
             for (int j = 0; j < materialesAlmacen.size(); j++) {
                 MaterialDTO candidato = materialesAlmacen.get(j);
 
                 boolean mismoTipo = candidato.getTipo() != null && material.getTipo() != null && candidato.getTipo().equalsIgnoreCase(material.getTipo());
+
                 boolean diferente = candidato.getIdMaterial() != material.getIdMaterial();
-                boolean stockSuficiente = candidato.getCantidadDisponible() >= detalle.getCantidad();
+
+                int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, candidato);
+
+                boolean stockSuficiente = candidato.getCantidadDisponible() >= cantidadNecesaria;
 
                 if (mismoTipo && diferente && stockSuficiente) {
                     sustitutos.add(candidato);
@@ -249,8 +250,7 @@ public class VerificarDisponibilidad extends JPanel {
 
             sustituir.setFont(new Font("Arial", Font.BOLD, 11));
 
-            // Permite sustituir incluso si el material original
-            // tiene suficiente existencia.
+            // Permite sustituir incluso si el material original tiene suficiente existencia.
             sustituir.setEnabled(!sustitutos.isEmpty());
 
             sustituir.addActionListener(e -> {
@@ -261,16 +261,48 @@ public class VerificarDisponibilidad extends JPanel {
                     return;
                 }
 
-                if (nuevo.getCantidadDisponible() < detalle.getCantidad()) {
-                    JOptionPane.showMessageDialog(this, "El sustituto no tiene existencias suficientes.");
+                // Comprueba el stock sumando las cantidades que se fusionarán.
+                int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
+
+                if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
+                    JOptionPane.showMessageDialog(this, "No hay existencias suficientes del sustituto.\nCantidad total necesaria: " + cantidadNecesaria
+                            + "\nCantidad disponible: " + nuevo.getCantidadDisponible());
                     return;
                 }
 
-                detalle.setMaterial(nuevo);
-                detalle.setPrecioUnitario(nuevo.getPrecioUnitario());
-                detalle.setImporte(nuevo.getPrecioUnitario() * detalle.getCantidad());
+                DetallePedidoDTO existente = null;
 
-                // Reconstruye el panel para mostrar el material sustituido.
+                // Busca si el material sustituto ya está en el carrito.
+                for (int j = 0; j < detalles.size(); j++) {
+                    DetallePedidoDTO otro = detalles.get(j);
+
+                    if (otro != detalle
+                            && otro.getMaterial() != null
+                            && otro.getMaterial().getIdMaterial()
+                            == nuevo.getIdMaterial()) {
+                        existente = otro;
+                        break;
+                    }
+                }
+
+                if (existente != null) {
+                    // Suma las cantidades en una sola fila.
+                    int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
+
+                    existente.setCantidad(cantidadTotal);
+                    existente.setImporte(cantidadTotal * existente.getPrecioUnitario());
+
+                    // Elimina la fila que se acaba de sustituir.
+                    detalles.remove(detalle);
+
+                } else {
+                    // Si no existía, cambia el material de la fila actual.
+                    detalle.setMaterial(nuevo);
+                    detalle.setPrecioUnitario(nuevo.getPrecioUnitario());
+                    detalle.setImporte(nuevo.getPrecioUnitario() * detalle.getCantidad());
+                }
+
+                // Actualiza la tabla para mostrar los cambios.
                 removeAll();
                 crearPantalla();
                 revalidate();
@@ -282,6 +314,25 @@ public class VerificarDisponibilidad extends JPanel {
 
         filas.revalidate();
         filas.repaint();
+    }
+    
+    private int calcularCantidadTotal(List<DetallePedidoDTO> detalles, DetallePedidoDTO detalleActual, MaterialDTO candidato) {
+
+        int cantidadTotal = detalleActual.getCantidad();
+
+        for (int i = 0; i < detalles.size(); i++) {
+            DetallePedidoDTO otro = detalles.get(i);
+
+            if (otro != detalleActual
+                    && otro.getMaterial() != null
+                    && otro.getMaterial().getIdMaterial()
+                    == candidato.getIdMaterial()) {
+
+                cantidadTotal += otro.getCantidad();
+            }
+        }
+
+        return cantidadTotal;
     }
 
     private void agregarCelda(JPanel panel, String texto) {
