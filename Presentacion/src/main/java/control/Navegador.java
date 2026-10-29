@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import almacenDatos.Almacen;
+import dtos.DetallePropuestaDTO;
+import dtos.PropuestaMaterialesDTO;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -30,10 +33,9 @@ public class Navegador {
     PanelCarrito panelCarrito;
     PanelProducto panelProducto;
     PanelPaquete panelPaquete;
+    private Almacen almacen;
+    DetallePropuestaDTO propuesta;
     private JPanel contenedorCarrito;
-    private  Map<MaterialDTO, Integer> carrito = new LinkedHashMap<>();
-
-    private final List<DetallePedidoDTO> detallesCarrito = new ArrayList<>();
     
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -42,6 +44,9 @@ public class Navegador {
     }
 
     public void iniciarSistema() {
+        if(almacen == null) {
+            almacen = new Almacen();
+        }
         if (framePrincipal == null) {
             framePrincipal = new FramePrincipal(this);
         }
@@ -126,6 +131,7 @@ public class Navegador {
 
     public void vincularCarrito(JPanel destino) {
         this.contenedorCarrito = destino;
+        refrescarCarrito();
     }
 
     public void cargarProductos(JPanel destino) {
@@ -146,20 +152,24 @@ public class Navegador {
         if (m == null) {
             return;
         }
-        carrito.merge(m, 1, Integer::sum);
         agregarAlCarrito(m, 1);
-
-        refrescarCarrito();
     }
 
     private void refrescarCarrito() {
-        if (contenedorCarrito == null) return;
+        if (contenedorCarrito == null) {
+            return;
+        }
+        
         contenedorCarrito.removeAll();
-        for (Map.Entry<MaterialDTO, Integer> e : carrito.entrySet()) {
-            MaterialDTO m = e.getKey();
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+        
+        for (DetallePropuestaDTO detalle : propuesta.getDetalles()) {
+            MaterialDTO m = detalle.getMaterial();
             PanelCarrito tarjeta = new PanelCarrito(this);
+            
             tarjeta.setDatos(m.getNombre(), m.getPrecioUnitario(),
-                    m.getUnidadMedida(), e.getValue());
+                    m.getUnidadMedida(), detalle.getCantidad());
+            
             tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                     tarjeta.getPreferredSize().height));
             contenedorCarrito.add(tarjeta);
@@ -194,38 +204,25 @@ public class Navegador {
         panelCarrito.setDatos(nombre, costo, unidad, cantidad);
     }
     
-    public List<DetallePedidoDTO> getDetallesCarrito() {
-        return detallesCarrito;
+    public List<DetallePropuestaDTO> getDetallesCarrito() {
+        return almacen.obtenerPropuesta().getDetalles();
     }
     
     public void agregarAlCarrito(MaterialDTO material, int cantidad) {
-        if (material == null || cantidad <= 0) {
-            return;
+        if (almacen == null) {
+            almacen = new Almacen();
         }
-
-        for (int i = 0; i < detallesCarrito.size(); i++) {
-            DetallePedidoDTO detalle = detallesCarrito.get(i);
-
-            if (detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
-
-                int nuevaCantidad = detalle.getCantidad() + cantidad;
-                detalle.setCantidad(nuevaCantidad);
-                detalle.setImporte(nuevaCantidad * detalle.getPrecioUnitario());
-
-                return;
-            }
-        }
-
-        detallesCarrito.add(new DetallePedidoDTO(material, cantidad, material.getPrecioUnitario(), material.getPrecioUnitario() * cantidad));
+        almacen.crearDetallePropuesta(material, cantidad);
+        refrescarCarrito();
     }
     
-    public void eliminarDelCarrito(DetallePedidoDTO detalle) {
-        detallesCarrito.remove(detalle);
+    public void eliminarDelCarrito(DetallePropuestaDTO detalle) {
+        almacen.eliminarDetallePropuesta(detalle);
+        refrescarCarrito();
     }
     
     public void limpiarCarrito() {
-        carrito.clear();
-        detallesCarrito.clear();
+        almacen.crearPropuesta();
         refrescarCarrito();
     }
     
@@ -236,4 +233,19 @@ public class Navegador {
         dialogTipoEntrega.setVisible(true);
     }
     
+    public DetallePropuestaDTO validarDisponibilidad() {
+        return almacen.validarDisponibilidad();
+    }
+    
+    public List<MaterialDTO> obtenerSustitutos(DetallePropuestaDTO detalle) {
+        return almacen.obtenerMaterialesSustitutos(detalle);
+    }
+    
+    public int obtenerCantidad(DetallePropuestaDTO detalle, MaterialDTO candidato) {
+        return almacen.obtenerCantidadNecesaria(detalle, candidato);
+    }
+    
+    public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
+        return almacen.sustituirMaterial(detalle, nuevo);
+    }
 }

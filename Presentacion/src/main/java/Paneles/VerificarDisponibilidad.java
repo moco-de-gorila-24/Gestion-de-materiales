@@ -4,9 +4,9 @@
  */
 package Paneles;
 
-import almacenDatos.Almacen;
 import control.Navegador;
 import dtos.DetallePedidoDTO;
+import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,7 +17,6 @@ import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -112,46 +111,41 @@ public class VerificarDisponibilidad extends JPanel {
         });
 
         botonSiguiente.addActionListener(e -> {
-            List<DetallePedidoDTO> detalles = navegador.getDetallesCarrito();
+            List<DetallePropuestaDTO> detalles = navegador.getDetallesCarrito();
 
             if (detalles.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "El carrito no contiene materiales.");
                 return;
             }
 
-            for (int i = 0; i < detalles.size(); i++) {
-                DetallePedidoDTO detalle = detalles.get(i);
+            DetallePropuestaDTO detalle = navegador.validarDisponibilidad();
+
+            if (detalle != null) {
                 MaterialDTO material = detalle.getMaterial();
+                String mensaje;
 
-                if (material == null || detalle.getCantidad() > material.getCantidadDisponible()) {
-
-                    String mensaje;
-
-                    if (material == null) {
-                        mensaje = "Hay un material sin seleccionar.";
-                    } else {
-                        mensaje = "No hay existencias suficientes de " + material.getNombre()
-                                + " - " + material.getMarca()
-                                + ".\nSolicitado: " + detalle.getCantidad()
-                                + "\nDisponible: " + material.getCantidadDisponible();
-                    }
-
-                    JOptionPane.showMessageDialog(this, mensaje + "\nSustituye o elimina el material antes de continuar.");
-                    return;
+                if (material == null) {
+                    mensaje = "Hay un material sin seleccionar.";
+                } else {
+                    mensaje = "No hay existencias suficientes de " + material.getNombre()
+                            + " - " + material.getMarca()
+                            + ".\nSolicitado: " + detalle.getCantidad()
+                            + "\nDisponible: " + material.getCantidadDisponible();
                 }
-            }
 
+                JOptionPane.showMessageDialog(this, mensaje + "\nSustituye o elimina el material antes de continuar.");
+                return;
+            }    
+            
             navegador.mostrarSeleccionTipoEntrega();
-        });
+        });           
     }
 
     private void actualizarFilas() {
         filas.removeAll();
         filas.setLayout(new BoxLayout(filas, BoxLayout.Y_AXIS));
 
-        List<DetallePedidoDTO> detalles = navegador.getDetallesCarrito();
-
-        List<MaterialDTO> materialesAlmacen = Almacen.obtenerMateriales();
+        List<DetallePropuestaDTO> detalles = navegador.getDetallesCarrito();
 
         if (detalles.isEmpty()) {
             JLabel vacio = new JLabel("No hay materiales en el carrito. Regresa y agrega materiales.", SwingConstants.CENTER);
@@ -164,7 +158,7 @@ public class VerificarDisponibilidad extends JPanel {
         }
 
         for (int i = 0; i < detalles.size(); i++) {
-            DetallePedidoDTO detalle = detalles.get(i);
+            DetallePropuestaDTO detalle = detalles.get(i);
             MaterialDTO material = detalle.getMaterial();
 
             if (material == null) {
@@ -204,23 +198,11 @@ public class VerificarDisponibilidad extends JPanel {
 
             // Selector de materiales sustitutos.
             JComboBox<MaterialDTO> selector = new JComboBox<>();
-            List<MaterialDTO> sustitutos = new java.util.ArrayList<>();
+            List<MaterialDTO> sustitutos = navegador.obtenerSustitutos(detalle);
 
-            for (int j = 0; j < materialesAlmacen.size(); j++) {
-                MaterialDTO candidato = materialesAlmacen.get(j);
-
-                boolean mismoTipo = candidato.getTipo() != null && material.getTipo() != null && candidato.getTipo().equalsIgnoreCase(material.getTipo());
-
-                boolean diferente = candidato.getIdMaterial() != material.getIdMaterial();
-
-                int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, candidato);
-
-                boolean stockSuficiente = candidato.getCantidadDisponible() >= cantidadNecesaria;
-
-                if (mismoTipo && diferente && stockSuficiente) {
-                    sustitutos.add(candidato);
-                    selector.addItem(candidato);
-                }
+            for (int j = 0; j < sustitutos.size(); j++) {
+                MaterialDTO candidato = sustitutos.get(j);
+                selector.addItem(candidato);
             }
 
             selector.setRenderer((list, value, index, isSelected, cellHasFocus) -> {
@@ -267,38 +249,14 @@ public class VerificarDisponibilidad extends JPanel {
                     return;
                 }
 
-                int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
+                int cantidadNecesaria = navegador.obtenerCantidad(detalle, nuevo);
 
-                if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
+                if (!navegador.sustituirMaterial(detalle, nuevo)) {
                     JOptionPane.showMessageDialog(this,
                             "No hay existencias suficientes del sustituto."
                             + "\nCantidad necesaria: " + cantidadNecesaria
                             + "\nDisponible: " + nuevo.getCantidadDisponible());
                     return;
-                }
-
-                DetallePedidoDTO existente = null;
-
-                for (int k = 0; k < detalles.size(); k++) {
-                    DetallePedidoDTO otro = detalles.get(k);
-
-                    if (otro != detalle && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == nuevo.getIdMaterial()) {
-                        existente = otro;
-                        break;
-                    }
-                }
-
-                if (existente != null) {
-                    int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
-
-                    existente.setCantidad(cantidadTotal);
-                    existente.setImporte(cantidadTotal * existente.getPrecioUnitario());
-
-                    detalles.remove(detalle);
-                } else {
-                    detalle.setMaterial(nuevo);
-                    detalle.setPrecioUnitario(nuevo.getPrecioUnitario());
-                    detalle.setImporte(nuevo.getPrecioUnitario() * detalle.getCantidad());
                 }
 
                 removeAll();
@@ -326,21 +284,6 @@ public class VerificarDisponibilidad extends JPanel {
 
         filas.revalidate();
         filas.repaint();
-    }
-
-    private int calcularCantidadTotal(List<DetallePedidoDTO> detalles, DetallePedidoDTO detalleActual, MaterialDTO candidato) {
-
-        int cantidadTotal = detalleActual.getCantidad();
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePedidoDTO otro = detalles.get(i);
-
-            if (otro != detalleActual && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == candidato.getIdMaterial()) {
-                cantidadTotal += otro.getCantidad();
-            }
-        }
-
-        return cantidadTotal;
     }
 
     private JButton crearBoton(String texto, Color fondo) {
