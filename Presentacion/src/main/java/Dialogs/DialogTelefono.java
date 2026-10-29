@@ -50,15 +50,18 @@ public class DialogTelefono extends JDialog {
 
         // Botones
         Button btnRegresar = new Button("Regresar");
+        Button btnRegistrarCliente = new Button("Registrar");
         Button btnConfirmar = new Button("Confirmar");
 
-        Dimension tam = new Dimension(150, 40);
+        Dimension tam = new Dimension(130, 40);
         btnRegresar.setPreferredSize(tam);
+        btnRegistrarCliente.setPreferredSize(tam);
         btnConfirmar.setPreferredSize(tam);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
         panelBotones.setOpaque(false);
         panelBotones.add(btnRegresar);
+        panelBotones.add(btnRegistrarCliente);
         panelBotones.add(btnConfirmar);
 
         gbc.gridx = 0;
@@ -80,7 +83,7 @@ public class DialogTelefono extends JDialog {
                 }
                 else if(!controlValidaciones.clienteExiste(campoTelefono.getText())){
                     dispose();
-                    navegador.mostrarPanelRegistrarCliente();
+                    JOptionPane.showMessageDialog(null, "El numero proporcionado no existe");
                 }
                 else{
                     campoTelefono.setText("");
@@ -88,6 +91,14 @@ public class DialogTelefono extends JDialog {
                     navegador.mostrarPanelRegistrarPedido();
                 }
 
+            }
+        });
+
+        btnRegistrarCliente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                navegador.mostrarPanelRegistrarCliente();
             }
         });
 

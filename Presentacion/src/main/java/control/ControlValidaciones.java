@@ -35,4 +35,9 @@ public class ControlValidaciones {
         }
         return false;
     }
+
+    public static boolean agregarCliente(ClienteDTO cliente){
+        Almacen almacen = new Almacen();
+        return almacen.GuardarCliente(cliente);
+    }
 }

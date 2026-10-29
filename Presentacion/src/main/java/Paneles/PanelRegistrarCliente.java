@@ -3,6 +3,7 @@ package Paneles;
 import control.ControlValidaciones;
 import control.Navegador;
 import Componentes.Button;
+import dtos.ClienteDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,9 +102,23 @@ public class PanelRegistrarCliente extends JPanel {
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Cliente registrado con exito");
-                    navegador.mostrarPanelRegistrarPedido();
+                    ClienteDTO clienteDTO = new ClienteDTO(fieldNombre.getText(), fieldApellidoPaterno.getText(), fieldApellidoMaterno.getText(), fieldTelefono.getText());
+                    if(controlValidaciones.agregarCliente(clienteDTO)){
+                        JOptionPane.showMessageDialog(null, "cliente agregado con exito");
+                        navegador.mostrarPanelRegistrarPedido();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "No se pudo agregar al cliente");
+                    }
                 }
 
+            }
+        });
+
+        buttonRegresar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegador.mostrarPanelMenuPrincipal();
             }
         });
         setVisible(true);

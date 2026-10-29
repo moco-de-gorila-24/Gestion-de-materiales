@@ -24,6 +24,13 @@ public class ClienteDTO {
         this.telefono = telefono;
     }
 
+    public ClienteDTO( String nombre, String apellidoPa, String apellidoMa, String telefono) {
+        this.nombre = nombre;
+        this.apellidoPa = apellidoPa;
+        this.apellidoMa = apellidoMa;
+        this.telefono = telefono;
+    }
+
     public int getId() {
         return id;
     }

@@ -45,6 +45,14 @@ public class Almacen {
     public static ClienteDTO obtenerCliente() {
         return new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890");
     }
+
+    public static boolean GuardarCliente(ClienteDTO cliente){
+        List<ClienteDTO> clientes = new ArrayList<>();
+        if(clientes.add(cliente)){
+            return true;
+        }
+        return false;
+    }
     
     public static PedidoDTO obtenerPedido() {
         return new PedidoDTO(3, "A domicilio", new Date(), "esperando confirmacion", 1376f, obtenerCliente());
