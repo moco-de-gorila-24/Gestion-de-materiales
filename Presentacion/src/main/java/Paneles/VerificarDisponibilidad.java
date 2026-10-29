@@ -296,7 +296,7 @@ public class VerificarDisponibilidad extends JPanel {
         boton.setOpaque(true);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Borde visible del botón.
+        // Borde del botón.
         boton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(fondo.darker(), 2), BorderFactory.createEmptyBorder(6, 10, 6, 10)));
 
         boton.addMouseListener(new MouseAdapter() {
