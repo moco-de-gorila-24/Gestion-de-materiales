@@ -15,6 +15,9 @@ public class PropuestaMaterialesDTO {
     private int cantidadTotalProductos;
     private List<DetallePropuestaDTO> detalles;
 
+    public PropuestaMaterialesDTO() {
+    }
+
     public PropuestaMaterialesDTO(float subtotal, int cantidadTotalProductos, List<DetallePropuestaDTO> detalles) {
         this.subtotal = subtotal;
         this.cantidadTotalProductos = cantidadTotalProductos;
