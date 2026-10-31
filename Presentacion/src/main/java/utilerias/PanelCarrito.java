@@ -4,16 +4,23 @@
  */
 package utilerias;
 
+import almacenDatos.Almacen;
 import control.Navegador;
+import dtos.DetallePropuestaDTO;
+import dtos.MaterialDTO;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
- * Panel que muestra los detalles del producto dentro del carrito. El usuario
+ * P`anel que muestra los detalles del producto dentro del carrito. El usuario
  * puede aumentar o disminuir la cantidad del producto.
  * 
  * @author cinca
  */
 public class PanelCarrito extends javax.swing.JPanel {
     private final Navegador navegador;
+    private DetallePropuestaDTO detalle;
     /**
      * Creates new form PanelCarrito
      */
@@ -171,11 +178,11 @@ public class PanelCarrito extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCantidadActionPerformed
 
     private void btnAgregarMasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMasActionPerformed
-        // TODO add your handling code here:
+        navegador.cambiarCantidad(detalle, +1);
     }//GEN-LAST:event_btnAgregarMasActionPerformed
 
     private void btnRestarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestarProductoActionPerformed
-        // TODO add your handling code here:
+        navegador.cambiarCantidad(detalle, -1);
     }//GEN-LAST:event_btnRestarProductoActionPerformed
 
     public void setDatos(String nombre, double costo, String unidad, int cantidad) {
@@ -193,6 +200,9 @@ public class PanelCarrito extends javax.swing.JPanel {
         }
     }
 
+    public void setDetalle(DetallePropuestaDTO detalle){
+        this.detalle = detalle;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarMas;

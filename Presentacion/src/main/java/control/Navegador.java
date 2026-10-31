@@ -155,6 +155,11 @@ public class Navegador {
         agregarAlCarrito(m, 1);
     }
 
+    public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidad) {
+        almacen.cambiarCantidad(detalle, cantidad);
+        refrescarCarrito();
+    }
+
     private void refrescarCarrito() {
         if (contenedorCarrito == null) {
             return;
@@ -166,7 +171,8 @@ public class Navegador {
         for (DetallePropuestaDTO detalle : propuesta.getDetalles()) {
             MaterialDTO m = detalle.getMaterial();
             PanelCarrito tarjeta = new PanelCarrito(this);
-            
+
+            tarjeta.setDetalle(detalle);
             tarjeta.setDatos(m.getNombre(), m.getPrecioUnitario(),
                     m.getUnidadMedida(), detalle.getCantidad());
             

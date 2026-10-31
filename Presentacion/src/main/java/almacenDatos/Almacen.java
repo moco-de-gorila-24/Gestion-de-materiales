@@ -250,6 +250,19 @@ public class Almacen {
         return sustitutos;
     }
 
+    public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidad) {
+        if (propuesta == null || detalle == null) return;
+
+        int nueva = detalle.getCantidad() + cantidad;
+        if (nueva <= 0) {
+            eliminarDetallePropuesta(detalle);
+            return;
+        }
+        detalle.setCantidad(nueva);
+        propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * detalle.getPrecioUnitario());
+        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad);
+    }
+
     private int calcularCantidadTotal(List<DetallePropuestaDTO> detalles, DetallePropuestaDTO detalleActual, MaterialDTO candidato) {
 
         if (detalles == null || detalleActual == null || candidato == null) {
