@@ -11,6 +11,7 @@ import dtos.DetallePedidoDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
 import dtos.MaterialDTO;
+import dtos.OrdenEntregaDTO;
 import dtos.PaqueteDTO;
 import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
@@ -25,8 +26,17 @@ import javax.swing.JOptionPane;
  */
 public class Almacen {
     
-    private static PropuestaMaterialesDTO propuesta;
     private static List<ClienteDTO> clientes = new ArrayList<>();
+    private static List<PropuestaMaterialesDTO> propuestas = new ArrayList<>();
+    private static List<CotizacionDTO> cotizaciones = new ArrayList<>();
+    private static List<PedidoDTO> pedidos = new ArrayList<>();
+    private static List<OrdenEntregaDTO> ordenesEntrega = new ArrayList<>();
+    
+    private static int siguienteIdPropuesta = 1;
+    private static ClienteDTO clienteActual;
+    private static PropuestaMaterialesDTO propuestaActual;
+
+    private static PropuestaMaterialesDTO propuesta;
 
     static {
         clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
@@ -51,6 +61,18 @@ public class Almacen {
             }
         }
 
+        if (cliente.getId() <= 0) {
+            int siguienteId = 1;
+
+            for (int i = 0; i < clientes.size(); i++) {
+                if (clientes.get(i).getId() >= siguienteId) {
+                    siguienteId = clientes.get(i).getId() + 1;
+                }
+            }
+
+            cliente.setId(siguienteId);
+        }
+        
         return clientes.add(cliente);
     }
 
@@ -95,6 +117,31 @@ public class Almacen {
     
     public static PedidoDTO obtenerPedido() {
         return new PedidoDTO(3, "A domicilio", new Date(), "esperando confirmacion", 1376f, obtenerCliente());
+    }
+    
+    public void seleccionarCliente(ClienteDTO cliente) {
+        clienteActual = cliente;
+        propuestaActual = null;
+
+        if (clienteActual != null) {
+            propuestaActual = buscarPropuestaPendiente(clienteActual);
+        }
+    }
+    
+    private PropuestaMaterialesDTO buscarPropuestaPendiente(ClienteDTO cliente) {
+        if (cliente == null) {
+            return null;
+        }
+
+        for (int i = 0; i < propuestas.size(); i++) {
+            PropuestaMaterialesDTO propuesta = propuestas.get(i);
+
+            if (propuesta.getCliente() != null && propuesta.getCliente().getId() == cliente.getId() && "PENDIENTE".equals(propuesta.getEstado())) {
+                return propuesta;
+            }
+        }
+
+        return null;
     }
     
     public static PropuestaMaterialesDTO obtenerPropuestaMock() {
