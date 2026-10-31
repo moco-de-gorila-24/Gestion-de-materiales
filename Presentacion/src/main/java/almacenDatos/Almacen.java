@@ -26,6 +26,52 @@ import javax.swing.JOptionPane;
 public class Almacen {
     
     private static PropuestaMaterialesDTO propuesta;
+    private static List<ClienteDTO> clientes = new ArrayList<>();
+
+    static {
+        clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
+    }
+    
+    public static ClienteDTO obtenerCliente() {
+        if (clientes.isEmpty()) {
+            return null;
+        }
+
+        return clientes.get(0);
+    }
+
+    public static boolean GuardarCliente(ClienteDTO cliente) {
+        if (cliente == null) {
+            return false;
+        }
+
+        for (int i = 0; i < clientes.size(); i++) {
+            if (clientes.get(i).getTelefono().equals(cliente.getTelefono())) {
+                return false;
+            }
+        }
+
+        return clientes.add(cliente);
+    }
+
+    public static List<ClienteDTO> obtenerClientes() {
+        return clientes;
+    }
+
+    public static ClienteDTO buscarCliente(String telefono) {
+        if (telefono == null) {
+            return null;
+        }
+
+        for (int i = 0; i < clientes.size(); i++) {
+            if (clientes.get(i).getTelefono().equals(telefono.trim())) {
+                return clientes.get(i);
+            }
+        }
+
+        return null;
+    }
+    
     
     public static List<MaterialDTO> obtenerMateriales() {
         List<MaterialDTO> materialesDto = new ArrayList<>();
@@ -45,18 +91,6 @@ public class Almacen {
         List<PaqueteDTO> paquetesDto = new ArrayList<>();
         paquetesDto.add(new PaqueteDTO(1, "Barda de block 10m", 10, "m", "Barda", detallespaqueteDto));
         return paquetesDto;
-    }
-    
-    public static ClienteDTO obtenerCliente() {
-        return new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890");
-    }
-
-    public static boolean GuardarCliente(ClienteDTO cliente){
-        List<ClienteDTO> clientes = new ArrayList<>();
-        if(clientes.add(cliente)){
-            return true;
-        }
-        return false;
     }
     
     public static PedidoDTO obtenerPedido() {

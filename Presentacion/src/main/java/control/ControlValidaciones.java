@@ -5,10 +5,11 @@ import dtos.ClienteDTO;
 
 public class ControlValidaciones {
 
-    public static boolean validarTextoVacio(String texto){
-        if(texto.trim().isEmpty() || texto.trim() == null){
+    public static boolean validarTextoVacio(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
             return false;
         }
+
         return true;
     }
 
@@ -26,18 +27,15 @@ public class ControlValidaciones {
         return true;
     }
 
-    public static boolean clienteExiste(String telefono){
-        Almacen almacen = new Almacen();
-        ClienteDTO clienteDTO = almacen.obtenerCliente();
-
-        if(telefono.trim().equals(clienteDTO.getTelefono()) ){
-            return true;
+    public static boolean clienteExiste(String telefono) {
+        if (telefono == null) {
+            return false;
         }
-        return false;
+
+        return Almacen.buscarCliente(telefono) != null;
     }
 
-    public static boolean agregarCliente(ClienteDTO cliente){
-        Almacen almacen = new Almacen();
-        return almacen.GuardarCliente(cliente);
+    public static boolean agregarCliente(ClienteDTO cliente) {
+        return Almacen.GuardarCliente(cliente);
     }
 }
