@@ -162,26 +162,33 @@ public class Navegador {
     }
 
     private void refrescarCarrito() {
-        if (contenedorCarrito == null) {
+        if (contenedorCarrito == null || almacen == null) {
             return;
         }
-        
-        contenedorCarrito.removeAll();
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-        
-        for (DetallePropuestaDTO detalle : propuesta.getDetalles()) {
-            MaterialDTO m = detalle.getMaterial();
-            PanelCarrito tarjeta = new PanelCarrito(this);
 
-            tarjeta.setDetalle(detalle);
-            tarjeta.setDatos(m.getNombre(), m.getPrecioUnitario(),
-                    m.getUnidadMedida(), detalle.getCantidad());
-            
-            tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                    tarjeta.getPreferredSize().height));
-            contenedorCarrito.add(tarjeta);
-            contenedorCarrito.add(Box.createVerticalStrut(8));
+        contenedorCarrito.removeAll();
+
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+
+        if (propuesta != null) {
+            for (int i = 0; i < propuesta.getDetalles().size(); i++) {
+                DetallePropuestaDTO detalle = propuesta.getDetalles().get(i);
+                MaterialDTO material = detalle.getMaterial();
+
+                PanelCarrito tarjeta = new PanelCarrito(this);
+                tarjeta.setDetalle(detalle);
+                tarjeta.setDatos(material.getNombre(), material.getPrecioUnitario(), material.getUnidadMedida(),detalle.getCantidad());
+                tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, tarjeta.getPreferredSize().height));
+
+                contenedorCarrito.add(tarjeta);
+                contenedorCarrito.add(Box.createVerticalStrut(8));
+            }
         }
+
+        if (panelRegistrarPedido != null) {
+            panelRegistrarPedido.actualizarSubtotal(propuesta != null ? propuesta.getSubtotal() : 0);
+        }
+
         contenedorCarrito.revalidate();
         contenedorCarrito.repaint();
     }
@@ -212,7 +219,31 @@ public class Navegador {
     }
     
     public List<DetallePropuestaDTO> getDetallesCarrito() {
-        return almacen.obtenerPropuesta().getDetalles();
+        if (almacen == null) {
+            almacen = new Almacen();
+        }
+
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+
+        if (propuesta == null) {
+            return new ArrayList<>();
+        }
+
+        return propuesta.getDetalles();
+    }
+    
+    public float obtenerSubtotal() {
+        if (almacen == null) {
+            almacen = new Almacen();
+        }
+
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+
+        if (propuesta == null) {
+            return 0;
+        }
+
+        return propuesta.getSubtotal();
     }
     
     public void agregarAlCarrito(MaterialDTO material, int cantidad) {
@@ -228,9 +259,17 @@ public class Navegador {
         refrescarCarrito();
     }
     
-    public void limpiarCarrito() {
-        almacen.crearPropuesta();
+    public void limpiarPropuestaActual() {
+        if (almacen == null) {
+            almacen = new Almacen();
+        }
+
+        almacen.limpiarPropuestaActual();
         refrescarCarrito();
+    }
+    
+    public void limpiarCarrito() {
+        limpiarPropuestaActual();
     }
     
     public void mostrarSeleccionTipoEntrega() {
@@ -265,11 +304,29 @@ public class Navegador {
     }
 
     public boolean clienteExiste(String telefono) {
-        return ControlValidaciones.clienteExiste(telefono);
+        return Almacen.buscarCliente(telefono) != null;
+    }
+
+    
+    public boolean validarSoloTexto(String texto) {
+        return ControlValidaciones.validarSoloTexto(texto);
+    }
+    
+    public boolean agregarCliente(ClienteDTO cliente) {
+        if (almacen == null) {
+            almacen = new Almacen();
+        }
+
+        boolean registrado = Almacen.GuardarCliente(cliente);
+
+        if (registrado) {
+            almacen.seleccionarCliente(cliente);
+        }
+
+        return registrado;
     }
     
     public void seleccionarCliente(String telefono) {
-
         if (almacen == null) {
             almacen = new Almacen();
         }
@@ -278,6 +335,16 @@ public class Navegador {
 
         if (cliente != null) {
             almacen.seleccionarCliente(cliente);
+            refrescarCarrito();
         }
     }
+    
+    public void cancelarPropuestaActual() {
+        if (almacen == null) {
+            almacen = new Almacen();
+        }
+
+        almacen.cancelarPropuestaActual();
+    }
+    
 }

@@ -27,6 +27,10 @@ public class PanelRegistrarPedido extends JPanel {
     private Button btnCancelar = new Button("Cancelar");
     private Button btnSiguiente = new Button("Siguiente");
 
+    public void actualizarSubtotal(float subtotal) {
+        lblSubtotal.setText(String.format("$%.2f", subtotal));
+    }
+    
     public PanelRegistrarPedido(Navegador navegador) {
         this.navegador = navegador;
         setLayout(new BorderLayout(10, 10));
@@ -100,9 +104,11 @@ public class PanelRegistrarPedido extends JPanel {
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int opcion = JOptionPane.showConfirmDialog(null, "Desea cancelar el pedido?");
+                int opcion = JOptionPane.showConfirmDialog(null,"¿Desea cancelar el pedido?","Cancelar pedido",JOptionPane.YES_NO_OPTION
+                );
 
-                if(opcion == 0){
+                if (opcion == JOptionPane.YES_OPTION) {
+                    navegador.cancelarPropuestaActual();
                     navegador.mostrarPanelMenuPrincipal();
                 }
             }
@@ -111,7 +117,11 @@ public class PanelRegistrarPedido extends JPanel {
         btnSiguiente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                navegador.mostrarVerificarDisponibilidad();
+                if (navegador.getDetallesCarrito().isEmpty()) {
+                    JOptionPane.showMessageDialog(null,"Debe agregar al menos un material al carrito.");
+                } else {
+                    navegador.mostrarVerificarDisponibilidad();
+                }
             }
         });
     }

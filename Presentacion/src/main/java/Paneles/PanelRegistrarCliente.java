@@ -83,35 +83,31 @@ public class PanelRegistrarCliente extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         add(buttonRegresar, gbc);
 
-        buttonRegistrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!controlValidaciones.validarTextoVacio(fieldNombre.getText()) ||
-                    !controlValidaciones.validarTextoVacio(fieldApellidoPaterno.getText()) ||
-                    !controlValidaciones.validarTextoVacio(fieldApellidoMaterno.getText()) ||
-                    !controlValidaciones.validarTextoVacio(fieldTelefono.getText())){
-                    JOptionPane.showMessageDialog(null, "No pueden haber espacios vacios");
-                }
-                else if (!controlValidaciones.validarSoloTexto(fieldNombre.getText()) ||
-                    !controlValidaciones.validarSoloTexto(fieldApellidoPaterno.getText()) ||
-                    !controlValidaciones.validarSoloTexto(fieldApellidoMaterno.getText())){
-                    JOptionPane.showMessageDialog(null, "Debe ingresar unicamente texto");
-                }
-                else if(!controlValidaciones.validarTelefono(fieldTelefono.getText())){
-                    JOptionPane.showMessageDialog(null, "Debe ingresar un numero de 10 digitos");
-                }
-                else{
-                    JOptionPane.showMessageDialog(null, "Cliente registrado con exito");
-                    ClienteDTO clienteDTO = new ClienteDTO(fieldNombre.getText(), fieldApellidoPaterno.getText(), fieldApellidoMaterno.getText(), fieldTelefono.getText());
-                    if(controlValidaciones.agregarCliente(clienteDTO)){
-                        JOptionPane.showMessageDialog(null, "cliente agregado con exito");
-                        navegador.mostrarPanelRegistrarPedido();
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "No se pudo agregar al cliente");
-                    }
-                }
+        buttonRegistrar.addActionListener(e -> {
 
+            String nombre = fieldNombre.getText();
+            String apellidoPaterno = fieldApellidoPaterno.getText();
+            String apellidoMaterno = fieldApellidoMaterno.getText();
+            String telefono = fieldTelefono.getText();
+
+            if (!navegador.validarTextoVacio(nombre) || !navegador.validarTextoVacio(apellidoPaterno) || !navegador.validarTextoVacio(apellidoMaterno)|| !navegador.validarTextoVacio(telefono)) {
+                JOptionPane.showMessageDialog(this, "No pueden haber espacios vacios");
+            } else if (!navegador.validarSoloTexto(nombre) || !navegador.validarSoloTexto(apellidoPaterno) || !navegador.validarSoloTexto(apellidoMaterno)) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar unicamente texto");
+            } else if (!navegador.validarTelefono(telefono)) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar un numero de 10 digitos");
+            } else if (navegador.clienteExiste(telefono)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un cliente con ese telefono");
+            } else {
+
+                ClienteDTO clienteDTO = new ClienteDTO(nombre, apellidoPaterno, apellidoMaterno, telefono);
+
+                if (navegador.agregarCliente(clienteDTO)) {
+                    JOptionPane.showMessageDialog(this, "Cliente registrado con exito");
+                    navegador.mostrarPanelRegistrarPedido();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo agregar al cliente");
+                }
             }
         });
 
