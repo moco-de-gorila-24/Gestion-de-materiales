@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import almacenDatos.Almacen;
+import dtos.ClienteDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.PropuestaMaterialesDTO;
 
@@ -253,5 +254,30 @@ public class Navegador {
     
     public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
         return almacen.sustituirMaterial(detalle, nuevo);
+    }
+    
+    public boolean validarTextoVacio(String texto) {
+        return ControlValidaciones.validarTextoVacio(texto);
+    }
+
+    public boolean validarTelefono(String telefono) {
+        return ControlValidaciones.validarTelefono(telefono);
+    }
+
+    public boolean clienteExiste(String telefono) {
+        return ControlValidaciones.clienteExiste(telefono);
+    }
+    
+    public void seleccionarCliente(String telefono) {
+
+        if (almacen == null) {
+            almacen = new Almacen();
+        }
+
+        ClienteDTO cliente = Almacen.buscarCliente(telefono);
+
+        if (cliente != null) {
+            almacen.seleccionarCliente(cliente);
+        }
     }
 }

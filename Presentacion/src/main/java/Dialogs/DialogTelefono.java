@@ -72,27 +72,26 @@ public class DialogTelefono extends JDialog {
         add(panelBotones, gbc);
 
         btnRegresar.addActionListener(e -> dispose());
-        btnConfirmar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!controlValidaciones.validarTextoVacio(campoTelefono.getText())){
-                    JOptionPane.showMessageDialog(null, "El campo no puede quedar vacio");
-                }
-                else if (!controlValidaciones.validarTelefono(campoTelefono.getText())){
-                    JOptionPane.showMessageDialog(null, "El telefono debe ser un numero de 10 digitos");
-                }
-                else if(!controlValidaciones.clienteExiste(campoTelefono.getText())){
-                    dispose();
-                    JOptionPane.showMessageDialog(null, "El numero proporcionado no existe");
-                }
-                else{
-                    campoTelefono.setText("");
-                    dispose();
-                    navegador.mostrarPanelRegistrarPedido();
-                }
+        btnConfirmar.addActionListener(e -> {
 
+            String telefono = campoTelefono.getText();
+
+            if (!navegador.validarTextoVacio(telefono)) {
+                JOptionPane.showMessageDialog(this, "El campo no puede quedar vacio");
+            } else if (!navegador.validarTelefono(telefono)) {
+                JOptionPane.showMessageDialog(this, "El telefono debe ser un numero de 10 digitos");
+            } else if (!navegador.clienteExiste(telefono)) {
+                JOptionPane.showMessageDialog(this, "El numero proporcionado no existe");
+            } else {
+                navegador.seleccionarCliente(telefono);
+
+                campoTelefono.setText("");
+                dispose();
+
+                navegador.mostrarPanelRegistrarPedido();
             }
         });
+
 
         btnRegistrarCliente.addActionListener(new ActionListener() {
             @Override
