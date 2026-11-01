@@ -5,7 +5,15 @@
 package Paneles;
 
 import control.Navegador;
+import dtos.ClienteDTO;
+import dtos.DetallePropuestaDTO;
+import dtos.DireccionDTO;
+import dtos.MaterialDTO;
+import dtos.PedidoDTO;
+import java.text.DecimalFormat;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -301,6 +309,51 @@ public class ordenEntrega extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    public void cargarDatos(ClienteDTO cliente, DireccionDTO direccion, PedidoDTO pedido, List<DetallePropuestaDTO> detalles, String tipoEntrega) {
+
+        if (pedido != null) {
+            lblEstado.setText(pedido.getEstado());
+        }
+
+        if (cliente != null) {
+            lblCliente.setText(cliente.getNombre() + " " + cliente.getApellidoPa() + " " + cliente.getApellidoMa());
+            lblTelefono.setText(cliente.getTelefono());
+        }
+
+        if ("DOMICILIO".equals(tipoEntrega) && direccion != null) {
+            lblCalle.setText(direccion.getCalle());
+            lblColonia.setText(direccion.getColonia());
+            lblNum.setText("Número: " + direccion.getNumero());
+            lblCP.setText("CP: " + direccion.getCp());
+        } else {
+            lblCalle.setText("No aplica");
+            lblColonia.setText("No aplica");
+            lblNum.setText("");
+            lblCP.setText("");
+        }
+
+        DefaultTableModel modelo = (DefaultTableModel) tblPedido.getModel();
+        modelo.setRowCount(0);
+
+        DecimalFormat formato = new DecimalFormat("$#,##0.00");
+
+        if (detalles != null) {
+            for (int i = 0; i < detalles.size(); i++) {
+                DetallePropuestaDTO detalle = detalles.get(i);
+                MaterialDTO material = detalle.getMaterial();
+
+                float importe = detalle.getCantidad() * detalle.getPrecioUnitario();
+
+                modelo.addRow(new Object[]{
+                    material.getNombre(),
+                    detalle.getCantidad(),
+                    material.getUnidadMedida(),
+                    formato.format(detalle.getPrecioUnitario()),
+                    formato.format(importe)
+                });
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;

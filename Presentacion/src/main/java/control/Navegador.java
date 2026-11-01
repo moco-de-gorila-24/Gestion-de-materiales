@@ -15,8 +15,12 @@ import java.util.List;
 import java.util.Map;
 import almacenDatos.Almacen;
 import dtos.ClienteDTO;
+import dtos.CotizacionDTO;
 import dtos.DetallePropuestaDTO;
+import dtos.DireccionDTO;
+import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
+import java.util.Date;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -85,9 +89,22 @@ public class Navegador {
     }
     
     public void mostrarOrdenEntrega() {
-        if(ordenEntrega == null) {
-            ordenEntrega = new ordenEntrega(this);
+        if (almacen == null) {
+            almacen = new Almacen();
         }
+
+        ClienteDTO cliente = almacen.obtenerClienteActual();
+        DireccionDTO direccion = almacen.obtenerDireccionActual();
+        String tipoEntrega = almacen.obtenerTipoEntrega();
+        CotizacionDTO cotizacion = almacen.obtenerCotizacion();
+
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+
+        PedidoDTO pedido = new PedidoDTO(1, tipoEntrega, new Date(), "Pendiente de confirmación", cotizacion != null ? cotizacion.getTotal() : 0, cliente);
+
+        ordenEntrega = new ordenEntrega(this);
+        ordenEntrega.cargarDatos(cliente,direccion, pedido, propuesta != null ? propuesta.getDetalles() : null, tipoEntrega);
+
         cambiarPanel(ordenEntrega);
     }
     
@@ -115,13 +132,6 @@ public class Navegador {
         cambiarPanel(verificarDisponibilidad);
     }
     
-    public void mostrarCotizacionSuministro() {
-        if(cotizacion == null){
-            cotizacion = new CotizacionSuministro(this);
-        }
-        cambiarPanel(cotizacion);
-    }
-
     public JPanel mostrarProductos(){
         if(panelProducto == null){
             panelProducto = new PanelProducto(this);
@@ -345,6 +355,19 @@ public class Navegador {
         }
 
         almacen.cancelarPropuestaActual();
+    }
+    
+    public void establecerTipoEntrega(String tipo) {
+        almacen.establecerTipoEntrega(tipo);
+    }
+    
+    public void mostrarCotizacionSuministro() {
+        CotizacionDTO cotizacion = almacen.obtenerCotizacion();
+
+        this.cotizacion = new CotizacionSuministro(this);
+        this.cotizacion.cargarDatos(cotizacion, almacen.obtenerTipoEntrega());
+
+        cambiarPanel(this.cotizacion);
     }
     
 }

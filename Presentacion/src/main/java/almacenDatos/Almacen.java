@@ -35,6 +35,7 @@ public class Almacen {
     private static int siguienteIdPropuesta = 1;
     private static ClienteDTO clienteActual;
     private static PropuestaMaterialesDTO propuestaActual;
+    private String tipoEntrega;
 
     static {
         clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
@@ -177,7 +178,18 @@ public class Almacen {
     }
     
     public CotizacionDTO obtnerCotizacion() {
-        return new CotizacionDTO(1100F, 1376F, new Date(), 176f, 100f, obtenerPropuesta());
+        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
+
+        if (propuesta == null) {
+            return null;
+        }
+
+        float subtotal = propuesta.getSubtotal();
+        float impuesto = subtotal * 0.16f;
+        float costoEnvio = 100f;
+        float total = subtotal + impuesto + costoEnvio;
+
+        return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuesta);
     }
     
     public static List<DireccionDTO> obtenerDirecciones() {
@@ -418,4 +430,44 @@ public class Almacen {
         propuesta.setSubtotal(0f);
         propuesta.setCantidadTotalProductos(0);
     }
+    
+    public ClienteDTO obtenerClienteActual() {
+        return clienteActual;
+    }
+    
+    public DireccionDTO obtenerDireccionActual() {
+        List<DireccionDTO> direcciones = obtenerDirecciones();
+
+        if (direcciones.isEmpty()) {
+            return null;
+        }
+
+        return direcciones.get(0);
+    }
+    
+    public void establecerTipoEntrega(String tipo) {
+        this.tipoEntrega = tipo;
+    }
+    
+    
+
+    public String obtenerTipoEntrega() {
+        return tipoEntrega;
+    }
+    
+    public CotizacionDTO obtenerCotizacion() {
+        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
+
+        if (propuesta == null) {
+            return null;
+        }
+
+        float subtotal = propuesta.getSubtotal();
+        float impuesto = subtotal * 0.16f;
+        float costoEnvio = 100f;
+        float total = subtotal + impuesto + costoEnvio;
+
+        return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuesta);
+    }
+    
 }

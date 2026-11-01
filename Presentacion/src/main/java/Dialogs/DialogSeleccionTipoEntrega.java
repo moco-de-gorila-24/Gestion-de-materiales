@@ -63,6 +63,7 @@ public class DialogSeleccionTipoEntrega extends JDialog {
 
     private void elegir(String tipo) {
         seleccion = tipo;
+        navegador.establecerTipoEntrega(tipo);
         dispose();
         navegador.mostrarCotizacionSuministro();
     }

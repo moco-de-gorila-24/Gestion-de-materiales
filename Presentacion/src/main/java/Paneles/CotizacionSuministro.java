@@ -5,7 +5,13 @@
 package Paneles;
 
 import control.Navegador;
+import dtos.CotizacionDTO;
+import dtos.DetallePropuestaDTO;
+import dtos.MaterialDTO;
+import dtos.PropuestaMaterialesDTO;
+import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -191,12 +197,11 @@ public class CotizacionSuministro extends javax.swing.JPanel {
 
     private void btnCancelarPropuestaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPropuestaActionPerformed
         Object[] opciones = {"Si, cancelar propuesta", "Regresar"};
-        int respuesta = JOptionPane.showOptionDialog(
-                this, "¿Desea cancelar la propuesta?", "Cancelar propuesta",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                opciones, opciones[1]);         
 
-        if (respuesta == 0) {          // eligio cancelar propuesta
+        int respuesta = JOptionPane.showOptionDialog(this, "¿Desea cancelar la propuesta?", "Cancelar propuesta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[1]);
+
+        if (respuesta == 0) {
+            navegador.cancelarPropuestaActual();
             navegador.mostrarPanelMenuPrincipal();
         }
     }//GEN-LAST:event_btnCancelarPropuestaActionPerformed
@@ -216,6 +221,42 @@ public class CotizacionSuministro extends javax.swing.JPanel {
         navegador.mostrarDialogoFechas();
     }//GEN-LAST:event_btnConsultarFechasActionPerformed
 
+    public void cargarDatos(CotizacionDTO cotizacion, String tipoEntrega) {
+        DefaultTableModel modelo = (DefaultTableModel) tblPedido.getModel();
+        modelo.setRowCount(0);
+
+        if (cotizacion == null || cotizacion.getPropuesta() == null) {
+            return;
+        }
+
+        DecimalFormat formato = new DecimalFormat("$#,##0.00");
+
+        PropuestaMaterialesDTO propuesta = cotizacion.getPropuesta();
+
+        for (int i = 0; i < propuesta.getDetalles().size(); i++) {
+            DetallePropuestaDTO detalle = propuesta.getDetalles().get(i);
+            MaterialDTO material = detalle.getMaterial();
+
+            float importe = detalle.getCantidad() * detalle.getPrecioUnitario();
+
+            modelo.addRow(new Object[]{
+                material.getNombre(),
+                detalle.getCantidad(),
+                material.getUnidadMedida(),
+                formato.format(detalle.getPrecioUnitario()),
+                formato.format(importe),
+                true
+            });
+        }
+
+        if (tipoEntrega != null) {
+            if (tipoEntrega.equals("DOMICILIO")) {
+                lblTipoEntrega.setText("A domicilio");
+            } else {
+                lblTipoEntrega.setText("Recoger en tienda");
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelarPropuesta;
