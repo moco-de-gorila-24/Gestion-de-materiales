@@ -4,7 +4,7 @@
  */
 package utilerias;
 
-import almacenDatos.Almacen;
+import almacen.Almacen;
 import control.Navegador;
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;

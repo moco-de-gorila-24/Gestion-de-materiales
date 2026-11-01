@@ -8,6 +8,7 @@
     <modules>
         <module>Presentacion</module>
         <module>ObjetosDTO</module>
+        <module>AlmacenTemporal</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

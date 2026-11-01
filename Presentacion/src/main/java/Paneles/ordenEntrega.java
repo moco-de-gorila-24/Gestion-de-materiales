@@ -266,7 +266,7 @@ public class ordenEntrega extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditarDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarDireccionActionPerformed
-        // TODO add your handling code here:
+        navegador.mostrarFormularioDireccion();
     }//GEN-LAST:event_btnEditarDireccionActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed

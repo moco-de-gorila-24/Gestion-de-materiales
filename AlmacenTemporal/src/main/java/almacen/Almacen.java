@@ -2,12 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package almacenDatos;
+package almacen;
 
 import dtos.ClienteDTO;
 import dtos.CotizacionDTO;
 import dtos.DetallePaqueteDTO;
-import dtos.DetallePedidoDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
 import dtos.MaterialDTO;
@@ -18,7 +17,6 @@ import dtos.PropuestaMaterialesDTO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -177,21 +175,6 @@ public class Almacen {
         propuestaActual = null;
     }
     
-    public CotizacionDTO obtnerCotizacion() {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null) {
-            return null;
-        }
-
-        float subtotal = propuesta.getSubtotal();
-        float impuesto = subtotal * 0.16f;
-        float costoEnvio = 100f;
-        float total = subtotal + impuesto + costoEnvio;
-
-        return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuesta);
-    }
-    
     public static List<DireccionDTO> obtenerDirecciones() {
         List<DireccionDTO> direcciones = new ArrayList<>();
         direcciones.add(new DireccionDTO("Mar amarillo", "Prados del Tepeyac", 123, 54678));
@@ -244,191 +227,15 @@ public class Almacen {
         propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad);
     }
     
-    public DetallePropuestaDTO validarDisponibilidad() {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null) {
-            return null;
-        }
-
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO detalle = detalles.get(i);
-            MaterialDTO material = detalle.getMaterial();
-
-            if (material == null || detalle.getCantidad() > material.getCantidadDisponible()) {
-                return detalle;
-            }
-        }
-
-        return null;
-    }
-    
-    public List<MaterialDTO> obtenerMaterialesSustitutos(DetallePropuestaDTO detalle) {
-        List<MaterialDTO> sustitutos = new ArrayList<>();
-
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null || detalle == null || detalle.getMaterial() == null) {
-            return sustitutos;
-        }
-
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
-        List<MaterialDTO> materialesAlmacen = obtenerMateriales();
-        MaterialDTO material = detalle.getMaterial();
-
-        for (int i = 0; i < materialesAlmacen.size(); i++) {
-            MaterialDTO candidato = materialesAlmacen.get(i);
-
-            boolean mismoTipo = candidato.getTipo() != null && material.getTipo() != null && candidato.getTipo().equalsIgnoreCase(material.getTipo());
-            boolean diferente = candidato.getIdMaterial() != material.getIdMaterial();
-            int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, candidato);
-            boolean stockSuficiente = candidato.getCantidadDisponible() >= cantidadNecesaria;
-
-            if (mismoTipo && diferente && stockSuficiente) {
-                sustitutos.add(candidato);
-            }
-        }
-
-        return sustitutos;
-    }
-
-    public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidad) {
+    public boolean eliminarDetallePropuesta(DetallePropuestaDTO detalle) {
         PropuestaMaterialesDTO propuesta = obtenerPropuesta();
 
         if (propuesta == null || detalle == null) {
-            return;
-        }
-
-        if (!propuesta.getDetalles().contains(detalle)) {
-            return;
-        }
-
-        int nueva = detalle.getCantidad() + cantidad;
-
-        if (nueva <= 0) {
-            eliminarDetallePropuesta(detalle);
-            return;
-        }
-
-        detalle.setCantidad(nueva);
-
-        propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * detalle.getPrecioUnitario()
-        );
-
-        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad
-        );
-    }
-
-    private int calcularCantidadTotal(List<DetallePropuestaDTO> detalles, DetallePropuestaDTO detalleActual, MaterialDTO candidato) {
-
-        if (detalles == null || detalleActual == null || candidato == null) {
-            return 0;
-        }
-
-        int cantidadTotal = detalleActual.getCantidad();
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO otro = detalles.get(i);
-
-            if (otro != detalleActual && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == candidato.getIdMaterial()) {
-                cantidadTotal += otro.getCantidad();
-            }
-        }
-
-        return cantidadTotal;
-    }
-    
-    public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null || detalle == null || nuevo == null || detalle.getMaterial() == null) {
             return false;
         }
 
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
-
-        if (!detalles.contains(detalle)) {
-            return false;
-        }
-
-        int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
-
-        if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
-            return false;
-        }
-
-        DetallePropuestaDTO existente = null;
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO otro = detalles.get(i);
-
-            if (otro != detalle && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == nuevo.getIdMaterial()) {
-                existente = otro;
-                break;
-            }
-        }
-
-        float subtotalAnteriorDetalle = detalle.getCantidad() * detalle.getPrecioUnitario();
-
-        if (existente != null) {
-            float subtotalAnteriorExistente = existente.getCantidad() * existente.getPrecioUnitario();
-            int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
-            float subtotalNuevo = cantidadTotal * nuevo.getPrecioUnitario();
-
-            existente.setCantidad(cantidadTotal);
-            existente.setMaterial(nuevo);
-            existente.setPrecioUnitario(nuevo.getPrecioUnitario());
-
-            detalles.remove(detalle);
-
-            propuesta.setSubtotal(propuesta.getSubtotal() - subtotalAnteriorDetalle - subtotalAnteriorExistente + subtotalNuevo);
-
-        } else {
-            detalle.setMaterial(nuevo);
-            detalle.setPrecioUnitario(nuevo.getPrecioUnitario());
-            float subtotalNuevo = detalle.getCantidad() * nuevo.getPrecioUnitario();
-
-            propuesta.setSubtotal(propuesta.getSubtotal() - subtotalAnteriorDetalle + subtotalNuevo);
-        }
-
-        return true;
-    }
-
-    public int obtenerCantidadNecesaria(DetallePropuestaDTO detalle, MaterialDTO candidato) {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null || detalle == null || candidato == null) {
-            return 0;
-        }
-
-        return calcularCantidadTotal(propuesta.getDetalles(), detalle, candidato);
-    }
-
-    public void eliminarDetallePropuesta(DetallePropuestaDTO detalle) {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null || detalle == null) {
-            return;
-        }
-
-        if (propuesta.getDetalles().remove(detalle)) {
-            propuesta.setSubtotal(propuesta.getSubtotal() - detalle.getCantidad() * detalle.getPrecioUnitario());
-            propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() - detalle.getCantidad());
-        }
-    }
-    
-    public void limpiarPropuestaActual() {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null) {
-            return;
-        }
-
-        propuesta.setDetalles(new ArrayList<>());
-        propuesta.setSubtotal(0f);
-        propuesta.setCantidadTotalProductos(0);
+        return propuesta.getDetalles().remove(detalle);
+           
     }
     
     public ClienteDTO obtenerClienteActual() {
@@ -447,9 +254,7 @@ public class Almacen {
     
     public void establecerTipoEntrega(String tipo) {
         this.tipoEntrega = tipo;
-    }
-    
-    
+    } 
 
     public String obtenerTipoEntrega() {
         return tipoEntrega;

@@ -198,7 +198,7 @@ public class VerificarDisponibilidad extends JPanel {
 
             // Selector de materiales sustitutos.
             JComboBox<MaterialDTO> selector = new JComboBox<>();
-            List<MaterialDTO> sustitutos = navegador.obtenerSustitutos(detalle);
+            List<MaterialDTO> sustitutos = navegador.obtenerMaterialesSustitutos(detalle);
 
             for (int j = 0; j < sustitutos.size(); j++) {
                 MaterialDTO candidato = sustitutos.get(j);
@@ -249,7 +249,7 @@ public class VerificarDisponibilidad extends JPanel {
                     return;
                 }
 
-                int cantidadNecesaria = navegador.obtenerCantidad(detalle, nuevo);
+                int cantidadNecesaria = navegador.obtenerCantidadNecesaria(detalle, nuevo);
 
                 if (!navegador.sustituirMaterial(detalle, nuevo)) {
                     JOptionPane.showMessageDialog(this,

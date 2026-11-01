@@ -1,6 +1,6 @@
 package control;
 
-import almacenDatos.Almacen;
+import almacen.Almacen;
 import dtos.ClienteDTO;
 
 public class ControlValidaciones {

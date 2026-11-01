@@ -8,10 +8,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PanelMenuPricipal extends JPanel {
+public class PanelMenuPrincipal extends JPanel {
     private final Navegador navegador;
 
-    public PanelMenuPricipal(Navegador navegador){
+    public PanelMenuPrincipal(Navegador navegador){
         this.navegador = navegador;
 
         setLayout(new GridBagLayout());
