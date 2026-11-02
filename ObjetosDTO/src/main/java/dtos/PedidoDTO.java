@@ -5,6 +5,7 @@
 package dtos;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -17,14 +18,16 @@ public class PedidoDTO {
     private String estado;
     private float total;
     private ClienteDTO cliente;
+    private List<DetallePedidoDTO> detalles;
 
-    public PedidoDTO(int idPedido, String formaSuministro, Date fecha, String estado, float total, ClienteDTO cliente) {
+    public PedidoDTO(int idPedido, String formaSuministro, Date fecha, String estado, float total, ClienteDTO cliente, List<DetallePedidoDTO> detalles) {
         this.idPedido = idPedido;
         this.formaSuministro = formaSuministro;
         this.fecha = fecha;
         this.estado = estado;
         this.total = total;
         this.cliente = cliente;
+        this.detalles = detalles;
     }
 
     public int getIdPedido() {
@@ -73,6 +76,14 @@ public class PedidoDTO {
 
     public void setCliente(ClienteDTO cliente) {
         this.cliente = cliente;
+    }
+
+    public List<DetallePedidoDTO> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetallePedidoDTO> detalles) {
+        this.detalles = detalles;
     }
     
     

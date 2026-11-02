@@ -13,6 +13,7 @@ import almacen.Almacen;
 import static almacen.Almacen.obtenerMateriales;
 import dtos.ClienteDTO;
 import dtos.CotizacionDTO;
+import dtos.DetallePedidoDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
 import dtos.PedidoDTO;
@@ -97,20 +98,17 @@ public class Navegador {
         DireccionDTO direccion = almacen.obtenerDireccionActual();
         String tipoEntrega = almacen.obtenerTipoEntrega();
         CotizacionDTO cotizacion = almacen.obtenerCotizacion();
-
         PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
 
-        PedidoDTO pedido = new PedidoDTO(1, tipoEntrega, new Date(), "Pendiente de confirmación", cotizacion != null ? cotizacion.getTotal() : 0, cliente);
-
         ordenEntrega = new ordenEntrega(this);
-        ordenEntrega.cargarDatos(cliente,direccion, pedido, propuesta != null ? propuesta.getDetalles() : null, tipoEntrega);
+        ordenEntrega.cargarDatos(cliente, direccion, "Pendiente de confirmacion", propuesta != null ? propuesta.getDetalles() : null, tipoEntrega);
 
         cambiarPanel(ordenEntrega);
     }
     
-    public void mostrarDialogoPedidoConfirmado() {
+    public void mostrarDialogoPedidoConfirmado(PedidoDTO pedido) {
         if(pedidoConfirmado == null) {
-            pedidoConfirmado = new DialogPedidoConfirmado(framePrincipal, this);
+            pedidoConfirmado = new DialogPedidoConfirmado(framePrincipal, this, pedido);
         }   
         pedidoConfirmado.setVisible(true);    
     }
@@ -597,5 +595,38 @@ public class Navegador {
             fechaLimite = fecha.getTime();
         }
         return fechaLimite;
+    }
+    
+    public void confirmarPedido() {
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+        CotizacionDTO cotizacion = almacen.obtenerCotizacion();
+        
+        if(propuesta == null || propuesta.getDetalles().isEmpty()) {
+            return;
+        }       
+        if(cotizacion == null) {
+            return;
+        }
+        List<DetallePedidoDTO> detalles = new ArrayList<>();
+        
+        for (int i = 0; i < propuesta.getDetalles().size(); i++) {
+            DetallePropuestaDTO detalle = propuesta.getDetalles().get(i);
+           
+            detalles.add(new DetallePedidoDTO(detalle.getMaterial(), detalle.getCantidad(), 
+            detalle.getPrecioUnitario(), detalle.getCantidad() * detalle.getPrecioUnitario()));
+        }
+        
+        PedidoDTO pedido = new PedidoDTO(0, almacen.obtenerTipoEntrega(), new Date(), "CONFIRMADO",
+                           cotizacion.getTotal(), propuesta.getCliente(), detalles);
+        
+        PedidoDTO pedidoAlmacenado = almacen.guardarPedido(pedido);
+        if (pedidoAlmacenado == null) {
+            return;
+        }
+        if("DOMICILIO".equals(almacen.obtenerTipoEntrega())) {
+            almacen.crearOrdenEntrega(almacen.obtenerTipoEntrega(), programarFechaEstimadaEntrega(), almacen.obtenerDireccionActual(), pedidoAlmacenado);
+        }
+        
+        mostrarDialogoPedidoConfirmado(pedidoAlmacenado);
     }
 }

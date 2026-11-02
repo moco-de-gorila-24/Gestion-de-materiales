@@ -16,7 +16,6 @@ import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -111,10 +110,6 @@ public class Almacen {
         List<PaqueteDTO> paquetesDto = new ArrayList<>();
         paquetesDto.add(new PaqueteDTO(1, "Barda de block 10m", 10, "m", "Barda", detallespaqueteDto));
         return paquetesDto;
-    }
-    
-    public static PedidoDTO obtenerPedido() {
-        return new PedidoDTO(3, "A domicilio", new Date(), "esperando confirmacion", 1376f, obtenerCliente());
     }
     
     public void seleccionarCliente(ClienteDTO cliente) {
@@ -285,6 +280,24 @@ public class Almacen {
         OrdenEntregaDTO orden = new OrdenEntregaDTO(tipoEntrega, fecha, direccion, pedido);
         ordenesEntrega.add(orden);
         return orden;
+    }
+    
+    public PedidoDTO guardarPedido(PedidoDTO pedido) {
+        if(pedido == null) {           
+           return null;
+        }
+        
+        int id = 1;
+        for(int i = 0; i<pedidos.size(); i++) {
+            PedidoDTO pedidoExistente = pedidos.get(i);
+            
+            if(pedidoExistente.getIdPedido() >= id) {
+                id= pedidoExistente.getIdPedido();
+            }
+        }
+        pedido.setIdPedido(id);
+        pedidos.add(pedido);
+        return pedido;
     }
 
 }

@@ -282,7 +282,7 @@ public class ordenEntrega extends javax.swing.JPanel {
 
     private void btnConfirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirarActionPerformed
         // TODO add your handling code here:
-        navegador.mostrarDialogoPedidoConfirmado();
+        navegador.confirmarPedido();
     }//GEN-LAST:event_btnConfirarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -293,16 +293,16 @@ public class ordenEntrega extends javax.swing.JPanel {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                 opciones, opciones[1]);         
 
-        if (respuesta == 0) {          // eligio cancelar el peido
+        if (respuesta == 0) {          // eligio cancelar el pedido
             navegador.mostrarPanelMenuPrincipal();
         }
         
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    public void cargarDatos(ClienteDTO cliente, DireccionDTO direccion, PedidoDTO pedido, List<DetallePropuestaDTO> detalles, String tipoEntrega) {
+    public void cargarDatos(ClienteDTO cliente, DireccionDTO direccion, String estadoPedido, List<DetallePropuestaDTO> detalles, String tipoEntrega) {
 
-        if (pedido != null) {
-            lblEstado.setText(pedido.getEstado());
+        if (estadoPedido != null) {
+            lblEstado.setText(estadoPedido);
         }
 
         if (cliente != null) {

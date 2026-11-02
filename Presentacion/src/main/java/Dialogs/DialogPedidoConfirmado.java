@@ -6,6 +6,7 @@ package Dialogs;
 
 import control.Navegador;
 import Componentes.Button;
+import dtos.PedidoDTO;
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,7 +17,7 @@ import java.awt.*;
 public class DialogPedidoConfirmado extends JDialog {
     private final Navegador navegador;
 
-    public DialogPedidoConfirmado(JFrame owner, Navegador navegador) {
+    public DialogPedidoConfirmado(JFrame owner, Navegador navegador, PedidoDTO pedido) {
         super(owner, "Pedido confirmado", true);
         this.navegador = navegador;
 
@@ -35,7 +36,7 @@ public class DialogPedidoConfirmado extends JDialog {
         gbc.insets = new Insets(25, 20, 30, 20);
         add(titulo, gbc);
 
-        JLabel lblEstado = new JLabel("Estado del pedido: Confirmado");
+        JLabel lblEstado = new JLabel("Estado del pedido: " + pedido.getEstado());
         lblEstado.setFont(new Font("Arial", Font.PLAIN, 20));
         lblEstado.setForeground(textoOscuro);
 
@@ -51,7 +52,7 @@ public class DialogPedidoConfirmado extends JDialog {
         gbc.insets = new Insets(0, 20, 20, 20);
         add(lblReservas, gbc);
 
-        JLabel lblTotal = new JLabel("Total a pagar: $0.00");
+        JLabel lblTotal = new JLabel(String.format("Total a pagar: $%.2f", pedido.getTotal()));
         lblTotal.setFont(new Font("Arial", Font.PLAIN, 20));
         lblTotal.setForeground(textoOscuro);
 

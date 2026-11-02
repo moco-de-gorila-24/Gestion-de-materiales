@@ -5,7 +5,6 @@
 package Paneles;
 
 import control.Navegador;
-import dtos.DetallePedidoDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import java.awt.BorderLayout;
