@@ -563,4 +563,18 @@ public class Navegador {
         cambiarPanel(this.cotizacion);
     }
     
+    public CotizacionDTO actualizarConfirmacionMaterial(int fila, boolean aceptado) {
+        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
+        
+        if(fila<0 || fila >= propuesta.getDetalles().size() || propuesta == null) {
+            return null;
+        }
+        if(!aceptado) {
+            DetallePropuestaDTO detalle = propuesta.getDetalles().get(fila);
+            eliminarDelCarrito(detalle);        
+        }
+        
+        return almacen.obtenerCotizacion();
+    }
+    
 }

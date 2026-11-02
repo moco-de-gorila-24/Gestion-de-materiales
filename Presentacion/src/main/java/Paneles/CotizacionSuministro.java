@@ -10,8 +10,12 @@ import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import dtos.PropuestaMaterialesDTO;
 import java.text.DecimalFormat;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -27,6 +31,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
     public CotizacionSuministro(Navegador navegador) {
         this.navegador = navegador;
         initComponents();
+        configurarListenerAceptar();
     }
 
     /**
@@ -328,6 +333,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
 
     public void cargarDatos(CotizacionDTO cotizacion, String tipoEntrega) {
         DefaultTableModel modelo = (DefaultTableModel) tblPedido.getModel();
+        configurarColumnaAceptar();
         modelo.setRowCount(0);
 
         if (cotizacion == null || cotizacion.getPropuesta() == null) {
@@ -361,6 +367,41 @@ public class CotizacionSuministro extends javax.swing.JPanel {
                 lblTipoEntrega.setText("Recoger en tienda");
             }
         }
+        
+        cargarDatosLbl(cotizacion);
+    }
+    
+    private void configurarColumnaAceptar() {
+        TableColumn columna = tblPedido.getColumnModel().getColumn(5);
+
+        columna.setCellRenderer(tblPedido.getDefaultRenderer(Boolean.class));
+
+        columna.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+    }
+    
+    private void configurarListenerAceptar() {
+        tblPedido.getModel().addTableModelListener(evento -> {
+            if (evento.getType() != TableModelEvent.UPDATE || evento.getColumn() != 5) {
+                return;
+            }
+
+            int fila = evento.getFirstRow();
+            boolean aceptado = Boolean.TRUE.equals(tblPedido.getModel().getValueAt(fila, 5));
+
+            CotizacionDTO cotizacion = navegador.actualizarConfirmacionMaterial(fila, aceptado);
+
+            if (cotizacion != null) {
+                if (!aceptado) {
+                    ((DefaultTableModel) tblPedido.getModel()).removeRow(fila);
+                }
+                
+                cargarDatosLbl(cotizacion);
+            }
+        });
+    }
+    
+    private void cargarDatosLbl(CotizacionDTO cotizacion) {
+        DecimalFormat formato = new DecimalFormat("$#,##0.00");
         lblSubtotal.setText(formato.format(cotizacion.getSubtotal()));
         lblCostoEnvio.setText(formato.format(cotizacion.getCostoEnvio()));
         lblImpuestos.setText(formato.format(cotizacion.getImpuesto()));
