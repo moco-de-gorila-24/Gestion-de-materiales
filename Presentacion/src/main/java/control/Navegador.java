@@ -18,6 +18,7 @@ import dtos.DireccionDTO;
 import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -38,6 +39,8 @@ public class Navegador {
     private Almacen almacen;
     DetallePropuestaDTO propuesta;
     private JPanel contenedorCarrito;
+    private Date fechaEntrega;
+    private Date fechaLimite;
     
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -242,7 +245,8 @@ public class Navegador {
     }
     
     public void mostrarDialogoFechas() {
-        DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this);
+        DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this, 
+                almacen.obtenerTipoEntrega(), programarFechaEstimadaEntrega(), programarFechaEstimadaLimiteRecoger());
         dialogFechas.setVisible(true);
     }
 
@@ -576,5 +580,22 @@ public class Navegador {
         
         return almacen.obtenerCotizacion();
     }
+           
+    public Date programarFechaEstimadaEntrega() {
+        if(fechaEntrega == null) {
+            GregorianCalendar fecha = new GregorianCalendar();
+            fecha.add(GregorianCalendar.DAY_OF_MONTH, 5);
+            fechaEntrega = fecha.getTime();
+        }
+        return fechaEntrega;
+    }
     
+    public Date programarFechaEstimadaLimiteRecoger() {
+        if(fechaLimite == null) {
+            GregorianCalendar fecha = new GregorianCalendar();
+            fecha.add(GregorianCalendar.DAY_OF_MONTH, 10);
+            fechaLimite = fecha.getTime();
+        }
+        return fechaLimite;
+    }
 }

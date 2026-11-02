@@ -86,13 +86,13 @@ public class CotizacionSuministro extends javax.swing.JPanel {
 
         tblPedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Material", "Cantidad", "Unidad", "Precio", "Importe", "Aceptar"
+                "Material", "Marca", "Cantidad", "Unidad", "Precio", "Importe", "Aceptar"
             }
         ));
         tblPedido.setRowHeight(45);
@@ -352,6 +352,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
 
             modelo.addRow(new Object[]{
                 material.getNombre(),
+                material.getMarca(),
                 detalle.getCantidad(),
                 material.getUnidadMedida(),
                 formato.format(detalle.getPrecioUnitario()),
@@ -372,7 +373,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
     }
     
     private void configurarColumnaAceptar() {
-        TableColumn columna = tblPedido.getColumnModel().getColumn(5);
+        TableColumn columna = tblPedido.getColumnModel().getColumn(6);
 
         columna.setCellRenderer(tblPedido.getDefaultRenderer(Boolean.class));
 
@@ -381,12 +382,12 @@ public class CotizacionSuministro extends javax.swing.JPanel {
     
     private void configurarListenerAceptar() {
         tblPedido.getModel().addTableModelListener(evento -> {
-            if (evento.getType() != TableModelEvent.UPDATE || evento.getColumn() != 5) {
+            if (evento.getType() != TableModelEvent.UPDATE || evento.getColumn() != 6) {
                 return;
             }
 
             int fila = evento.getFirstRow();
-            boolean aceptado = Boolean.TRUE.equals(tblPedido.getModel().getValueAt(fila, 5));
+            boolean aceptado = Boolean.TRUE.equals(tblPedido.getModel().getValueAt(fila, 6));
 
             CotizacionDTO cotizacion = navegador.actualizarConfirmacionMaterial(fila, aceptado);
 

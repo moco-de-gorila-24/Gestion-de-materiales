@@ -4,12 +4,10 @@
  */
 package Dialogs;
 
-import Paneles.CotizacionSuministro;
 import control.Navegador;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -21,9 +19,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -38,7 +37,7 @@ public class DialogFechasEntrega extends JDialog {
     private final Color BORDE   = Color.decode("#DFE3E9");
     private final Color GRIS    = Color.decode("#5B6675");
 
-    public DialogFechasEntrega(JFrame owner, Navegador navegador) {
+    public DialogFechasEntrega(JFrame owner, Navegador navegador,String tipoEntrega, Date fecha, Date fechaLi) {
         super(owner, "Fechas", true);
         this.navegador = navegador;
         setUndecorated(true);
@@ -46,6 +45,23 @@ public class DialogFechasEntrega extends JDialog {
         String entrega = ";";
         String recoger = "-";
         String limite = "-";
+        
+        if(fecha != null) {
+            SimpleDateFormat formato= new SimpleDateFormat("dd/MM/yyyy");
+            if("DOMICILIO".equals(tipoEntrega)) {
+                entrega = formato.format(fecha);
+            } 
+            if ("TIENDA".equals(tipoEntrega)) {
+                if(fecha != null) {
+                    recoger = formato.format(fecha);
+                }
+                if(fechaLi != null) {
+                    limite = formato.format(fechaLi);
+                }
+            }
+        }
+        
+
         
         JPanel raiz = new JPanel(new BorderLayout());
         raiz.setBorder(new LineBorder(AZUL, 1));

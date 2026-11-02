@@ -16,6 +16,7 @@ import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -269,10 +270,21 @@ public class Almacen {
 
         float subtotal = propuesta.getSubtotal();
         float impuesto = subtotal * 0.16f;
-        float costoEnvio = 100f;
+        float costoEnvio = 0f;
+        
+        if("DOMICILIO".equals(obtenerTipoEntrega())) {
+           costoEnvio = 100f;
+        }
+        
         float total = subtotal + impuesto + costoEnvio;
 
         return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuesta);
     }
     
+    public OrdenEntregaDTO crearOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido) {
+        OrdenEntregaDTO orden = new OrdenEntregaDTO(tipoEntrega, fecha, direccion, pedido);
+        ordenesEntrega.add(orden);
+        return orden;
+    }
+
 }
