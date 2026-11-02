@@ -136,12 +136,12 @@ public class PanelProducto extends javax.swing.JPanel {
     public void setMaterial(MaterialDTO m) {
         this.material = m;
         setDatos(m.getNombre(), m.getPrecioUnitario(),
-                m.getUnidadMedida(), m.getCantidadDisponible());
+                m.getUnidadMedida());
     }
 
-    public void setDatos(String nombre, double costo, String unidad, int cantidad) {
+    public void setDatos(String nombre, double costo, String unidad) {
         jLabelNombre.setText(nombre);
-        lblCosto.setText(String.valueOf(cantidad));
+        lblCosto.setText(String.valueOf(costo));
         lblUnidad.setText(unidad);
 
     }

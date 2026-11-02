@@ -3,7 +3,7 @@ package control;
 import Dialogs.*;
 import FramePrincipal.FramePrincipal;
 import Paneles.*;
-import dtos.MaterialDTO;
+import dtos.*;
 import utilerias.*;
 import javax.swing.*;
 import java.awt.*;
@@ -11,13 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import almacen.Almacen;
 import static almacen.Almacen.obtenerMateriales;
-import dtos.ClienteDTO;
-import dtos.CotizacionDTO;
-import dtos.DetallePedidoDTO;
-import dtos.DetallePropuestaDTO;
-import dtos.DireccionDTO;
-import dtos.PedidoDTO;
-import dtos.PropuestaMaterialesDTO;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -143,11 +136,25 @@ public class Navegador {
         refrescarCarrito();
     }
 
+    public void cargarPaquetes(JPanel destino){
+        destino.removeAll();
+        for (PaqueteDTO p : Almacen.obtenerPaquetes()) {
+            PanelPaquete tarjeta = new PanelPaquete(this);
+            tarjeta.setPaquete(p);
+            tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+                    tarjeta.getPreferredSize().height));
+            destino.add(tarjeta);
+            destino.add(Box.createVerticalStrut(8));
+        }
+        destino.revalidate();
+        destino.repaint();
+    }
+
     public void cargarProductos(JPanel destino) {
         destino.removeAll();
         for (MaterialDTO m : Almacen.obtenerMateriales()) {
             PanelProducto tarjeta = new PanelProducto(this);
-            tarjeta.setMaterial(m);   // la tarjeta guarda su producto
+            tarjeta.setMaterial(m);
             tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                     tarjeta.getPreferredSize().height));
             destino.add(tarjeta);
@@ -164,7 +171,7 @@ public class Navegador {
         agregarAlCarrito(m, 1);
     }
 
-    public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidad) {
+    public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal) {
         PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
 
         if (propuesta == null || detalle == null) {
@@ -175,7 +182,7 @@ public class Navegador {
             return;
         }
 
-        int nueva = detalle.getCantidad() + cantidad;
+        int nueva = cantidadOriginal + cantidadCambiar;
 
         if (nueva <= 0) {
             eliminarDelCarrito(detalle);
@@ -184,10 +191,10 @@ public class Navegador {
 
         detalle.setCantidad(nueva);
 
-        propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * detalle.getPrecioUnitario()
+        propuesta.setSubtotal(propuesta.getSubtotal() + cantidadCambiar * detalle.getPrecioUnitario()
         );
 
-        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad
+        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidadCambiar
         );
         
         refrescarCarrito();

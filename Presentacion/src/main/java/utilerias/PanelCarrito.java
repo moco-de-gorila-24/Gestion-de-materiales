@@ -170,7 +170,7 @@ public class PanelCarrito extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        navegador.eliminarDelCarrito(detalle);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
@@ -178,11 +178,11 @@ public class PanelCarrito extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCantidadActionPerformed
 
     private void btnAgregarMasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMasActionPerformed
-        navegador.cambiarCantidad(detalle, +1);
+        navegador.cambiarCantidad(detalle, +1, this.getCantidad());
     }//GEN-LAST:event_btnAgregarMasActionPerformed
 
     private void btnRestarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestarProductoActionPerformed
-        navegador.cambiarCantidad(detalle, -1);
+        navegador.cambiarCantidad(detalle, -1, this.getCantidad());
     }//GEN-LAST:event_btnRestarProductoActionPerformed
 
     public void setDatos(String nombre, double costo, String unidad, int cantidad) {
