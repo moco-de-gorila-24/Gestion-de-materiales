@@ -181,7 +181,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
 
         jLabel5.setFont(new java.awt.Font("Corbel", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("impuestos(16%):");
+        jLabel5.setText("impuestos (16%):");
 
         jLabel6.setFont(new java.awt.Font("Corbel", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
@@ -207,38 +207,39 @@ public class CotizacionSuministro extends javax.swing.JPanel {
         pnlContenedorTotales.setLayout(pnlContenedorTotalesLayout);
         pnlContenedorTotalesLayout.setHorizontalGroup(
             pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContenedorTotalesLayout.createSequentialGroup()
+            .addGroup(pnlContenedorTotalesLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-                .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTotal)
-                    .addComponent(lblImpuestos)
-                    .addComponent(lblCostoEnvio))
-                .addGap(37, 37, 37))
+                .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlContenedorTotalesLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(100, 100, 100)
+                        .addComponent(lblTotal))
+                    .addComponent(lblSubtotal)
+                    .addComponent(jLabel6)
+                    .addComponent(lblCostoEnvio)
+                    .addComponent(lblImpuestos))
+                .addContainerGap(24, Short.MAX_VALUE))
             .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlContenedorTotalesLayout.createSequentialGroup()
                     .addGap(20, 20, 20)
-                    .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContenedorTotalesLayout.createSequentialGroup()
-                            .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel5))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblSubtotal)
-                            .addGap(16, 16, 16)))
-                    .addContainerGap(21, Short.MAX_VALUE)))
+                    .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel5))
+                    .addContainerGap(126, Short.MAX_VALUE)))
         );
         pnlContenedorTotalesLayout.setVerticalGroup(
             pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContenedorTotalesLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(lblCostoEnvio)
+                .addContainerGap()
+                .addComponent(lblSubtotal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblCostoEnvio)
+                .addGap(1, 1, 1)
                 .addComponent(lblImpuestos)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTotal)
                     .addComponent(jLabel7))
@@ -246,16 +247,12 @@ public class CotizacionSuministro extends javax.swing.JPanel {
             .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlContenedorTotalesLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(pnlContenedorTotalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(lblSubtotal))
+                    .addComponent(jLabel3)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jLabel4)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jLabel6)
-                    .addContainerGap(19, Short.MAX_VALUE)))
+                    .addContainerGap(43, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -294,7 +291,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlContenedorTotales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnContinuar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -364,6 +361,10 @@ public class CotizacionSuministro extends javax.swing.JPanel {
                 lblTipoEntrega.setText("Recoger en tienda");
             }
         }
+        lblSubtotal.setText(formato.format(cotizacion.getSubtotal()));
+        lblCostoEnvio.setText(formato.format(cotizacion.getCostoEnvio()));
+        lblImpuestos.setText(formato.format(cotizacion.getImpuesto()));
+        lblTotal.setText(formato.format(cotizacion.getTotal()));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
