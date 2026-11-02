@@ -6,6 +6,8 @@ package Dialogs;
 
 import control.Navegador;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 /**
@@ -30,8 +32,20 @@ public class DialogSeleccionTipoEntrega extends JDialog {
         JButton btnDomicilio = crearBoton("A domicilio", NARANJA);
         JButton btnTienda    = crearBoton("Recoger en tienda", AZUL);
 
-        btnDomicilio.addActionListener(e -> elegir("DOMICILIO"));
-        btnTienda.addActionListener(e -> elegir("TIENDA"));
+        btnDomicilio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                navegador.mostrarFormularioDireccion();
+            }
+        });
+        btnTienda.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                navegador.mostrarCotizacionSuministro();
+            }
+        });
 
         JPanel botones = new JPanel(new GridLayout(1, 2, 14, 0));
         botones.setOpaque(false);

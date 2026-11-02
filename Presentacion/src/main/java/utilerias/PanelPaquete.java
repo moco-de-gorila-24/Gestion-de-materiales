@@ -5,6 +5,7 @@
 package utilerias;
 
 import control.Navegador;
+import dtos.PaqueteDTO;
 
 import java.lang.annotation.Native;
 
@@ -41,7 +42,7 @@ public class PanelPaquete extends javax.swing.JPanel {
         lblMaterial = new javax.swing.JLabel();
         lblCantidad = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtLongitud = new javax.swing.JTextField();
+        txtLongitud = new javax.swing.JTextField(10);
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -127,6 +128,15 @@ public class PanelPaquete extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public void setPaquete(PaqueteDTO p){
+        setDatos(p.getDescripcion(), p.getDetalles().getFirst().getMaterial().getNombre(), p.getDetalles().getFirst().getCantidadMaterial());
+    }
+
+    public void setDatos(String nombre, String materiales, int cantidad){
+        lblNombre.setText(nombre);
+        lblMaterial.setText(materiales);
+        lblCantidad.setText(String.valueOf(cantidad));
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

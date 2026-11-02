@@ -20,7 +20,7 @@ public class PanelRegistrarPedido extends JPanel {
 
     private JTextField txtBuscar = new JTextField();
     private Button btnBuscar = new Button("Buscar");
-    private JComboBox<String> cmbFiltro = new JComboBox<>(new String[]{"filtrar"});
+    private JComboBox<String> cmbFiltro = new JComboBox<>(new String[]{"Materiales", "Paquetes", "Ambos"});
     private JPanel panelProductos = new JPanel();
     private JPanel panelCarrito = new JPanel();
     private JLabel lblSubtotal = new JLabel("$0.00");
@@ -121,6 +121,23 @@ public class PanelRegistrarPedido extends JPanel {
                     JOptionPane.showMessageDialog(null,"Debe agregar al menos un material al carrito.");
                 } else {
                     navegador.mostrarVerificarDisponibilidad();
+                }
+            }
+        });
+
+        cmbFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                switch (cmbFiltro.getSelectedIndex()) {
+                    case 0:
+                        navegador.cargarProductos(panelProductos);
+                        break;
+                    case 1:
+                        navegador.cargarPaquetes(panelProductos);
+                        break;
+                    case 2:
+                        break;
                 }
             }
         });
