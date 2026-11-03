@@ -42,7 +42,8 @@ public class PanelPaquete extends javax.swing.JPanel {
         lblMaterial = new javax.swing.JLabel();
         lblCantidad = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtLongitud = new javax.swing.JTextField(10);
+        txtLongitud = new javax.swing.JTextField();
+        btnAgregarPaquete = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -85,6 +86,16 @@ public class PanelPaquete extends javax.swing.JPanel {
         txtLongitud.setForeground(new java.awt.Color(0, 0, 0));
         txtLongitud.setText("");
 
+        btnAgregarPaquete.setBackground(new java.awt.Color(70, 229, 110));
+        btnAgregarPaquete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnAgregarPaquete.setForeground(new java.awt.Color(0, 0, 0));
+        btnAgregarPaquete.setText("Agregar al carrito");
+        btnAgregarPaquete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarPaqueteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -93,18 +104,22 @@ public class PanelPaquete extends javax.swing.JPanel {
                 .addGap(23, 23, 23)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblNombre)
-                        .addGap(158, 158, 158)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblMaterial)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblCantidad)))
+                        .addComponent(lblCantidad)
+                        .addGap(142, 142, 142)
+                        .addComponent(btnAgregarPaquete)
+                        .addGap(22, 22, 22))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(lblNombre)
+                            .addGap(158, 158, 158)
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1)))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -122,11 +137,16 @@ public class PanelPaquete extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblMaterial)
-                            .addComponent(lblCantidad)))
+                            .addComponent(lblCantidad)
+                            .addComponent(btnAgregarPaquete, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAgregarPaqueteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPaqueteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarPaqueteActionPerformed
 
     public void setPaquete(PaqueteDTO p){
         setDatos(p.getDescripcion(), p.getDetalles().getFirst().getMaterial().getNombre(), p.getDetalles().getFirst().getCantidadMaterial());
@@ -139,6 +159,7 @@ public class PanelPaquete extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarPaquete;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

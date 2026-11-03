@@ -36,14 +36,14 @@ public class DialogSeleccionTipoEntrega extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                navegador.mostrarFormularioDireccion();
+                elegir("DOMICILIO");
             }
         });
         btnTienda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                navegador.mostrarCotizacionSuministro();
+                elegir("TIENDA");
             }
         });
 
@@ -64,6 +64,12 @@ public class DialogSeleccionTipoEntrega extends JDialog {
         setLocationRelativeTo(owner);
     }
 
+    private void elegir(String tipo) {
+        seleccion = tipo;
+        navegador.establecerTipoEntrega(tipo);
+        dispose();
+        navegador.mostrarCotizacionSuministro();
+    }
     private JButton crearBoton(String texto, Color fondo) {
         JButton b = new JButton(texto);
         b.setBackground(fondo);
@@ -75,13 +81,7 @@ public class DialogSeleccionTipoEntrega extends JDialog {
         return b;
     }
 
-    private void elegir(String tipo) {
-        seleccion = tipo;
-        navegador.establecerTipoEntrega(tipo);
-        dispose();
-        navegador.mostrarCotizacionSuministro();
-    }
-
+ 
     public String getSeleccion() {
         return seleccion;
     }

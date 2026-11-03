@@ -31,9 +31,6 @@ public class Almacen {
     private static List<OrdenEntregaDTO> ordenesEntrega = new ArrayList<>();
     
     private static int siguienteIdPropuesta = 1;
-    private static ClienteDTO clienteActual;
-    private static PropuestaMaterialesDTO propuestaActual;
-    private String tipoEntrega;
 
     static {
         clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
@@ -50,12 +47,6 @@ public class Almacen {
     public static boolean GuardarCliente(ClienteDTO cliente) {
         if (cliente == null) {
             return false;
-        }
-
-        for (int i = 0; i < clientes.size(); i++) {
-            if (clientes.get(i).getTelefono().equals(cliente.getTelefono())) {
-                return false;
-            }
         }
 
         if (cliente.getId() <= 0) {
@@ -112,16 +103,7 @@ public class Almacen {
         return paquetesDto;
     }
     
-    public void seleccionarCliente(ClienteDTO cliente) {
-        clienteActual = cliente;
-        propuestaActual = null;
-
-        if (cliente != null) {
-            propuestaActual = buscarPropuestaPendiente(cliente);
-        }
-    }
-    
-    private PropuestaMaterialesDTO buscarPropuestaPendiente(ClienteDTO cliente) {
+    public PropuestaMaterialesDTO buscarPropuestaPendiente(ClienteDTO cliente) {
         if (cliente == null) {
             return null;
         }
@@ -146,38 +128,13 @@ public class Almacen {
         return new PropuestaMaterialesDTO(1100f, 60, detallesPropuestaDto);
     }
     
-    public PropuestaMaterialesDTO obtenerPropuesta() {
-        if (clienteActual == null) {
-            return null;
-        }
-
-        if (propuestaActual == null) {
-            propuestaActual = buscarPropuestaPendiente(clienteActual);
-        }
-
-        if (propuestaActual == null) {
-            propuestaActual = crearPropuesta(clienteActual);
-        }
-
-        return propuestaActual;
-    }
-    
-    public void cancelarPropuestaActual() {
-        if (propuestaActual == null) {
-            return;
-        }
-
-        propuestaActual.setEstado("CANCELADA");
-        propuestaActual = null;
-    }
-    
     public static List<DireccionDTO> obtenerDirecciones() {
         List<DireccionDTO> direcciones = new ArrayList<>();
         direcciones.add(new DireccionDTO("Mar amarillo", "Prados del Tepeyac", 123, 54678));
         return direcciones;
     }
     
-    public PropuestaMaterialesDTO crearPropuesta(ClienteDTO cliente) {
+    public PropuestaMaterialesDTO guardarPropuesta(ClienteDTO cliente) {
         if (cliente == null) {
             return null;
         }
@@ -190,52 +147,13 @@ public class Almacen {
         return nuevaPropuesta;
     }
     
-    public void crearDetallePropuesta(MaterialDTO material, int cantidad) {
-        if (material == null || cantidad <= 0) {
-            return;
-        }
-
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null) {
-            return;
-        }
-
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO detalle = detalles.get(i);
-
-            if (detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
-                detalle.setCantidad(detalle.getCantidad() + cantidad);
-
-                propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * detalle.getPrecioUnitario());
-
-                propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad);
-                return;
-            }
-        }
-
-        detalles.add(new DetallePropuestaDTO(material, cantidad, material.getPrecioUnitario()));
-
-        propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * material.getPrecioUnitario());
-
-        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad);
-    }
-    
-    public boolean eliminarDetallePropuesta(DetallePropuestaDTO detalle) {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
+    public boolean eliminarDetallePropuesta(PropuestaMaterialesDTO propuesta, DetallePropuestaDTO detalle) {        
         if (propuesta == null || detalle == null) {
             return false;
         }
 
         return propuesta.getDetalles().remove(detalle);
            
-    }
-    
-    public ClienteDTO obtenerClienteActual() {
-        return clienteActual;
     }
     
     public DireccionDTO obtenerDireccionActual() {
@@ -246,34 +164,6 @@ public class Almacen {
         }
 
         return direcciones.get(0);
-    }
-    
-    public void establecerTipoEntrega(String tipo) {
-        this.tipoEntrega = tipo;
-    } 
-
-    public String obtenerTipoEntrega() {
-        return tipoEntrega;
-    }
-    
-    public CotizacionDTO obtenerCotizacion() {
-        PropuestaMaterialesDTO propuesta = obtenerPropuesta();
-
-        if (propuesta == null) {
-            return null;
-        }
-
-        float subtotal = propuesta.getSubtotal();
-        float impuesto = subtotal * 0.16f;
-        float costoEnvio = 0f;
-        
-        if("DOMICILIO".equals(obtenerTipoEntrega())) {
-           costoEnvio = 100f;
-        }
-        
-        float total = subtotal + impuesto + costoEnvio;
-
-        return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuesta);
     }
     
     public OrdenEntregaDTO crearOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido) {
@@ -289,15 +179,12 @@ public class Almacen {
         
         int id = 1;
         for(int i = 0; i<pedidos.size(); i++) {
-            PedidoDTO pedidoExistente = pedidos.get(i);
-            
-            if(pedidoExistente.getIdPedido() >= id) {
-                id= pedidoExistente.getIdPedido();
+            if(pedidos.get(i).getIdPedido() >= id) {
+                id = pedidos.get(i).getIdPedido() + 1;
             }
         }
         pedido.setIdPedido(id);
         pedidos.add(pedido);
         return pedido;
     }
-
 }

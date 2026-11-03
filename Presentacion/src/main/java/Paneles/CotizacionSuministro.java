@@ -311,7 +311,7 @@ public class CotizacionSuministro extends javax.swing.JPanel {
         int respuesta = JOptionPane.showOptionDialog(this, "¿Desea cancelar la propuesta?", "Cancelar propuesta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[1]);
 
         if (respuesta == 0) {
-            navegador.cancelarPropuestaActual();
+            navegador.cancelarVenta();
             navegador.mostrarPanelMenuPrincipal();
         }
     }//GEN-LAST:event_btnCancelarPropuestaActionPerformed

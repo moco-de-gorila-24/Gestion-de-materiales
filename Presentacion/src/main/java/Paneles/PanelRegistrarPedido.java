@@ -108,7 +108,7 @@ public class PanelRegistrarPedido extends JPanel {
                 );
 
                 if (opcion == JOptionPane.YES_OPTION) {
-                    navegador.cancelarPropuestaActual();
+                    navegador.cancelarVenta();
                     navegador.mostrarPanelMenuPrincipal();
                 }
             }

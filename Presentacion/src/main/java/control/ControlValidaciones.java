@@ -1,7 +1,5 @@
 package control;
 
-import almacen.Almacen;
-import dtos.ClienteDTO;
 
 public class ControlValidaciones {
 
@@ -27,15 +25,4 @@ public class ControlValidaciones {
         return true;
     }
 
-    public static boolean clienteExiste(String telefono) {
-        if (telefono == null) {
-            return false;
-        }
-
-        return Almacen.buscarCliente(telefono) != null;
-    }
-
-    public static boolean agregarCliente(ClienteDTO cliente) {
-        return Almacen.GuardarCliente(cliente);
-    }
 }

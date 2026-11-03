@@ -31,10 +31,12 @@ public class Navegador {
     PanelProducto panelProducto;
     PanelPaquete panelPaquete;
     private Almacen almacen;
-    DetallePropuestaDTO propuesta;
     private JPanel contenedorCarrito;
     private Date fechaEntrega;
     private Date fechaLimite;
+    private ClienteDTO clienteActual;
+    private PropuestaMaterialesDTO propuestaActual;
+    private String tipoEntrega;
     
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -87,14 +89,10 @@ public class Navegador {
             almacen = new Almacen();
         }
 
-        ClienteDTO cliente = almacen.obtenerClienteActual();
         DireccionDTO direccion = almacen.obtenerDireccionActual();
-        String tipoEntrega = almacen.obtenerTipoEntrega();
-        CotizacionDTO cotizacion = almacen.obtenerCotizacion();
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
 
         ordenEntrega = new ordenEntrega(this);
-        ordenEntrega.cargarDatos(cliente, direccion, "Pendiente de confirmacion", propuesta != null ? propuesta.getDetalles() : null, tipoEntrega);
+        ordenEntrega.cargarDatos(clienteActual, direccion, "Pendiente de confirmacion", propuestaActual != null ? propuestaActual.getDetalles() : null, tipoEntrega);
 
         cambiarPanel(ordenEntrega);
     }
@@ -172,13 +170,12 @@ public class Navegador {
     }
 
     public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal) {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
 
-        if (propuesta == null || detalle == null) {
+        if (propuestaActual == null || detalle == null) {
             return;
         }
 
-        if (!propuesta.getDetalles().contains(detalle)) {
+        if (!propuestaActual.getDetalles().contains(detalle)) {
             return;
         }
 
@@ -190,29 +187,21 @@ public class Navegador {
         }
 
         detalle.setCantidad(nueva);
-
-        propuesta.setSubtotal(propuesta.getSubtotal() + cantidadCambiar * detalle.getPrecioUnitario()
-        );
-
-        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidadCambiar
-        );
-        
+        recalcularPropuesta();
         refrescarCarrito();
    }
 
 
     private void refrescarCarrito() {
-        if (contenedorCarrito == null || almacen == null) {
+        if (contenedorCarrito == null) {
             return;
         }
 
         contenedorCarrito.removeAll();
 
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta != null) {
-            for (int i = 0; i < propuesta.getDetalles().size(); i++) {
-                DetallePropuestaDTO detalle = propuesta.getDetalles().get(i);
+        if (propuestaActual != null) {
+            for (int i = 0; i < propuestaActual.getDetalles().size(); i++) {
+                DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(i);
                 MaterialDTO material = detalle.getMaterial();
 
                 PanelCarrito tarjeta = new PanelCarrito(this);
@@ -226,7 +215,7 @@ public class Navegador {
         }
 
         if (panelRegistrarPedido != null) {
-            panelRegistrarPedido.actualizarSubtotal(propuesta != null ? propuesta.getSubtotal() : 0);
+            panelRegistrarPedido.actualizarSubtotal(propuestaActual != null ? propuestaActual.getSubtotal() : 0);
         }
 
         contenedorCarrito.revalidate();
@@ -251,7 +240,7 @@ public class Navegador {
     
     public void mostrarDialogoFechas() {
         DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this, 
-                almacen.obtenerTipoEntrega(), programarFechaEstimadaEntrega(), programarFechaEstimadaLimiteRecoger());
+                tipoEntrega, programarFechaEstimadaEntrega(), programarFechaEstimadaLimiteRecoger());
         dialogFechas.setVisible(true);
     }
 
@@ -264,28 +253,35 @@ public class Navegador {
             almacen = new Almacen();
         }
 
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta == null) {
+        if (propuestaActual == null) {
             return new ArrayList<>();
         }
 
-        return propuesta.getDetalles();
+        return propuestaActual.getDetalles();
     }
     
     public float obtenerSubtotal() {
-        if (almacen == null) {
-            almacen = new Almacen();
-        }
-
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta == null) {
+        if (propuestaActual == null) {
             return 0;
         }
 
-        return propuesta.getSubtotal();
+        return propuestaActual.getSubtotal();
     }
+    
+    public void cancelarVenta() {
+        if (propuestaActual != null) {
+            propuestaActual.setEstado("CANCELADA");
+        }
+
+        clienteActual = null;
+        propuestaActual = null;
+        tipoEntrega = null;
+        fechaEntrega = null;
+        fechaLimite = null;
+        
+        refrescarCarrito();
+    }
+    
     
     public void agregarAlCarrito(MaterialDTO material, int cantidad) {
         if (almacen == null) {
@@ -294,50 +290,38 @@ public class Navegador {
         if (material == null || cantidad <= 0) {
             return;
         }
-
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta == null) {
+        
+        if (propuestaActual == null) {
             return;
         }
 
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
+        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
 
         for (int i = 0; i < detalles.size(); i++) {
             DetallePropuestaDTO detalle = detalles.get(i);
 
             if (detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
                 detalle.setCantidad(detalle.getCantidad() + cantidad);
-
-                propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * detalle.getPrecioUnitario());
-
-                propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad);
+                recalcularPropuesta();
                 refrescarCarrito();
                 return;
             }
         }
 
         detalles.add(new DetallePropuestaDTO(material, cantidad, material.getPrecioUnitario()));
-
-        propuesta.setSubtotal(propuesta.getSubtotal() + cantidad * material.getPrecioUnitario());
-
-        propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() + cantidad);
-    
+        recalcularPropuesta();   
         refrescarCarrito();
     }
     
     public void eliminarDelCarrito(DetallePropuestaDTO detalle) {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-        if(propuesta == null || detalle == null || !propuesta.getDetalles().contains(detalle)) {
+        if(propuestaActual == null || detalle == null || !propuestaActual.getDetalles().contains(detalle)) {
             return;
         }
         
-        boolean eliminado = almacen.eliminarDetallePropuesta(detalle);
+        boolean eliminado = almacen.eliminarDetallePropuesta(propuestaActual, detalle);
         
         if(eliminado) {
-            propuesta.setSubtotal(propuesta.getSubtotal() - detalle.getCantidad() * detalle.getPrecioUnitario());
-            propuesta.setCantidadTotalProductos(propuesta.getCantidadTotalProductos() - detalle.getCantidad());
- 
+            recalcularPropuesta();
             refrescarCarrito();
         }
     }
@@ -347,15 +331,12 @@ public class Navegador {
             almacen = new Almacen();
         }
 
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta == null) {
+        if (propuestaActual == null) {
             return;
         }
 
-        propuesta.setDetalles(new ArrayList<>());
-        propuesta.setSubtotal(0f);
-        propuesta.setCantidadTotalProductos(0);
+        propuestaActual.setDetalles(new ArrayList<>());
+        recalcularPropuesta();
         refrescarCarrito();
     }
     
@@ -371,13 +352,12 @@ public class Navegador {
     }
     
     public DetallePropuestaDTO validarDisponibilidad() {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta == null) {
+ 
+        if (propuestaActual == null) {
             return null;
         }
 
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
+        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
 
         for (int i = 0; i < detalles.size(); i++) {
             DetallePropuestaDTO detalle = detalles.get(i);
@@ -394,13 +374,11 @@ public class Navegador {
     public List<MaterialDTO> obtenerMaterialesSustitutos(DetallePropuestaDTO detalle) {
         List<MaterialDTO> sustitutos = new ArrayList<>();
 
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-
-        if (propuesta == null || detalle == null || detalle.getMaterial() == null) {
+        if (propuestaActual == null || detalle == null || detalle.getMaterial() == null) {
             return sustitutos;
         }
 
-        List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
+        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
         List<MaterialDTO> materialesAlmacen = obtenerMateriales();
         MaterialDTO material = detalle.getMaterial();
 
@@ -422,13 +400,12 @@ public class Navegador {
 
     
     public int obtenerCantidadNecesaria(DetallePropuestaDTO detalle, MaterialDTO candidato) {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
 
-        if (propuesta == null || detalle == null || candidato == null) {
+        if (propuestaActual == null || detalle == null || candidato == null) {
             return 0;
         }
 
-        return calcularCantidadTotal(propuesta.getDetalles(), detalle, candidato);
+        return calcularCantidadTotal(propuestaActual.getDetalles(), detalle, candidato);
     
     }
     
@@ -452,59 +429,54 @@ public class Navegador {
     }
     
     public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
 
-        if (propuesta == null || detalle == null || nuevo == null || detalle.getMaterial() == null) {
+        if (propuestaActual == null || detalle == null || nuevo == null || detalle.getMaterial() == null) {
              return false;
         }
 
-         List<DetallePropuestaDTO> detalles = propuesta.getDetalles();
+        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
 
-         if (!detalles.contains(detalle)) {
-             return false;
-         }
+        if (!detalles.contains(detalle)) {
+            return false;
+        }
 
-         int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
+        int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
 
-         if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
-             return false;
-         }
+        if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
+            return false;
+        }
 
-         DetallePropuestaDTO existente = null;
+        DetallePropuestaDTO existente = null;
 
-         for (int i = 0; i < detalles.size(); i++) {
-             DetallePropuestaDTO otro = detalles.get(i);
+        for (int i = 0; i < detalles.size(); i++) {
+            DetallePropuestaDTO otro = detalles.get(i);
 
-             if (otro != detalle && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == nuevo.getIdMaterial()) {
-                 existente = otro;
-                 break;
-             }
-         }
+            if (otro != detalle && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == nuevo.getIdMaterial()) {
+                existente = otro;
+                break;
+            }
+        }
 
-         float subtotalAnteriorDetalle = detalle.getCantidad() * detalle.getPrecioUnitario();
+        float subtotalAnteriorDetalle = detalle.getCantidad() * detalle.getPrecioUnitario();
 
-         if (existente != null) {
-             float subtotalAnteriorExistente = existente.getCantidad() * existente.getPrecioUnitario();
-             int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
-             float subtotalNuevo = cantidadTotal * nuevo.getPrecioUnitario();
+        if (existente != null) {
+            float subtotalAnteriorExistente = existente.getCantidad() * existente.getPrecioUnitario();
+            int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
+            float subtotalNuevo = cantidadTotal * nuevo.getPrecioUnitario();
 
-             existente.setCantidad(cantidadTotal);
-             existente.setMaterial(nuevo);
-             existente.setPrecioUnitario(nuevo.getPrecioUnitario());
+            existente.setCantidad(cantidadTotal);
+            existente.setMaterial(nuevo);
+            existente.setPrecioUnitario(nuevo.getPrecioUnitario());
 
-             detalles.remove(detalle);
+            detalles.remove(detalle);
 
-             propuesta.setSubtotal(propuesta.getSubtotal() - subtotalAnteriorDetalle - subtotalAnteriorExistente + subtotalNuevo);
-
-         } else {
-             detalle.setMaterial(nuevo);
-             detalle.setPrecioUnitario(nuevo.getPrecioUnitario());
-             float subtotalNuevo = detalle.getCantidad() * nuevo.getPrecioUnitario();
-
-             propuesta.setSubtotal(propuesta.getSubtotal() - subtotalAnteriorDetalle + subtotalNuevo);
-         }
-
-         return true;
+        } else {
+            detalle.setMaterial(nuevo);
+            detalle.setPrecioUnitario(nuevo.getPrecioUnitario()); 
+        }
+         
+        recalcularPropuesta();
+        return true;
     }
 
     public boolean validarTextoVacio(String texto) {
@@ -525,65 +497,56 @@ public class Navegador {
     }
     
     public boolean agregarCliente(ClienteDTO cliente) {
-        if (almacen == null) {
-            almacen = new Almacen();
+        if (cliente == null) {
+            return false;
+        }
+        
+        if(!validarTextoVacio(cliente.getNombre()) || !validarTextoVacio(cliente.getApellidoPa()) || !validarTextoVacio(cliente.getApellidoMa()) || !validarTextoVacio(cliente.getTelefono())) {
+            return false;
+        }
+        
+        if(!validarSoloTexto(cliente.getNombre()) || !validarSoloTexto(cliente.getApellidoPa()) || !validarSoloTexto(cliente.getApellidoMa())) {
+            return false;
+        }
+        
+        if(!validarTelefono(cliente.getTelefono()) || clienteExiste(cliente.getTelefono())) {
+            return false;
         }
 
         boolean registrado = Almacen.GuardarCliente(cliente);
 
         if (registrado) {
-            almacen.seleccionarCliente(cliente);
+            iniciarVenta(cliente.getTelefono());
         }
 
         return registrado;
     }
     
     public void seleccionarCliente(String telefono) {
-        if (almacen == null) {
-            almacen = new Almacen();
-        }
-
-        ClienteDTO cliente = Almacen.buscarCliente(telefono);
-
-        if (cliente != null) {
-            almacen.seleccionarCliente(cliente);
-            refrescarCarrito();
-        }
-    }
-    
-    public void cancelarPropuestaActual() {
-        if (almacen == null) {
-            almacen = new Almacen();
-        }
-
-        almacen.cancelarPropuestaActual();
+        iniciarVenta(telefono);
     }
     
     public void establecerTipoEntrega(String tipo) {
-        almacen.establecerTipoEntrega(tipo);
+        tipoEntrega = tipo;
     }
     
     public void mostrarCotizacionSuministro() {
-        CotizacionDTO cotizacion = almacen.obtenerCotizacion();
-
         this.cotizacion = new CotizacionSuministro(this);
-        this.cotizacion.cargarDatos(cotizacion, almacen.obtenerTipoEntrega());
+        this.cotizacion.cargarDatos(generarCotizacion(), tipoEntrega);
 
         cambiarPanel(this.cotizacion);
     }
     
-    public CotizacionDTO actualizarConfirmacionMaterial(int fila, boolean aceptado) {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-        
-        if(fila<0 || fila >= propuesta.getDetalles().size() || propuesta == null) {
+    public CotizacionDTO actualizarConfirmacionMaterial(int fila, boolean aceptado) {        
+        if(propuestaActual == null || fila<0 || fila >= propuestaActual.getDetalles().size()) {
             return null;
         }
         if(!aceptado) {
-            DetallePropuestaDTO detalle = propuesta.getDetalles().get(fila);
+            DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(fila);
             eliminarDelCarrito(detalle);        
         }
         
-        return almacen.obtenerCotizacion();
+        return generarCotizacion();
     }
            
     public Date programarFechaEstimadaEntrega() {
@@ -605,35 +568,88 @@ public class Navegador {
     }
     
     public void confirmarPedido() {
-        PropuestaMaterialesDTO propuesta = almacen.obtenerPropuesta();
-        CotizacionDTO cotizacion = almacen.obtenerCotizacion();
-        
-        if(propuesta == null || propuesta.getDetalles().isEmpty()) {
+        if(propuestaActual == null || propuestaActual.getDetalles().isEmpty()) {
             return;
         }       
+        CotizacionDTO cotizacion = generarCotizacion();
+        
         if(cotizacion == null) {
             return;
         }
         List<DetallePedidoDTO> detalles = new ArrayList<>();
         
-        for (int i = 0; i < propuesta.getDetalles().size(); i++) {
-            DetallePropuestaDTO detalle = propuesta.getDetalles().get(i);
+        for (int i = 0; i < propuestaActual.getDetalles().size(); i++) {
+            DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(i);
            
             detalles.add(new DetallePedidoDTO(detalle.getMaterial(), detalle.getCantidad(), 
             detalle.getPrecioUnitario(), detalle.getCantidad() * detalle.getPrecioUnitario()));
         }
         
-        PedidoDTO pedido = new PedidoDTO(0, almacen.obtenerTipoEntrega(), new Date(), "CONFIRMADO",
-                           cotizacion.getTotal(), propuesta.getCliente(), detalles);
+        PedidoDTO pedido = new PedidoDTO(0, tipoEntrega, new Date(), "CONFIRMADO",
+                           cotizacion.getTotal(), propuestaActual.getCliente(), detalles);
         
         PedidoDTO pedidoAlmacenado = almacen.guardarPedido(pedido);
         if (pedidoAlmacenado == null) {
             return;
         }
-        if("DOMICILIO".equals(almacen.obtenerTipoEntrega())) {
-            almacen.crearOrdenEntrega(almacen.obtenerTipoEntrega(), programarFechaEstimadaEntrega(), almacen.obtenerDireccionActual(), pedidoAlmacenado);
+        if("DOMICILIO".equals(tipoEntrega)) {
+            almacen.crearOrdenEntrega(tipoEntrega, programarFechaEstimadaEntrega(), almacen.obtenerDireccionActual(), pedidoAlmacenado);
         }
         
         mostrarDialogoPedidoConfirmado(pedidoAlmacenado);
     }
+    
+    public CotizacionDTO generarCotizacion() {
+        if (propuestaActual == null) {
+            return null;
+        }
+
+        float subtotal = propuestaActual.getSubtotal();
+        float impuesto = subtotal * 0.16f;
+        float costoEnvio = 0f;
+        
+        if("DOMICILIO".equals(tipoEntrega)) {
+           costoEnvio = 100f;
+        }
+        
+        float total = subtotal + impuesto + costoEnvio;
+
+        return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuestaActual);
+    }
+    
+    public boolean iniciarVenta(String telefono) {
+        clienteActual = almacen.buscarCliente(telefono);
+       
+        if (clienteActual == null) {
+            propuestaActual = null;
+            return false;
+        }
+        
+        propuestaActual = almacen.buscarPropuestaPendiente(clienteActual);
+        if(propuestaActual == null) {
+            propuestaActual = almacen.guardarPropuesta(clienteActual);
+        }
+        refrescarCarrito();
+        return propuestaActual != null;        
+    }
+    
+    private void recalcularPropuesta() {
+        if(propuestaActual == null) {
+            return;
+        }
+        
+        float subtot = 0;
+        int cantidadTot = 0;
+        for(int i= 0; i < propuestaActual.getDetalles().size(); i++) {
+            DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(i);
+            subtot += detalle.getCantidad() * detalle.getPrecioUnitario();
+            cantidadTot += detalle.getCantidad();
+        }
+        
+        propuestaActual.setSubtotal(subtot);
+        propuestaActual.setCantidadTotalProductos(cantidadTot);
+    }
+    
+    
+
 }
