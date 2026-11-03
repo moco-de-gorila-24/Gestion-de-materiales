@@ -5,13 +5,9 @@ import control.Navegador;
 import Componentes.Button;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Stack;
 
 public class PanelRegistrarPedido extends JPanel {
     private final Navegador navegador;

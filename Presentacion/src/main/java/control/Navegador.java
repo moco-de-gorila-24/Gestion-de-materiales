@@ -205,7 +205,7 @@ public class Navegador {
 
                 PanelCarrito tarjeta = new PanelCarrito(this);
                 tarjeta.setDetalle(detalle);
-                tarjeta.setDatos(material.getNombre(), material.getPrecioUnitario(), material.getUnidadMedida(),detalle.getCantidad());
+                tarjeta.setDatos(material.getNombre(), material.getPrecioUnitario(), material.getUnidadMedida(),detalle.getCantidad(), material.getMarca());
                 tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, tarjeta.getPreferredSize().height));
 
                 contenedorCarrito.add(tarjeta);
@@ -243,8 +243,8 @@ public class Navegador {
         dialogFechas.setVisible(true);
     }
 
-    public void setDatosCarrito(String nombre, double costo, String unidad, int cantidad){
-        panelCarrito.setDatos(nombre, costo, unidad, cantidad);
+    public void setDatosCarrito(String nombre, double costo, String unidad, int cantidad, String marca){
+        panelCarrito.setDatos(nombre, costo, unidad, cantidad, marca);
     }
     
     public List<DetallePropuestaDTO> getDetallesCarrito() {

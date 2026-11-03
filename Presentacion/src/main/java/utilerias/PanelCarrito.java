@@ -4,16 +4,12 @@
  */
 package utilerias;
 
-import almacen.Almacen;
 import control.Navegador;
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
- * P`anel que muestra los detalles del producto dentro del carrito. El usuario
+ * Panel que muestra los detalles del producto dentro del carrito. El usuario
  * puede aumentar o disminuir la cantidad del producto.
  * 
  * @author cinca
@@ -21,12 +17,22 @@ import java.awt.event.ActionListener;
 public class PanelCarrito extends javax.swing.JPanel {
     private final Navegador navegador;
     private DetallePropuestaDTO detalle;
+    private MaterialDTO material;
     /**
      * Creates new form PanelCarrito
      */
     public PanelCarrito(Navegador navegador) {
         this.navegador = navegador;
         initComponents();
+        
+        pnlImg.setPreferredSize(new java.awt.Dimension(300, 200));
+        pnlImg.setLayout(new java.awt.BorderLayout());
+
+        lblImg.setText("");
+        lblImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImg.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+
+        pnlImg.add(lblImg, java.awt.BorderLayout.CENTER);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -47,6 +53,7 @@ public class PanelCarrito extends javax.swing.JPanel {
         txtCantidad = new javax.swing.JTextField();
         btnAgregarMas = new javax.swing.JButton();
         btnRestarProducto = new javax.swing.JButton();
+        lblMarca = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -118,6 +125,9 @@ public class PanelCarrito extends javax.swing.JPanel {
             }
         });
 
+        lblMarca.setForeground(new java.awt.Color(0, 0, 0));
+        lblMarca.setText("Marca");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,25 +137,30 @@ public class PanelCarrito extends javax.swing.JPanel {
                 .addComponent(pnlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblNombre)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCosto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblUnidad)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnRestarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(77, 77, 77))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNombre)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblCosto)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblUnidad)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnRestarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(77, 77, 77))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnEliminar)
+                                    .addComponent(btnAgregarMas, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(25, 25, 25))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnEliminar)
-                            .addComponent(btnAgregarMas, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(25, 25, 25))))
+                        .addComponent(lblMarca)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,7 +178,9 @@ public class PanelCarrito extends javax.swing.JPanel {
                             .addComponent(lblUnidad)
                             .addComponent(btnAgregarMas)
                             .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRestarProducto)))
+                            .addComponent(btnRestarProducto))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblMarca))
                     .addComponent(pnlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
@@ -185,11 +202,13 @@ public class PanelCarrito extends javax.swing.JPanel {
         navegador.cambiarCantidad(detalle, -1, this.getCantidad());
     }//GEN-LAST:event_btnRestarProductoActionPerformed
 
-    public void setDatos(String nombre, double costo, String unidad, int cantidad) {
+    public void setDatos(String nombre, double costo, String unidad, int cantidad, String marca) {
         lblNombre.setText(nombre);
         lblCosto.setText(String.format("%.2f", costo));
         lblUnidad.setText(unidad);
         txtCantidad.setText(String.valueOf(cantidad));
+        lblMarca.setText(marca);
+        
     }
 
     public int getCantidad() {
@@ -202,7 +221,66 @@ public class PanelCarrito extends javax.swing.JPanel {
 
     public void setDetalle(DetallePropuestaDTO detalle){
         this.detalle = detalle;
+        this.material = detalle.getMaterial();
+        cargarImagen(this.material);
     }
+    
+    private void cargarImagen(MaterialDTO material) {
+        if(material==null) {
+           lblImg.setIcon(null);
+           lblImg.setText(" ");
+           return;
+        }
+        String ruta = null;
+
+        if ("Block".equalsIgnoreCase(material.getTipo())) {
+            ruta = "/blockCemento.png";
+        } else if ("Cemento".equalsIgnoreCase(material.getTipo())) {
+            ruta = "/cemex.png";
+        } else if ("Varilla".equalsIgnoreCase(material.getTipo())) {
+            ruta = "/varilla.png";
+        }
+
+        if (ruta == null) {
+            lblImg.setIcon(null);
+            lblImg.setText("");
+            return;
+        }
+
+        java.net.URL recurso = getClass().getResource(ruta);
+
+        if (recurso == null) {
+            lblImg.setIcon(null);
+            lblImg.setText("");
+            System.out.println("No se encontró la imagen: " + ruta);
+            return;
+        }
+
+        javax.swing.ImageIcon icono = new javax.swing.ImageIcon(recurso);
+
+        int anchoDisponible = 260;
+        int altoDisponible = 150;
+
+        double escala = Math.min(
+                (double) anchoDisponible / icono.getIconWidth(),
+                (double) altoDisponible / icono.getIconHeight()
+        );
+
+        int ancho = (int) (icono.getIconWidth() * escala);
+        int alto = (int) (icono.getIconHeight() * escala);
+
+        java.awt.Image imagen = icono.getImage().getScaledInstance(
+                ancho,
+                alto,
+                java.awt.Image.SCALE_SMOOTH
+        );
+
+        lblImg.setText("");
+        lblImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImg.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImg.setIcon(new javax.swing.ImageIcon(imagen));
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarMas;
@@ -211,6 +289,7 @@ public class PanelCarrito extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblCosto;
     private javax.swing.JLabel lblImg;
+    private javax.swing.JLabel lblMarca;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblUnidad;
     private javax.swing.JPanel pnlImg;
