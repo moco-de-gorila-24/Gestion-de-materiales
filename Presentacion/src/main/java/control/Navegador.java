@@ -133,6 +133,19 @@ public class Navegador {
         refrescarCarrito();
     }
 
+    public void buscarProductos(JPanel panelDestino, String nombre){
+        MaterialDTO materialEncontrado = almacen.buscarMaterial(nombre);
+        if(materialEncontrado == null){
+            JOptionPane.showMessageDialog(null,"Producto no encontrado");
+        }
+        panelDestino.removeAll();
+        PanelProducto productoEncontrado = new PanelProducto(this);
+        productoEncontrado.setMaterial(materialEncontrado);
+        panelDestino.add(productoEncontrado);
+        panelDestino.revalidate();
+        panelDestino.repaint();
+    }
+
     public void cargarPaquetes(JPanel destino){
         destino.removeAll();
         for (PaqueteDTO p : Almacen.obtenerPaquetes()) {

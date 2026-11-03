@@ -97,6 +97,14 @@ public class PanelRegistrarPedido extends JPanel {
         add(sur, BorderLayout.SOUTH);
         setVisible(true);
 
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                navegador.buscarProductos(panelProductos,txtBuscar.getText());
+            }
+        });
+
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

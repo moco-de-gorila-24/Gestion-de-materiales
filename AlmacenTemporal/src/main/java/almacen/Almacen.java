@@ -93,7 +93,16 @@ public class Almacen {
         materialesDto.add(new MaterialDTO(4, "Bulto de cemento 25kg", "PANAM", 48f, "bulto", 40, "Cemento"));
         return materialesDto;
     }
-    
+
+    public MaterialDTO buscarMaterial(String nombre){
+        for(MaterialDTO material: obtenerMateriales()){
+            if(material.getNombre().toLowerCase().contains(nombre.toLowerCase())){
+                return material;
+            }
+        }
+        return null;
+    }
+
     public static List<PaqueteDTO> obtenerPaquetes() {
         List<DetallePaqueteDTO> detallespaqueteDto = new ArrayList<>();
         // o sea que la barda usa 50 blocks de construccion y 10 bultos de cemento

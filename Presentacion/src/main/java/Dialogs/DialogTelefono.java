@@ -74,7 +74,7 @@ public class DialogTelefono extends JDialog {
         btnRegresar.addActionListener(e -> dispose());
         btnConfirmar.addActionListener(e -> {
 
-            String telefono = campoTelefono.getText();
+            String telefono = campoTelefono.getText().trim();
 
             if (!navegador.validarTextoVacio(telefono)) {
                 JOptionPane.showMessageDialog(this, "El campo no puede quedar vacio");
