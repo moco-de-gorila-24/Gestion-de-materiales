@@ -1,6 +1,5 @@
 package Paneles;
 
-import control.ControlValidaciones;
 import control.Navegador;
 import Componentes.Button;
 import dtos.ClienteDTO;
@@ -12,7 +11,6 @@ import java.awt.event.ActionListener;
 
 public class PanelRegistrarCliente extends JPanel {
     private final Navegador navegador;
-    ControlValidaciones controlValidaciones;
 
     public PanelRegistrarCliente(Navegador navegador) {
         this.navegador = navegador;
@@ -90,24 +88,13 @@ public class PanelRegistrarCliente extends JPanel {
             String apellidoMaterno = fieldApellidoMaterno.getText();
             String telefono = fieldTelefono.getText();
 
-            if (!navegador.validarTextoVacio(nombre) || !navegador.validarTextoVacio(apellidoPaterno) || !navegador.validarTextoVacio(apellidoMaterno)|| !navegador.validarTextoVacio(telefono)) {
-                JOptionPane.showMessageDialog(this, "No pueden haber espacios vacios");
-            } else if (!navegador.validarSoloTexto(nombre) || !navegador.validarSoloTexto(apellidoPaterno) || !navegador.validarSoloTexto(apellidoMaterno)) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar unicamente texto");
-            } else if (!navegador.validarTelefono(telefono)) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar un numero de 10 digitos");
-            } else if (navegador.clienteExiste(telefono)) {
-                JOptionPane.showMessageDialog(this, "Ya existe un cliente con ese telefono");
+            ClienteDTO clienteDTO = new ClienteDTO(nombre, apellidoPaterno, apellidoMaterno, telefono);
+
+            if (navegador.agregarCliente(clienteDTO)) {
+                JOptionPane.showMessageDialog(this, "Cliente registrado con exito");
+                navegador.mostrarPanelRegistrarPedido();
             } else {
-
-                ClienteDTO clienteDTO = new ClienteDTO(nombre, apellidoPaterno, apellidoMaterno, telefono);
-
-                if (navegador.agregarCliente(clienteDTO)) {
-                    JOptionPane.showMessageDialog(this, "Cliente registrado con exito");
-                    navegador.mostrarPanelRegistrarPedido();
-                } else {
-                    JOptionPane.showMessageDialog(this, "No se pudo agregar al cliente");
-                }
+                JOptionPane.showMessageDialog(this, "No se pudo agregar al cliente");
             }
         });
 

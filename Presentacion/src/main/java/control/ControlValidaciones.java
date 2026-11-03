@@ -25,4 +25,16 @@ public class ControlValidaciones {
         return true;
     }
 
+    public static Integer cambiarAEntero(String texto) {
+        if(!validarTextoVacio(texto)) {
+            return null;
+        }
+        
+        try {
+            return Integer.parseInt(texto.trim());          
+        } catch (NumberFormatException e){
+            return null;
+        }
+    }
+
 }

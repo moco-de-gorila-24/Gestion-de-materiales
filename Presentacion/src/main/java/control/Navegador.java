@@ -37,6 +37,7 @@ public class Navegador {
     private ClienteDTO clienteActual;
     private PropuestaMaterialesDTO propuestaActual;
     private String tipoEntrega;
+    private DireccionDTO direccionActual;
     
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -76,12 +77,12 @@ public class Navegador {
         dialogTelefono.setVisible(true);
     }
 
-    public String mostrarFormularioDireccion() {
+    public DireccionDTO mostrarFormularioDireccion() {
         if(dialogRegistroDireccion == null){
             dialogRegistroDireccion = new DialogRegistroDireccion(framePrincipal, this);
         }
         dialogRegistroDireccion.setVisible(true);
-        return dialogRegistroDireccion.getSeleccionada();
+        return direccionActual;
     }
     
     public void mostrarOrdenEntrega() {
@@ -89,10 +90,8 @@ public class Navegador {
             almacen = new Almacen();
         }
 
-        DireccionDTO direccion = almacen.obtenerDireccionActual();
-
         ordenEntrega = new ordenEntrega(this);
-        ordenEntrega.cargarDatos(clienteActual, direccion, "Pendiente de confirmacion", propuestaActual != null ? propuestaActual.getDetalles() : null, tipoEntrega);
+        ordenEntrega.cargarDatos(clienteActual, direccionActual, "Pendiente de confirmacion", propuestaActual != null ? propuestaActual.getDetalles() : null, tipoEntrega);
 
         cambiarPanel(ordenEntrega);
     }
@@ -278,6 +277,7 @@ public class Navegador {
         tipoEntrega = null;
         fechaEntrega = null;
         fechaLimite = null;
+        direccionActual = null;
         
         refrescarCarrito();
     }
@@ -570,7 +570,11 @@ public class Navegador {
     public void confirmarPedido() {
         if(propuestaActual == null || propuestaActual.getDetalles().isEmpty()) {
             return;
-        }       
+        }   
+        
+        if("DOMICILIO".equals(tipoEntrega) && direccionActual == null) {
+            return;
+        }
         CotizacionDTO cotizacion = generarCotizacion();
         
         if(cotizacion == null) {
@@ -592,8 +596,10 @@ public class Navegador {
         if (pedidoAlmacenado == null) {
             return;
         }
+
+        
         if("DOMICILIO".equals(tipoEntrega)) {
-            almacen.crearOrdenEntrega(tipoEntrega, programarFechaEstimadaEntrega(), almacen.obtenerDireccionActual(), pedidoAlmacenado);
+            almacen.crearOrdenEntrega(tipoEntrega, programarFechaEstimadaEntrega(), direccionActual, pedidoAlmacenado);
         }
         
         mostrarDialogoPedidoConfirmado(pedidoAlmacenado);
@@ -650,6 +656,31 @@ public class Navegador {
         propuestaActual.setCantidadTotalProductos(cantidadTot);
     }
     
+    public List<DireccionDTO> obtenerDirecciones() {
+        return Almacen.obtenerDirecciones();
+    }
     
+    public void seleccionarDireccion(DireccionDTO direccion) {
+        direccionActual = direccion;
+    }
+    
+    public DireccionDTO obtenerDireccionSeleccionada() {
+        return direccionActual;
+    }
+    
+    public boolean registrarDireccion(String calle, String colonia, String numeroTxt, String cpTxt) {
+        if(!validarTextoVacio(calle) || !validarTextoVacio(colonia) || !validarTextoVacio(numeroTxt) || !validarTextoVacio(cpTxt)) {
+            return false;
+        }
 
+        Integer numero = ControlValidaciones.cambiarAEntero(numeroTxt);
+        Integer codigoP= ControlValidaciones.cambiarAEntero(cpTxt);
+        
+        if(numero == null || codigoP == null) {
+            return false;
+        }
+        
+        DireccionDTO direccion = new DireccionDTO(calle.trim(), colonia.trim(), numero, codigoP);
+        return almacen.guardarDireccion(direccion);
+    }
 }

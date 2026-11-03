@@ -9,7 +9,6 @@ import dtos.ClienteDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
 import dtos.MaterialDTO;
-import dtos.PedidoDTO;
 import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -273,7 +272,14 @@ public class ordenEntrega extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditarDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarDireccionActionPerformed
-        navegador.mostrarFormularioDireccion();
+        DireccionDTO direccion = navegador.mostrarFormularioDireccion();
+        
+        if(direccion!=null) {
+            lblCalle.setText(direccion.getCalle());
+            lblColonia.setText(direccion.getColonia());
+            lblNum.setText("Número: " + direccion.getNumero());
+            lblCP.setText("CP: " + direccion.getCp());
+        }
     }//GEN-LAST:event_btnEditarDireccionActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
@@ -294,6 +300,7 @@ public class ordenEntrega extends javax.swing.JPanel {
                 opciones, opciones[1]);         
 
         if (respuesta == 0) {          // eligio cancelar el pedido
+            navegador.cancelarVenta();
             navegador.mostrarPanelMenuPrincipal();
         }
         
@@ -309,7 +316,7 @@ public class ordenEntrega extends javax.swing.JPanel {
             lblCliente.setText(cliente.getNombre() + " " + cliente.getApellidoPa() + " " + cliente.getApellidoMa());
             lblTelefono.setText(cliente.getTelefono());
         }
-
+        
         if ("DOMICILIO".equals(tipoEntrega) && direccion != null) {
             lblCalle.setText(direccion.getCalle());
             lblColonia.setText(direccion.getColonia());

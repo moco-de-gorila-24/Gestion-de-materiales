@@ -25,6 +25,7 @@ import java.util.List;
 public class Almacen {
     
     private static List<ClienteDTO> clientes = new ArrayList<>();
+    private static List<DireccionDTO> direcciones = new ArrayList<>();
     private static List<PropuestaMaterialesDTO> propuestas = new ArrayList<>();
     private static List<CotizacionDTO> cotizaciones = new ArrayList<>();
     private static List<PedidoDTO> pedidos = new ArrayList<>();
@@ -34,6 +35,7 @@ public class Almacen {
 
     static {
         clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
+        direcciones.add(new DireccionDTO("Mar amarillo", "Prados del Tepeyac", 123, 54678));
     }
     
     public static ClienteDTO obtenerCliente() {
@@ -129,9 +131,13 @@ public class Almacen {
     }
     
     public static List<DireccionDTO> obtenerDirecciones() {
-        List<DireccionDTO> direcciones = new ArrayList<>();
-        direcciones.add(new DireccionDTO("Mar amarillo", "Prados del Tepeyac", 123, 54678));
-        return direcciones;
+        return new ArrayList<>(direcciones);
+    }
+    public static boolean guardarDireccion(DireccionDTO direccion) {
+        if (direccion == null) {
+            return false;
+        }
+        return direcciones.add(direccion);
     }
     
     public PropuestaMaterialesDTO guardarPropuesta(ClienteDTO cliente) {
@@ -154,16 +160,6 @@ public class Almacen {
 
         return propuesta.getDetalles().remove(detalle);
            
-    }
-    
-    public DireccionDTO obtenerDireccionActual() {
-        List<DireccionDTO> direcciones = obtenerDirecciones();
-
-        if (direcciones.isEmpty()) {
-            return null;
-        }
-
-        return direcciones.get(0);
     }
     
     public OrdenEntregaDTO crearOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido) {

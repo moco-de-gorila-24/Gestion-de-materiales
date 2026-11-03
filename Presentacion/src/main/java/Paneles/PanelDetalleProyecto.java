@@ -97,6 +97,7 @@ public class PanelDetalleProyecto extends JPanel{
                 int opcion = JOptionPane.showConfirmDialog(null, "Desea cancelar el pedido?");
 
                 if(opcion == 0){
+                    navegador.cancelarVenta();
                     navegador.mostrarPanelMenuPrincipal();
                 }
             }

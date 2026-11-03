@@ -7,9 +7,9 @@ package Dialogs;
 import javax.swing.JDialog;
 import Componentes.Button;
 import control.Navegador;
+import dtos.DireccionDTO;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,8 +27,7 @@ public class DialogRegistroDireccion extends JDialog {
     private final JPanel contenedor = new JPanel(cards);
 
     private final JPanel panelLista = new JPanel();
-    private final List<String> direcciones = new ArrayList<>(); // temporal
-    private String seleccionada = null;
+    private DireccionDTO seleccionada = null;
 
     private final JTextField campoCalle = new JTextField(15);
     private final JTextField campoColonia = new JTextField(15);
@@ -169,10 +168,13 @@ public class DialogRegistroDireccion extends JDialog {
 
     // cambiar pantalla
     private void confirmar() {
-        // por mientras
-        direcciones.add(campoCalle.getText().trim() + ", " + campoNumero.getText().trim() + ", "
-                + campoColonia.getText().trim() + ", "
-                + campoCodigoPostal.getText().trim());
+        boolean registrar = navegador.registrarDireccion(campoCalle.getText().trim(), campoColonia.getText().trim(), campoNumero.getText().trim(),
+                campoCodigoPostal.getText().trim());
+        
+        if(!registrar) {
+            JOptionPane.showMessageDialog(this, "debe llenar todos los campos del registro de la direccion");
+            return;
+        }
         refrescarLista();
         cards.show(contenedor, VISTA_LISTA);
     }
@@ -186,28 +188,31 @@ public class DialogRegistroDireccion extends JDialog {
 
     private void refrescarLista() {
         panelLista.removeAll();
-        for (String d : direcciones) {
-            panelLista.add(crearFila(d));
+        List<DireccionDTO> direcciones = navegador.obtenerDirecciones();
+        for (int i= 0; i < direcciones.size(); i++) {
+            panelLista.add(crearFila(direcciones.get(i)));
             panelLista.add(Box.createVerticalStrut(8));
         }
         panelLista.revalidate();
         panelLista.repaint();
     }
 
-    private JPanel crearFila(String direccion) {
+    private JPanel crearFila(DireccionDTO direccion) {
         JPanel fila = new JPanel(new BorderLayout(10, 0));
         fila.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(119, 119, 119)),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)));
         fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        JLabel lbl = new JLabel("<html><b>Dirección:</b> " + direccion + "</html>");
+        JLabel lbl = new JLabel("<html><b>Dirección:</b> " + direccion.getCalle()+ " " + direccion.getNumero() + " " + direccion.getColonia() + " " + direccion.getCp() + " " + "</html>");
         lbl.setFont(new Font("Arial", Font.PLAIN, 16));
 
         Button btnSeleccionar = new Button("Seleccionar");
         btnSeleccionar.setPreferredSize(new Dimension(120, 30));
+        
         btnSeleccionar.addActionListener(e -> {
             seleccionada = direccion;
+            navegador.seleccionarDireccion(seleccionada);
             dispose();
         });
 
@@ -216,7 +221,7 @@ public class DialogRegistroDireccion extends JDialog {
         return fila;
     }
 
-    public String getSeleccionada() {
+    public DireccionDTO getSeleccionada() {
         return seleccionada;
     }
 }
