@@ -10,6 +10,9 @@
         <module>ObjetosDTO</module>
         <module>AlmacenTemporal</module>
         <module>ObjetosNegocio</module>
+        <module>SubsistemaCreacionPedido</module>
+        <module>SubsistemaGestionInventario</module>
+        <module>SubsistemaIniciarSesion</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
