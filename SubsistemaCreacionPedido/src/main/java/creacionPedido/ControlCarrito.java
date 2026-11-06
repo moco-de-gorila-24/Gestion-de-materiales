@@ -8,6 +8,6 @@ package creacionPedido;
  *
  * @author cinca
  */
-public class ControlCarrito implements IControlCarrito {
+public class ControlCarrito {
     
 }

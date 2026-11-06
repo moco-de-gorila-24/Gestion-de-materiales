@@ -8,6 +8,6 @@ package inicioSesion;
  *
  * @author cinca
  */
-public class ControlInicioSesion implements IControlInicioSesion {
+public class ControlInicioSesion {
     
 }

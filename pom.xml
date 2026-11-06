@@ -13,7 +13,6 @@
         <module>SubsistemaCreacionPedido</module>
         <module>SubsistemaGestionInventario</module>
         <module>SubsistemaIniciarSesion</module>
-        <module>FachadaCreacionPedido</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

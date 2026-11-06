@@ -8,6 +8,6 @@ package gestionInventario;
  *
  * @author cinca
  */
-public class ControlInventario implements IControlInventario {
+public class ControlInventario {
     
 }
