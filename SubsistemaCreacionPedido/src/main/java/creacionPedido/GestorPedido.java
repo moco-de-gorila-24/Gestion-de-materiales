@@ -8,6 +8,6 @@ package creacionPedido;
  *
  * @author cinca
  */
-public class GestorPedido implements IGestorPedido {
+public class GestorPedido {
     
 }

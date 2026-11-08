@@ -8,6 +8,6 @@ package creacionPedido;
  *
  * @author cinca
  */
-public interface IGestorOrdenEntrega {
+public interface ISubsistemaCrearPedido {
     
 }
