@@ -4,10 +4,15 @@
  */
 package interfaces;
 
+import dtos.MaterialDTO;
+import java.util.List;
+
 /**
  * Interfaz/Contrato de MaterialBO.
  * @author cinca
  */
 public interface IMaterialBO {
-    
+    boolean validarMaterialDisponible(MaterialDTO material);
+    MaterialDTO consultarMaterial(String nombre);
+    List<MaterialDTO> consultarMateriales();
 }

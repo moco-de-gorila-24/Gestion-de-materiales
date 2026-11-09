@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import almacen.Almacen;
 import static almacen.Almacen.obtenerMateriales;
+import gestionInventario.GestionInventarioFachada;
+import gestionInventario.ISubsistemaInventario;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -38,6 +40,8 @@ public class Navegador {
     private PropuestaMaterialesDTO propuestaActual;
     private String tipoEntrega;
     private DireccionDTO direccionActual;
+    
+    private final ISubsistemaInventario subsistemaInventario = new GestionInventarioFachada();
     
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -134,7 +138,7 @@ public class Navegador {
     }
 
     public void buscarProductos(JPanel panelDestino, String nombre){
-        MaterialDTO materialEncontrado = almacen.buscarMaterial(nombre);
+        MaterialDTO materialEncontrado = subsistemaInventario.consultarMaterial(nombre);
         if(materialEncontrado == null){
             JOptionPane.showMessageDialog(null,"Producto no encontrado");
         }
@@ -162,7 +166,7 @@ public class Navegador {
 
     public void cargarProductos(JPanel destino) {
         destino.removeAll();
-        for (MaterialDTO m : Almacen.obtenerMateriales()) {
+        for (MaterialDTO m : subsistemaInventario.consultarMaterial()) {
             PanelProducto tarjeta = new PanelProducto(this);
             tarjeta.setMaterial(m);
             tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,

@@ -30,12 +30,18 @@ public class Almacen {
     private static List<CotizacionDTO> cotizaciones = new ArrayList<>();
     private static List<PedidoDTO> pedidos = new ArrayList<>();
     private static List<OrdenEntregaDTO> ordenesEntrega = new ArrayList<>();
+    private static List<MaterialDTO> materiales = new ArrayList<>();
     
     private static int siguienteIdPropuesta = 1;
 
     static {
         clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
         direcciones.add(new DireccionDTO("Mar amarillo", "Prados del Tepeyac", 123, 54678));
+        materiales.add(new MaterialDTO(1, "Block de construccion", "cualquiera", 12f, "pieza", 500, "Block"));
+        materiales.add(new MaterialDTO(2, "Varilla metalica corrugada 3/8", "cualquiera", 20f, "m", 300, "Varilla"));
+        materiales.add(new MaterialDTO(3, "Bulto de cemento 25kg", "Cemex", 50f, "bulto", 9, "Cemento"));
+        materiales.add(new MaterialDTO(4, "Bulto de cemento 25kg", "PANAM", 48f, "bulto", 40, "Cemento"));
+        
     }
     
     public static ClienteDTO obtenerCliente() {
@@ -86,17 +92,15 @@ public class Almacen {
     
     
     public static List<MaterialDTO> obtenerMateriales() {
-        List<MaterialDTO> materialesDto = new ArrayList<>();
-        materialesDto.add(new MaterialDTO(1, "Block de construccion", "cualquiera", 12f, "pieza", 500, "Block"));
-        materialesDto.add(new MaterialDTO(2, "Varilla metalica corrugada 3/8", "cualquiera", 20f, "m", 300, "Varilla"));
-        materialesDto.add(new MaterialDTO(3, "Bulto de cemento 25kg", "Cemex", 50f, "bulto", 9, "Cemento"));
-        materialesDto.add(new MaterialDTO(4, "Bulto de cemento 25kg", "PANAM", 48f, "bulto", 40, "Cemento"));
-        return materialesDto;
+        return new ArrayList<>(materiales);
     }
 
-    public MaterialDTO buscarMaterial(String nombre){
+    public static MaterialDTO buscarMaterial(String nombre){
+        if(nombre == null) {
+           return null;
+        }
         for(MaterialDTO material: obtenerMateriales()){
-            if(material.getNombre().toLowerCase().contains(nombre.toLowerCase())){
+            if(material.getNombre() != null && material.getNombre().toLowerCase().contains(nombre.toLowerCase())){
                 return material;
             }
         }

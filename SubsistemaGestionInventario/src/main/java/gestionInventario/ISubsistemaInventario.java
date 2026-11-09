@@ -4,10 +4,18 @@
  */
 package gestionInventario;
 
+import dtos.MaterialDTO;
+import java.util.List;
+
 /**
  *
  * @author cinca
  */
 public interface ISubsistemaInventario {
-    
+
+    boolean validarMaterialDisponible(MaterialDTO material);
+    List<MaterialDTO> consultarMaterial();
+    MaterialDTO consultarMaterial(String nombre);
+    boolean agregarMaterial(MaterialDTO material);
+       
 }
