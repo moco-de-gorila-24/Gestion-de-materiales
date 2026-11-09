@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import almacen.Almacen;
 import static almacen.Almacen.obtenerMateriales;
+import creacionPedido.CrearPedidoFachada;
+import creacionPedido.ISubsistemaCrearPedido;
 import gestionInventario.GestionInventarioFachada;
 import gestionInventario.ISubsistemaInventario;
 import java.util.Date;
@@ -42,6 +44,7 @@ public class Navegador {
     private DireccionDTO direccionActual;
     
     private final ISubsistemaInventario subsistemaInventario = new GestionInventarioFachada();
+    private final ISubsistemaCrearPedido subsistemaCrearPedido = new CrearPedidoFachada();
     
     public void cambiarPanel(JPanel panel) {
         framePrincipal.setContentPane(panel);
@@ -301,33 +304,13 @@ public class Navegador {
     
     
     public void agregarAlCarrito(MaterialDTO material, int cantidad) {
-        if (almacen == null) {
-            almacen = new Almacen();
-        }
         if (material == null || cantidad <= 0) {
             return;
         }
         
-        if (propuestaActual == null) {
-            return;
-        }
-
-        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO detalle = detalles.get(i);
-
-            if (detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
-                detalle.setCantidad(detalle.getCantidad() + cantidad);
-                recalcularPropuesta();
-                refrescarCarrito();
-                return;
-            }
-        }
-
-        detalles.add(new DetallePropuestaDTO(material, cantidad, material.getPrecioUnitario()));
-        recalcularPropuesta();   
+        subsistemaCrearPedido.agregarAlCarrito(material, cantidad);
         refrescarCarrito();
+
     }
     
     public void eliminarDelCarrito(DetallePropuestaDTO detalle) {
@@ -652,6 +635,7 @@ public class Navegador {
         if(propuestaActual == null) {
             propuestaActual = almacen.guardarPropuesta(clienteActual);
         }
+        subsistemaCrearPedido.iniciarCarrito(propuestaActual);
         refrescarCarrito();
         return propuestaActual != null;        
     }

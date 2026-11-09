@@ -4,6 +4,8 @@
  */
 package objetosNegocio;
 
+import almacen.Almacen;
+import dtos.PropuestaMaterialesDTO;
 import interfaces.IPropuestaMaterialesBO;
 
 /**
@@ -11,5 +13,19 @@ import interfaces.IPropuestaMaterialesBO;
  * @author cinca
  */
 public class PropuestaMaterialesBO  implements IPropuestaMaterialesBO {
+
+    /**
+     * Actualiza en almacen la propuesta obtenida.
+     * 
+     * @param propuesta propuesta con los datos actualizados.
+     * @return true si se actualiza la propuesta, false en caso de lo contrario.
+     */
+    @Override
+    public boolean actualizarPropuesta(PropuestaMaterialesDTO propuesta) {
+        if(propuesta == null) {
+            return false;
+        }
+        return Almacen.actualizarPropuesta(propuesta);
+    }
     
 }

@@ -4,10 +4,13 @@
  */
 package interfaces;
 
+import dtos.PropuestaMaterialesDTO;
+
 /**
  * Interfaz/Contrato de PropuestaMaterialesBO.
  * @author cinca
  */
 public interface IPropuestaMaterialesBO {
     
+    boolean actualizarPropuesta(PropuestaMaterialesDTO propuesta);
 }

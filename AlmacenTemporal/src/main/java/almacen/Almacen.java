@@ -166,6 +166,21 @@ public class Almacen {
         return nuevaPropuesta;
     }
     
+    public static boolean actualizarPropuesta(PropuestaMaterialesDTO propuestaActualizada) {
+        if(propuestaActualizada == null) {
+            return false;
+        }
+        
+        for(int i = 0; i < propuestas.size(); i++) {
+            if(propuestas.get(i).getIdPropuesta() == propuestaActualizada.getIdPropuesta()) {
+                propuestas.set(i, propuestaActualizada);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     public boolean eliminarDetallePropuesta(PropuestaMaterialesDTO propuesta, DetallePropuestaDTO detalle) {        
         if (propuesta == null || detalle == null) {
             return false;
