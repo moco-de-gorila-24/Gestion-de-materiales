@@ -4,8 +4,10 @@
  */
 package gestionInventario;
 
+import dtos.DetalleReposicionDTO;
 import dtos.MaterialDTO;
 import dtos.PaqueteDTO;
+import dtos.SolicitudReposicionDTO;
 import java.util.List;
 
 /**
@@ -42,5 +44,20 @@ public class GestionInventarioFachada implements ISubsistemaInventario  {
     @Override
     public List<PaqueteDTO> consultarPaquetes() {
         return controlInventario.consultarPaquetes();
+    }
+    
+    @Override
+    public List<DetalleReposicionDTO> consultarMaterialesInsuficientes() {
+        return controlInventario.consultarMaterialesInsuficientes();
+    }
+    
+    @Override
+    public SolicitudReposicionDTO generarSolicitudReposicion() {
+        return controlInventario.generarSolicitudReposicion();
+    }
+
+    @Override
+    public List<SolicitudReposicionDTO> consultarSolicitudesReposicion() {
+        return controlInventario.consultarSolicitudesReposicion();
     }
 }

@@ -14,6 +14,7 @@ import dtos.OrdenEntregaDTO;
 import dtos.PaqueteDTO;
 import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
+import dtos.SolicitudReposicionDTO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,8 @@ public class Almacen {
     private static List<PedidoDTO> pedidos = new ArrayList<>();
     private static List<OrdenEntregaDTO> ordenesEntrega = new ArrayList<>();
     private static List<MaterialDTO> materiales = new ArrayList<>();
+    private static List<SolicitudReposicionDTO> solicitudesReposicion = new ArrayList<>();
+    private static int siguienteIdSolicitudReposicion = 1;
     
     private static int siguienteIdPropuesta = 1;
 
@@ -210,5 +213,20 @@ public class Almacen {
         pedido.setIdPedido(id);
         pedidos.add(pedido);
         return pedido;
+    }
+    
+    public static boolean guardarSolicitudReposicion(SolicitudReposicionDTO solicitud) {
+        if (solicitud == null) {
+            return false;
+        }
+
+        solicitud.setIdSolicitud(siguienteIdSolicitudReposicion++);
+        solicitud.setFechaSolicitud(new Date());
+        solicitud.setEstado("PENDIENTE");
+        return solicitudesReposicion.add(solicitud);
+    }
+
+    public static List<SolicitudReposicionDTO> obtenerSolicitudesReposicion() {
+        return new ArrayList<>(solicitudesReposicion);
     }
 }

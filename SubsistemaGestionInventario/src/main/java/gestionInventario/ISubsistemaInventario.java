@@ -4,8 +4,10 @@
  */
 package gestionInventario;
 
+import dtos.DetalleReposicionDTO;
 import dtos.MaterialDTO;
 import dtos.PaqueteDTO;
+import dtos.SolicitudReposicionDTO;
 import java.util.List;
 
 /**
@@ -19,5 +21,8 @@ public interface ISubsistemaInventario {
     MaterialDTO consultarMaterial(String nombre);
     boolean agregarMaterial(MaterialDTO material);
     List<PaqueteDTO> consultarPaquetes();
+    List<DetalleReposicionDTO> consultarMaterialesInsuficientes();
+    SolicitudReposicionDTO generarSolicitudReposicion();
+    List<SolicitudReposicionDTO> consultarSolicitudesReposicion();
        
 }
