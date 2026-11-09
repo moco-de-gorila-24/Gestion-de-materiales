@@ -34,7 +34,6 @@ public class ControlReposicion {
      * @return lista de detalles de reposicion.
      */
     public List<DetalleReposicionDTO> identificarMaterialesInsuficientes() {
-
         List<DetalleReposicionDTO> materialesInsuficientes = new ArrayList<>();
         List<MaterialDTO> materiales = materialBO.consultarMateriales();
 
@@ -47,7 +46,7 @@ public class ControlReposicion {
             int cantidadActual = material.getCantidadDisponible();
             int stockMinimo = material.getStockMinimo();
 
-            if (cantidadActual < stockMinimo) {
+            if (cantidadActual < stockMinimo && !tieneSolicitudPendiente(material)) {
 
                 int cantidadNecesaria = stockMinimo - cantidadActual;
                 DetalleReposicionDTO detalle = new DetalleReposicionDTO(material, cantidadActual, stockMinimo, cantidadNecesaria);
@@ -59,6 +58,31 @@ public class ControlReposicion {
         }
 
         return materialesInsuficientes;
+    }
+
+    private boolean tieneSolicitudPendiente(MaterialDTO material) {
+
+        List<SolicitudReposicionDTO> solicitudes = reposicionBO.consultarSolicitudes();
+
+        for (SolicitudReposicionDTO solicitud : solicitudes) {
+
+            if (solicitud == null || !"PENDIENTE".equalsIgnoreCase(solicitud.getEstado())) {
+                continue;
+            }
+
+            if (solicitud.getDetalles() == null) {
+                continue;
+            }
+
+            for (DetalleReposicionDTO detalle : solicitud.getDetalles()) {
+
+                if (detalle != null && detalle.getMaterial() == material) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
     
     public SolicitudReposicionDTO generarSolicitudReposicion() {

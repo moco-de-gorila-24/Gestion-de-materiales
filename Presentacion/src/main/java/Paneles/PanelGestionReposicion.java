@@ -145,7 +145,7 @@ public class PanelGestionReposicion extends JPanel {
         List<DetalleReposicionDTO> detalles = navegador.consultarMaterialesInsuficientes();
 
         if (detalles == null || detalles.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No hay materiales que necesiten reposición.");
+            JOptionPane.showMessageDialog(this, "No hay materiales nuevos para solicitar. Los materiales que requieren reposición ya tienen una solicitud pendiente.");
             return;
         }
 
