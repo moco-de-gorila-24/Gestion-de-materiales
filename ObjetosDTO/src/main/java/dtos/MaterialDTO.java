@@ -16,6 +16,7 @@ public class MaterialDTO {
     private String unidadMedida;
     private int cantidadDisponible;
     private String tipo;
+    private int stockMinimo = 20;
 
     public MaterialDTO() {
     }
@@ -112,5 +113,17 @@ public class MaterialDTO {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+    
+    public int getStockMinimo() {
+        return stockMinimo;
+    }
+
+    public void setStockMinimo(int stockMinimo) {
+        if (stockMinimo < 0) {
+            throw new IllegalArgumentException("El stock minimo no puede ser negativo");
+        }
+
+        this.stockMinimo = stockMinimo;
     }
 }
