@@ -22,6 +22,14 @@ public class PanelMenuPrincipal extends JPanel {
 
         Button button = new Button("Registrar Pedido");
         button.setPreferredSize(new Dimension(200,45));
+        
+        Button botonReposicion = new Button("Gestionar Reposición");
+        botonReposicion.setPreferredSize(new Dimension(200, 45));
+        
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelBotones.setOpaque(false);
+        panelBotones.add(button);
+        panelBotones.add(botonReposicion);
 
         JLabel labelTitulo = new JLabel("Menu Principal", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("Arial", Font.BOLD, 45));
@@ -31,17 +39,23 @@ public class PanelMenuPrincipal extends JPanel {
         gbc.insets = new Insets(20, 0, 30, 0);
         add(labelTitulo, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        add(button, gbc);
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+
+        add(panelBotones, gbc);
 
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 navegador.mostrarDialogoBuscarCliente();
             }
+        });
+        
+        botonReposicion.addActionListener(e -> {
+            navegador.mostrarPanelGestionReposicion();
         });
     }
 

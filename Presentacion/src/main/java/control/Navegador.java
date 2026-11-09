@@ -34,6 +34,7 @@ public class Navegador {
     PanelCarrito panelCarrito;
     PanelProducto panelProducto;
     PanelPaquete panelPaquete;
+    PanelGestionReposicion panelGestionReposicion;
     private Almacen almacen;
     private JPanel contenedorCarrito;
     private Date fechaEntrega;
@@ -683,5 +684,22 @@ public class Navegador {
         
         DireccionDTO direccion = new DireccionDTO(calle.trim(), colonia.trim(), numero, codigoP);
         return almacen.guardarDireccion(direccion);
+    }
+    
+    public void mostrarPanelGestionReposicion() {
+        panelGestionReposicion = new PanelGestionReposicion(this);
+        cambiarPanel(panelGestionReposicion);
+    }
+    
+    public List<DetalleReposicionDTO> consultarMaterialesInsuficientes() {
+        return subsistemaInventario.consultarMaterialesInsuficientes();
+    }
+
+    public SolicitudReposicionDTO generarSolicitudReposicion() {
+        return subsistemaInventario.generarSolicitudReposicion();
+    }
+
+    public List<SolicitudReposicionDTO> consultarSolicitudesReposicion() {
+        return subsistemaInventario.consultarSolicitudesReposicion();
     }
 }
