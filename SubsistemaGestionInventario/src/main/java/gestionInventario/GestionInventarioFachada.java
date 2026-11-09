@@ -5,6 +5,7 @@
 package gestionInventario;
 
 import dtos.MaterialDTO;
+import dtos.PaqueteDTO;
 import java.util.List;
 
 /**
@@ -36,5 +37,10 @@ public class GestionInventarioFachada implements ISubsistemaInventario  {
     @Override
     public boolean agregarMaterial(MaterialDTO material) {
         return controlInventario.agregarMaterial(material);
+    }
+
+    @Override
+    public List<PaqueteDTO> consultarPaquetes() {
+        return controlInventario.consultarPaquetes();
     }
 }

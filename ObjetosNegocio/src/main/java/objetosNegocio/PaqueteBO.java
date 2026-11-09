@@ -4,12 +4,19 @@
  */
 package objetosNegocio;
 
+import almacen.Almacen;
+import dtos.PaqueteDTO;
 import interfaces.IPaqueteBO;
+import java.util.List;
 
 /**
  * Objeto negocio que usa AlmacenTemporal temporalmente.
  * @author cinca
  */
 public class PaqueteBO implements IPaqueteBO {
+    @Override
+    public List<PaqueteDTO> obtenerPaquetes() {
+        return Almacen.obtenerPaquetes();
+    }
     
 }

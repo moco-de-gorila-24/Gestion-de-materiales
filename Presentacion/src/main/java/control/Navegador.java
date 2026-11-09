@@ -152,7 +152,7 @@ public class Navegador {
 
     public void cargarPaquetes(JPanel destino){
         destino.removeAll();
-        for (PaqueteDTO p : Almacen.obtenerPaquetes()) {
+        for (PaqueteDTO p : subsistemaInventario.consultarPaquetes()) {
             PanelPaquete tarjeta = new PanelPaquete(this);
             tarjeta.setPaquete(p);
             tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE,

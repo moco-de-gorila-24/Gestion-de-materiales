@@ -4,10 +4,15 @@
  */
 package interfaces;
 
+import dtos.PaqueteDTO;
+import java.util.List;
+
 /**
  * Interfaz/Contrato de PaqueteBO.
  * @author cinca
  */
 public interface IPaqueteBO {
+
+    public List<PaqueteDTO> obtenerPaquetes();
     
 }

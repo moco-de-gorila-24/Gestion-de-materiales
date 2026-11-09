@@ -5,9 +5,12 @@
 package gestionInventario;
 
 import dtos.MaterialDTO;
+import dtos.PaqueteDTO;
 import interfaces.IMaterialBO;
+import interfaces.IPaqueteBO;
 import java.util.List;
 import objetosNegocio.MaterialBO;
+import objetosNegocio.PaqueteBO;
 
 /**
  *
@@ -15,10 +18,12 @@ import objetosNegocio.MaterialBO;
  */
 public class ControlInventario {
     
+    private IPaqueteBO paqueteBO;
     private IMaterialBO materialBO;
     
     public ControlInventario() {
         materialBO = new MaterialBO();
+        paqueteBO = new PaqueteBO();
     }
     
     public boolean validarMaterialDisponible(MaterialDTO material) {
@@ -43,5 +48,9 @@ public class ControlInventario {
         
         return false;
         
+    }
+
+    public List<PaqueteDTO> consultarPaquetes() {
+        return paqueteBO.obtenerPaquetes();
     }
 }

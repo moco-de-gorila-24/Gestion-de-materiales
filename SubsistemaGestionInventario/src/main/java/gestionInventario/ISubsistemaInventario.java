@@ -5,6 +5,7 @@
 package gestionInventario;
 
 import dtos.MaterialDTO;
+import dtos.PaqueteDTO;
 import java.util.List;
 
 /**
@@ -17,5 +18,6 @@ public interface ISubsistemaInventario {
     List<MaterialDTO> consultarMaterial();
     MaterialDTO consultarMaterial(String nombre);
     boolean agregarMaterial(MaterialDTO material);
+    List<PaqueteDTO> consultarPaquetes();
        
 }
