@@ -4,6 +4,7 @@
  */
 package creacionPedido;
 
+import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import dtos.PropuestaMaterialesDTO;
 
@@ -42,6 +43,12 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     @Override
     public void iniciarCarrito(PropuestaMaterialesDTO propuesta) {
         controlCarrito.iniciarCarrito(propuesta);
+    }
+
+    @Override
+    public boolean eliminarDelCarrito(DetallePropuestaDTO detalle) {
+        controlCarrito.eliminarDelCarrito(detalle);
+        return true;
     }
     
 }

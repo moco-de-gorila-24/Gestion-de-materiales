@@ -315,16 +315,8 @@ public class Navegador {
     }
     
     public void eliminarDelCarrito(DetallePropuestaDTO detalle) {
-        if(propuestaActual == null || detalle == null || !propuestaActual.getDetalles().contains(detalle)) {
-            return;
-        }
-        
-        boolean eliminado = almacen.eliminarDetallePropuesta(propuestaActual, detalle);
-        
-        if(eliminado) {
-            recalcularPropuesta();
+            subsistemaCrearPedido.eliminarDelCarrito(detalle);
             refrescarCarrito();
-        }
     }
     
     public void limpiarPropuestaActual() {
