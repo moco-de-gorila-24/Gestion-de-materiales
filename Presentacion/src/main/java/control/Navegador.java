@@ -77,11 +77,21 @@ public class Navegador {
         }
         cambiarPanel(panelRegistrarCliente);
     }
-
+    
     public void mostrarDialogoBuscarCliente() {
-        if(dialogTelefono == null){
+        if (dialogTelefono == null) {
             dialogTelefono = new DialogTelefono(framePrincipal, this);
         }
+
+        dialogTelefono.setVisible(true);
+    }
+
+    public void mostrarDialogoBuscarCliente(String telefono) {
+        if (dialogTelefono == null) {
+            dialogTelefono = new DialogTelefono(framePrincipal, this);
+        }
+
+        dialogTelefono.establecerTelefono(telefono);
         dialogTelefono.setVisible(true);
     }
 
@@ -492,6 +502,13 @@ public class Navegador {
         return Almacen.buscarCliente(telefono) != null;
     }
 
+    public ClienteDTO buscarClientePorTelefono(String telefono) {
+        if (telefono == null || telefono.trim().isEmpty()) {
+            return null;
+        }
+
+        return Almacen.buscarCliente(telefono.trim());
+    }
     
     public boolean validarSoloTexto(String texto) {
         return ControlValidaciones.validarSoloTexto(texto);
@@ -514,13 +531,7 @@ public class Navegador {
             return false;
         }
 
-        boolean registrado = Almacen.GuardarCliente(cliente);
-
-        if (registrado) {
-            iniciarVenta(cliente.getTelefono());
-        }
-
-        return registrado;
+        return Almacen.GuardarCliente(cliente);
     }
     
     public void seleccionarCliente(String telefono) {

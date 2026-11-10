@@ -92,7 +92,7 @@ public class PanelRegistrarCliente extends JPanel {
 
             if (navegador.agregarCliente(clienteDTO)) {
                 JOptionPane.showMessageDialog(this, "Cliente registrado con exito");
-                navegador.mostrarPanelRegistrarPedido();
+                navegador.mostrarDialogoBuscarCliente(telefono);
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo agregar al cliente");
             }

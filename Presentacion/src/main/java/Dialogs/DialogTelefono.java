@@ -3,15 +3,21 @@ package Dialogs;
 import control.ControlValidaciones;
 import control.Navegador;
 import Componentes.Button;
+import dtos.ClienteDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class DialogTelefono extends JDialog {
     private final Navegador navegador;
     private ControlValidaciones controlValidaciones;
     private final JTextField campoTelefono = new JTextField(10);
+    private final JLabel lblEstadoCliente = new JLabel("Ingrese un teléfono de 10 dígitos.");
+    private final JLabel lblNombreCliente = new JLabel(" ");
+    private final JLabel lblTelefonoCliente = new JLabel(" ");
 
     public DialogTelefono(JFrame owner, Navegador navegador) {
         super(owner, "Buscar cliente", true);   // true = modal
@@ -48,6 +54,27 @@ public class DialogTelefono extends JDialog {
         gbc.insets = new Insets(0, 0, 40, 30);
         add(campoTelefono, gbc);
 
+        JPanel panelDatosCliente = new JPanel(new GridLayout(3, 1, 5, 5));
+        panelDatosCliente.setBackground(Color.WHITE);
+        panelDatosCliente.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(gris), BorderFactory.createEmptyBorder(10, 15, 10, 15)));
+
+        lblEstadoCliente.setFont(new Font("Arial", Font.PLAIN, 14));
+        lblNombreCliente.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTelefonoCliente.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        panelDatosCliente.add(lblEstadoCliente);
+        panelDatosCliente.add(lblNombreCliente);
+        panelDatosCliente.add(lblTelefonoCliente);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(0, 30, 25, 30);
+
+        add(panelDatosCliente, gbc);
+
         // Botones
         Button btnRegresar = new Button("Regresar");
         Button btnRegistrarCliente = new Button("Registrar");
@@ -65,12 +92,30 @@ public class DialogTelefono extends JDialog {
         panelBotones.add(btnConfirmar);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 25, 0);
         add(panelBotones, gbc);
 
+        campoTelefono.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizarDatosCliente();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizarDatosCliente();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizarDatosCliente();
+            }
+        });
+        
         btnRegresar.addActionListener(e -> dispose());
         btnConfirmar.addActionListener(e -> {
 
@@ -105,5 +150,41 @@ public class DialogTelefono extends JDialog {
         pack();
         setLocationRelativeTo(owner);
 
+    }
+    
+    private void actualizarDatosCliente() {
+        String telefono = campoTelefono.getText().trim();
+        lblNombreCliente.setText(" ");
+        lblTelefonoCliente.setText(" ");
+
+        if (telefono.isEmpty()) {
+            lblEstadoCliente.setText("Ingrese un teléfono de 10 dígitos.");
+            return;
+        }
+
+        if (telefono.length() < 10) {
+            lblEstadoCliente.setText("Continúe ingresando el teléfono...");
+            return;
+        }
+
+        if (!navegador.validarTelefono(telefono)) {
+            lblEstadoCliente.setText("El teléfono debe tener 10 dígitos.");
+            return;
+        }
+
+        ClienteDTO cliente = navegador.buscarClientePorTelefono(telefono);
+
+        if (cliente == null) {
+            lblEstadoCliente.setText("No se encontró ningún cliente con ese teléfono.");
+            return;
+        }
+
+        lblEstadoCliente.setText("Cliente encontrado:");
+        lblNombreCliente.setText("Nombre: " + cliente.getNombre() + " " + cliente.getApellidoPa() + " " + cliente.getApellidoMa());
+        lblTelefonoCliente.setText("Teléfono: " + cliente.getTelefono());
+    }
+    
+    public void establecerTelefono(String telefono) {
+        campoTelefono.setText(telefono);
     }
 }
