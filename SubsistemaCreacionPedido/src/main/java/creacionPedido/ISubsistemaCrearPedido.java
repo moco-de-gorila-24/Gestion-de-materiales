@@ -4,6 +4,7 @@
  */
 package creacionPedido;
 
+import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import dtos.PropuestaMaterialesDTO;
 
@@ -27,5 +28,7 @@ public interface ISubsistemaCrearPedido {
      * @param cantidad
      */
     void agregarAlCarrito(MaterialDTO material, int cantidad);
+    
+    boolean eliminarDelCarrito(DetallePropuestaDTO detalle);
     
 }

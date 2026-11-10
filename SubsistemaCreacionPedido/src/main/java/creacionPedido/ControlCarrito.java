@@ -37,9 +37,9 @@ public class ControlCarrito {
     /**
      * Metodo encargado de realizar la operacion de agregar un producto al 
      * carrito.
-     * Si el material ya esta en la propuesta activa, se incrementa su cantidad,
+     * Si el material ya esta en la propuesta activa, se incrementa su cantidad (primer caso),
      * de lo contrario se crea un nuevo detalle y se recalculan los totales y
-     * se actualiza la propuesta mediante el BO correspondiente..
+     * se actualiza la propuesta mediante el BO correspondiente.
      * 
      * @param material material de la lista de materiales.
      * @param cantidad cantidad de unidades del material que se añadiran.
@@ -90,6 +90,18 @@ public class ControlCarrito {
         
         propuestaActual.setSubtotal(subtot);
         propuestaActual.setCantidadTotalProductos(cantidadTot);    
+    }
+    
+    public boolean eliminarDelCarrito(DetallePropuestaDTO detalle) {
+         if (propuestaActual == null || detalle == null) {
+            return false;
+        }
+         
+        if(!propuestaActual.getDetalles().contains(detalle)) {
+            return false;
+        }
+        recalcularPropuesta();
+        return propuestaActual.getDetalles().remove(detalle);
     }
     
 }

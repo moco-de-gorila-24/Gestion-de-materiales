@@ -184,15 +184,6 @@ public class Almacen {
         return false;
     }
     
-    public boolean eliminarDetallePropuesta(PropuestaMaterialesDTO propuesta, DetallePropuestaDTO detalle) {        
-        if (propuesta == null || detalle == null) {
-            return false;
-        }
-
-        return propuesta.getDetalles().remove(detalle);
-           
-    }
-    
     public OrdenEntregaDTO crearOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido) {
         OrdenEntregaDTO orden = new OrdenEntregaDTO(tipoEntrega, fecha, direccion, pedido);
         ordenesEntrega.add(orden);
