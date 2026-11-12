@@ -5,8 +5,11 @@
 package utilerias;
 
 import control.Navegador;
+import dtos.MaterialDTO;
 import dtos.PaqueteDTO;
 
+import javax.swing.*;
+import java.util.List;
 
 /**
  *
@@ -17,6 +20,8 @@ import dtos.PaqueteDTO;
  */
 public class PanelPaquete extends javax.swing.JPanel {
     private final Navegador navegador;
+    PaqueteDTO paquete;
+
     /**
      * Creates new form PanelPaquete
      */
@@ -142,11 +147,17 @@ public class PanelPaquete extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPaqueteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPaqueteActionPerformed
-        // TODO add your handling code here:
+        if(txtLongitud.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "no puede quedar null la longitud");
+            return;
+        }
+        //navegador.agregarAlCarrito();
+        navegador.agregarPaqueteCarrito(this.paquete);
     }//GEN-LAST:event_btnAgregarPaqueteActionPerformed
 
     public void setPaquete(PaqueteDTO p){
         setDatos(p.getDescripcion(), p.getDetalles().getFirst().getMaterial().getNombre(), p.getDetalles().getFirst().getCantidadMaterial());
+        this.paquete = p;
     }
 
     public void setDatos(String nombre, String materiales, int cantidad){

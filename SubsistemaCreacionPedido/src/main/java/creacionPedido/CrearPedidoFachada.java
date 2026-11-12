@@ -11,9 +11,13 @@ import dtos.DireccionDTO;
 import dtos.MaterialDTO;
 import dtos.OrdenEntregaDTO;
 import dtos.PedidoDTO;
+import dtos.PaqueteDTO;
 import dtos.PropuestaMaterialesDTO;
 import excepciones.CreacionPedidoException;
 import java.util.Date;
+import java.util.List;
+import objetosNegocio.PaqueteBO;
+
 import java.util.List;
 
 /**
@@ -50,6 +54,24 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     }
 
     /**
+     * Pide al control del carrito agregar el material/material indicado.
+     *
+     * @param paqueteInstancia paquete que esta en la instancia de cada panel
+     */
+    @Override
+    public void agregarAlCarrito(PaqueteDTO paqueteInstancia) {
+
+        PaqueteBO paqueteBO = new PaqueteBO();
+        List<PaqueteDTO> paquetes = paqueteBO.obtenerPaquetes();
+
+        for(int i = 0; i < paquetes.size(); i++){
+            if (paquetes.get(i).getIdPaquete() == paqueteInstancia.getIdPaquete()){
+                agregarAlCarrito(paquetes.get(i).getDetalles().get(i).getMaterial(), paquetes.get(i).getDetalles().get(i).getCantidadMaterial());
+            }
+        }
+    }
+
+    /**
      * Establece la propuesta activa que usara el control del carrito.
      * 
      * @param propuesta propuesta asociada al carrito.
@@ -77,7 +99,7 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
 
     @Override
     public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
-        return controlCarrito.sustituirMaterial(detalle, nuevo);          
+        return controlCarrito.sustituirMaterial(detalle, nuevo);
     }
 
     @Override
@@ -153,20 +175,20 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     @Override
     public PedidoDTO confirmarPedido() throws CreacionPedidoException {
         PedidoDTO pedido = gestorPedido.confirmarPedido(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega(),
-                           gestorOrdenEntrega.obtenerDireccionSeleccionada(), 
+                           gestorOrdenEntrega.obtenerDireccionSeleccionada(),
                            gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega()));
-        
+
         gestorOrdenEntrega.confirmarOrdenEntrega(pedido);
         controlCarrito.finalizarPropuestaConfirmada();
         return pedido;
-        
+
     }
 
     @Override
     public CotizacionDTO generarCotizacion() {
-        return gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega());    
+        return gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega());
     }
-    
-    
-    
+
+
+
 }

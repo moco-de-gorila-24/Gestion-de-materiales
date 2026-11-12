@@ -196,6 +196,14 @@ public class Navegador {
         agregarAlCarrito(m, 1);
     }
 
+    public void agregarPaqueteCarrito(PaqueteDTO p) {
+        if (p == null) {
+            return;
+        }
+        subsistemaCrearPedido.agregarAlCarrito(p);
+        refrescarCarrito();
+    }
+
     public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal) {
         subsistemaCrearPedido.cambiarCantidad(detalle, cantidadCambiar, cantidadOriginal);
         refrescarCarrito();
