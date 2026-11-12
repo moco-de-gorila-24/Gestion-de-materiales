@@ -4,11 +4,15 @@
  */
 package creacionPedido;
 
+import almacen.Almacen;
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import dtos.PropuestaMaterialesDTO;
+import interfaces.IMaterialBO;
 import interfaces.IPropuestaMaterialesBO;
+import java.util.ArrayList;
 import java.util.List;
+import objetosNegocio.MaterialBO;
 import objetosNegocio.PropuestaMaterialesBO;
 
 /**
@@ -18,10 +22,12 @@ import objetosNegocio.PropuestaMaterialesBO;
  */
 public class ControlCarrito {
     private IPropuestaMaterialesBO propuestaBO;
+    private IMaterialBO materialBO;
     private PropuestaMaterialesDTO propuestaActual;
     
     public ControlCarrito() {
         propuestaBO = new PropuestaMaterialesBO();
+        materialBO = new MaterialBO();
     }   
 
     /**
@@ -97,11 +103,176 @@ public class ControlCarrito {
             return false;
         }
          
-        if(!propuestaActual.getDetalles().contains(detalle)) {
+        if(!propuestaActual.getDetalles().remove(detalle)) {
             return false;
         }
         recalcularPropuesta();
-        return propuestaActual.getDetalles().remove(detalle);
+        propuestaBO.actualizarPropuesta(propuestaActual);
+        return true;
     }
     
+    public void limpiarPropuestaActual() {
+        if (propuestaActual == null) {
+            return;
+        }
+
+        propuestaActual.setDetalles(new ArrayList<>());
+        recalcularPropuesta();
+        propuestaBO.actualizarPropuesta(propuestaActual);
+    }
+    
+    public void cancelarVenta() {
+        if (propuestaActual != null) {
+            propuestaActual.setEstado("CANCELADA");
+        }
+        propuestaBO.actualizarPropuesta(propuestaActual);
+        propuestaActual = null;
+    }
+    
+    public List<DetallePropuestaDTO> getDetallesCarrito() {
+        if (propuestaActual == null) {
+            return new ArrayList<>();
+        }
+
+        return propuestaActual.getDetalles();
+    }
+    
+    public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
+
+        if (propuestaActual == null || detalle == null || nuevo == null || detalle.getMaterial() == null) {
+             return false;
+        }
+
+        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
+
+        if (!detalles.contains(detalle)) {
+            return false;
+        }
+
+        int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
+
+        if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
+            return false;
+        }
+
+        DetallePropuestaDTO existente = null;
+
+        for (int i = 0; i < detalles.size(); i++) {
+            DetallePropuestaDTO otro = detalles.get(i);
+
+            if (otro != detalle && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == nuevo.getIdMaterial()) {
+                existente = otro;
+                break;
+            }
+        }
+
+        float subtotalAnteriorDetalle = detalle.getCantidad() * detalle.getPrecioUnitario();
+
+        if (existente != null) {
+            float subtotalAnteriorExistente = existente.getCantidad() * existente.getPrecioUnitario();
+            int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
+            float subtotalNuevo = cantidadTotal * nuevo.getPrecioUnitario();
+
+            existente.setCantidad(cantidadTotal);
+            existente.setMaterial(nuevo);
+            existente.setPrecioUnitario(nuevo.getPrecioUnitario());
+
+            detalles.remove(detalle);
+
+        } else {
+            detalle.setMaterial(nuevo);
+            detalle.setPrecioUnitario(nuevo.getPrecioUnitario()); 
+        }
+         
+        recalcularPropuesta();
+        return true;
+    }
+
+    private int calcularCantidadTotal(List<DetallePropuestaDTO> detalles, DetallePropuestaDTO detalleActual, MaterialDTO candidato) {
+
+        if (detalles == null || detalleActual == null || candidato == null) {
+            return 0;
+        }
+
+        int cantidadTotal = detalleActual.getCantidad();
+
+        for (int i = 0; i < detalles.size(); i++) {
+            DetallePropuestaDTO otro = detalles.get(i);
+
+            if (otro != detalleActual && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == candidato.getIdMaterial()) {
+                cantidadTotal += otro.getCantidad();
+            }
+        }
+
+        return cantidadTotal;
+           
+    }
+
+    public List<MaterialDTO> obtenerMaterialesSustitutos(DetallePropuestaDTO detalle) {
+        List<MaterialDTO> sustitutos = new ArrayList<>();
+
+        if (propuestaActual == null || detalle == null || detalle.getMaterial() == null) {
+            return sustitutos;
+        }
+
+        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
+        List<MaterialDTO> materialesAlmacen = materialBO.consultarMateriales();
+        MaterialDTO material = detalle.getMaterial();
+
+        for (int i = 0; i < materialesAlmacen.size(); i++) {
+            MaterialDTO candidato = materialesAlmacen.get(i);
+
+            boolean mismoTipo = candidato.getTipo() != null && material.getTipo() != null && candidato.getTipo().equalsIgnoreCase(material.getTipo());
+            boolean diferente = candidato.getIdMaterial() != material.getIdMaterial();
+            int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, candidato);
+            boolean stockSuficiente = candidato.getCantidadDisponible() >= cantidadNecesaria;
+
+            if (mismoTipo && diferente && stockSuficiente) {
+                sustitutos.add(candidato);
+            }
+        }
+
+        return sustitutos;
+    }
+
+    
+    public int obtenerCantidadNecesaria(DetallePropuestaDTO detalle, MaterialDTO candidato) {
+
+        if (propuestaActual == null || detalle == null || candidato == null) {
+            return 0;
+        }
+
+        return calcularCantidadTotal(propuestaActual.getDetalles(), detalle, candidato);
+    
+    }
+    
+    public float obtenerSubtotal() {
+        if (propuestaActual == null) {
+            return 0;
+        }
+
+        return propuestaActual.getSubtotal();
+    }
+    
+    public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal) {
+
+        if (propuestaActual == null || detalle == null) {
+            return;
+        }
+
+        if (!propuestaActual.getDetalles().contains(detalle)) {
+            return;
+        }
+
+        int nueva = cantidadOriginal + cantidadCambiar;
+
+        if (nueva <= 0) {
+            eliminarDelCarrito(detalle);
+            return;
+        }
+
+        detalle.setCantidad(nueva);
+        recalcularPropuesta();
+        propuestaBO.actualizarPropuesta(propuestaActual);
+   }
 }

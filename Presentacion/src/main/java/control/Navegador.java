@@ -124,6 +124,7 @@ public class Navegador {
     public void mostrarPanelRegistrarPedido(){
         panelRegistrarPedido = new PanelRegistrarPedido(this);
         cambiarPanel(panelRegistrarPedido);
+        panelRegistrarPedido.actualizarSubtotal(subsistemaCrearPedido.obtenerSubtotal());
     }
 
     public void mostrarPanelDetalleProyecto() {
@@ -200,24 +201,7 @@ public class Navegador {
     }
 
     public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal) {
-
-        if (propuestaActual == null || detalle == null) {
-            return;
-        }
-
-        if (!propuestaActual.getDetalles().contains(detalle)) {
-            return;
-        }
-
-        int nueva = cantidadOriginal + cantidadCambiar;
-
-        if (nueva <= 0) {
-            eliminarDelCarrito(detalle);
-            return;
-        }
-
-        detalle.setCantidad(nueva);
-        recalcularPropuesta();
+        subsistemaCrearPedido.cambiarCantidad(detalle, cantidadCambiar, cantidadOriginal);
         refrescarCarrito();
    }
 
@@ -226,12 +210,16 @@ public class Navegador {
         if (contenedorCarrito == null) {
             return;
         }
+        if(panelRegistrarPedido != null) {
+            panelRegistrarPedido.actualizarSubtotal(subsistemaCrearPedido.obtenerSubtotal());
+        }
 
         contenedorCarrito.removeAll();
+        List<DetallePropuestaDTO> detalles = subsistemaCrearPedido.getDetallesCarrito();
 
         if (propuestaActual != null) {
-            for (int i = 0; i < propuestaActual.getDetalles().size(); i++) {
-                DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(i);
+            for (int i = 0; i < detalles.size(); i++) {
+                DetallePropuestaDTO detalle = detalles.get(i);
                 MaterialDTO material = detalle.getMaterial();
 
                 PanelCarrito tarjeta = new PanelCarrito(this);
@@ -242,12 +230,11 @@ public class Navegador {
                 contenedorCarrito.add(tarjeta);
                 contenedorCarrito.add(Box.createVerticalStrut(8));
             }
+            
+            if (panelRegistrarPedido != null) {
+                panelRegistrarPedido.actualizarSubtotal(propuestaActual != null ? propuestaActual.getSubtotal() : 0);
+            }
         }
-
-        if (panelRegistrarPedido != null) {
-            panelRegistrarPedido.actualizarSubtotal(propuestaActual != null ? propuestaActual.getSubtotal() : 0);
-        }
-
         contenedorCarrito.revalidate();
         contenedorCarrito.repaint();
     }
@@ -279,37 +266,15 @@ public class Navegador {
     }
     
     public List<DetallePropuestaDTO> getDetallesCarrito() {
-        if (almacen == null) {
-            almacen = new Almacen();
-        }
-
-        if (propuestaActual == null) {
-            return new ArrayList<>();
-        }
-
-        return propuestaActual.getDetalles();
+        return subsistemaCrearPedido.getDetallesCarrito();
     }
     
     public float obtenerSubtotal() {
-        if (propuestaActual == null) {
-            return 0;
-        }
-
-        return propuestaActual.getSubtotal();
+        return subsistemaCrearPedido.obtenerSubtotal();
     }
     
     public void cancelarVenta() {
-        if (propuestaActual != null) {
-            propuestaActual.setEstado("CANCELADA");
-        }
-
-        clienteActual = null;
-        propuestaActual = null;
-        tipoEntrega = null;
-        fechaEntrega = null;
-        fechaLimite = null;
-        direccionActual = null;
-        
+        subsistemaCrearPedido.cancelarVenta();        
         refrescarCarrito();
     }
     
@@ -330,16 +295,7 @@ public class Navegador {
     }
     
     public void limpiarPropuestaActual() {
-        if (almacen == null) {
-            almacen = new Almacen();
-        }
-
-        if (propuestaActual == null) {
-            return;
-        }
-
-        propuestaActual.setDetalles(new ArrayList<>());
-        recalcularPropuesta();
+        subsistemaCrearPedido.limpiarPropuestaActual();
         refrescarCarrito();
     }
     
@@ -375,110 +331,20 @@ public class Navegador {
     }
     
     public List<MaterialDTO> obtenerMaterialesSustitutos(DetallePropuestaDTO detalle) {
-        List<MaterialDTO> sustitutos = new ArrayList<>();
-
-        if (propuestaActual == null || detalle == null || detalle.getMaterial() == null) {
-            return sustitutos;
-        }
-
-        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
-        List<MaterialDTO> materialesAlmacen = obtenerMateriales();
-        MaterialDTO material = detalle.getMaterial();
-
-        for (int i = 0; i < materialesAlmacen.size(); i++) {
-            MaterialDTO candidato = materialesAlmacen.get(i);
-
-            boolean mismoTipo = candidato.getTipo() != null && material.getTipo() != null && candidato.getTipo().equalsIgnoreCase(material.getTipo());
-            boolean diferente = candidato.getIdMaterial() != material.getIdMaterial();
-            int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, candidato);
-            boolean stockSuficiente = candidato.getCantidadDisponible() >= cantidadNecesaria;
-
-            if (mismoTipo && diferente && stockSuficiente) {
-                sustitutos.add(candidato);
-            }
-        }
-
-        return sustitutos;
+        return subsistemaCrearPedido.obtenerMaterialesSustitutos(detalle);
     }
 
     
     public int obtenerCantidadNecesaria(DetallePropuestaDTO detalle, MaterialDTO candidato) {
-
-        if (propuestaActual == null || detalle == null || candidato == null) {
-            return 0;
-        }
-
-        return calcularCantidadTotal(propuestaActual.getDetalles(), detalle, candidato);
+        return subsistemaCrearPedido.obtenerCantidadNecesaria(detalle, candidato);
     
-    }
-    
-    private int calcularCantidadTotal(List<DetallePropuestaDTO> detalles, DetallePropuestaDTO detalleActual, MaterialDTO candidato) {
-
-        if (detalles == null || detalleActual == null || candidato == null) {
-            return 0;
-        }
-
-        int cantidadTotal = detalleActual.getCantidad();
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO otro = detalles.get(i);
-
-            if (otro != detalleActual && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == candidato.getIdMaterial()) {
-                cantidadTotal += otro.getCantidad();
-            }
-        }
-
-        return cantidadTotal;
     }
     
     public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
-
-        if (propuestaActual == null || detalle == null || nuevo == null || detalle.getMaterial() == null) {
-             return false;
-        }
-
-        List<DetallePropuestaDTO> detalles = propuestaActual.getDetalles();
-
-        if (!detalles.contains(detalle)) {
+        if(!subsistemaCrearPedido.sustituirMaterial(detalle, nuevo)) {
             return false;
         }
-
-        int cantidadNecesaria = calcularCantidadTotal(detalles, detalle, nuevo);
-
-        if (nuevo.getCantidadDisponible() < cantidadNecesaria) {
-            return false;
-        }
-
-        DetallePropuestaDTO existente = null;
-
-        for (int i = 0; i < detalles.size(); i++) {
-            DetallePropuestaDTO otro = detalles.get(i);
-
-            if (otro != detalle && otro.getMaterial() != null && otro.getMaterial().getIdMaterial() == nuevo.getIdMaterial()) {
-                existente = otro;
-                break;
-            }
-        }
-
-        float subtotalAnteriorDetalle = detalle.getCantidad() * detalle.getPrecioUnitario();
-
-        if (existente != null) {
-            float subtotalAnteriorExistente = existente.getCantidad() * existente.getPrecioUnitario();
-            int cantidadTotal = existente.getCantidad() + detalle.getCantidad();
-            float subtotalNuevo = cantidadTotal * nuevo.getPrecioUnitario();
-
-            existente.setCantidad(cantidadTotal);
-            existente.setMaterial(nuevo);
-            existente.setPrecioUnitario(nuevo.getPrecioUnitario());
-
-            detalles.remove(detalle);
-
-        } else {
-            detalle.setMaterial(nuevo);
-            detalle.setPrecioUnitario(nuevo.getPrecioUnitario()); 
-        }
-         
-        recalcularPropuesta();
+        refrescarCarrito();
         return true;
     }
 

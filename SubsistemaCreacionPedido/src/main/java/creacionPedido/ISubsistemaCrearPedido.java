@@ -7,6 +7,7 @@ package creacionPedido;
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import dtos.PropuestaMaterialesDTO;
+import java.util.List;
 
 /**
  * Interfaz del subsistema para la creacion del pedido. Ofrece a  
@@ -31,4 +32,19 @@ public interface ISubsistemaCrearPedido {
     
     boolean eliminarDelCarrito(DetallePropuestaDTO detalle);
     
+    void limpiarPropuestaActual();
+    
+    void cancelarVenta();
+    
+    boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo);
+    
+    List<DetallePropuestaDTO> getDetallesCarrito();
+    
+    int obtenerCantidadNecesaria(DetallePropuestaDTO detalle, MaterialDTO candidato);
+    
+    List<MaterialDTO> obtenerMaterialesSustitutos(DetallePropuestaDTO detalle);
+    
+    float obtenerSubtotal();
+    
+    void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal);
 }

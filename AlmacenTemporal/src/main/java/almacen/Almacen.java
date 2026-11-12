@@ -184,7 +184,7 @@ public class Almacen {
         return false;
     }
     
-    public OrdenEntregaDTO crearOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido) {
+    public static OrdenEntregaDTO crearOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido) {
         OrdenEntregaDTO orden = new OrdenEntregaDTO(tipoEntrega, fecha, direccion, pedido);
         ordenesEntrega.add(orden);
         return orden;

@@ -4,10 +4,21 @@
  */
 package interfaces;
 
+import dtos.DireccionDTO;
+import dtos.OrdenEntregaDTO;
+import dtos.PedidoDTO;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Interfaz/Contrato de OrdenEntregaBO.
  * @author cinca
  */
 public interface IOrdenEntregaBO {
     
+    List<DireccionDTO> consultarDirecciones();
+    
+    boolean guardarDireccion(DireccionDTO direccion);
+    
+    OrdenEntregaDTO guardarOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido);
 }
