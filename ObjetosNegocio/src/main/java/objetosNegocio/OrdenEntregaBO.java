@@ -19,13 +19,13 @@ import java.util.List;
 public class OrdenEntregaBO implements IOrdenEntregaBO {
 
     @Override
-    public List<DireccionDTO> consultarDirecciones() {
-        return Almacen.obtenerDirecciones();
+    public List<DireccionDTO> consultarDirecciones(int idCliente) {
+        return Almacen.obtenerDirecciones(idCliente);
     }    
 
     @Override
-    public boolean guardarDireccion(DireccionDTO direccion) {
-        return Almacen.guardarDireccion(direccion);
+    public boolean guardarDireccion(int idCliente, DireccionDTO direccion) {
+        return Almacen.guardarDireccion(idCliente, direccion);
     }
 
     @Override

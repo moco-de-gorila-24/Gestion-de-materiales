@@ -16,9 +16,9 @@ import java.util.List;
  */
 public interface IOrdenEntregaBO {
     
-    List<DireccionDTO> consultarDirecciones();
+    List<DireccionDTO> consultarDirecciones(int idCliente);
     
-    boolean guardarDireccion(DireccionDTO direccion);
+    boolean guardarDireccion(int idCliente, DireccionDTO direccion);
     
     OrdenEntregaDTO guardarOrdenEntrega(String tipoEntrega, Date fecha, DireccionDTO direccion, PedidoDTO pedido);
 }

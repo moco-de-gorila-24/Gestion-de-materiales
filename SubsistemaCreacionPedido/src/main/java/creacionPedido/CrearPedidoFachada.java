@@ -4,6 +4,7 @@
  */
 package creacionPedido;
 
+import dtos.ClienteDTO;
 import dtos.CotizacionDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
@@ -125,13 +126,13 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     }
 
     @Override
-    public List<DireccionDTO> obtenerDirecciones() {
-        return gestorOrdenEntrega.obtenerDirecciones();
+    public List<DireccionDTO> obtenerDirecciones(int idCliente) {
+        return gestorOrdenEntrega.obtenerDirecciones(idCliente);
     }
 
     @Override
-    public boolean guardarDireccion(DireccionDTO direccion) {
-        return gestorOrdenEntrega.guardarDireccion(direccion);
+    public boolean guardarDireccion(int idCliente, DireccionDTO direccion) {
+        return gestorOrdenEntrega.guardarDireccion(idCliente, direccion);
     }
 
     @Override

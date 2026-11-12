@@ -7,7 +7,6 @@ import dtos.*;
 import utilerias.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import almacen.Almacen;
 import creacionPedido.CrearPedidoFachada;
@@ -15,8 +14,7 @@ import creacionPedido.ISubsistemaCrearPedido;
 import excepciones.CreacionPedidoException;
 import gestionInventario.GestionInventarioFachada;
 import gestionInventario.ISubsistemaInventario;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -435,7 +433,10 @@ public class Navegador {
     }
     
     public List<DireccionDTO> obtenerDirecciones() {
-        return subsistemaCrearPedido.obtenerDirecciones();
+        if(clienteActual == null) {
+            return new ArrayList<>();
+        }
+        return subsistemaCrearPedido.obtenerDirecciones(clienteActual.getId());
     }
     
     public void seleccionarDireccion(DireccionDTO direccion) {
@@ -456,7 +457,7 @@ public class Navegador {
         }
         
         DireccionDTO direccion = new DireccionDTO(calle.trim(), colonia.trim(), numero, codigoP);
-        return subsistemaCrearPedido.guardarDireccion(direccion);
+        return subsistemaCrearPedido.guardarDireccion(clienteActual.getId(), direccion);
     }
     
     public void mostrarPanelGestionReposicion() {

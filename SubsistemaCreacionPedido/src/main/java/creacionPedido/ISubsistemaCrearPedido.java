@@ -62,9 +62,9 @@ public interface ISubsistemaCrearPedido {
     
     DireccionDTO obtenerDireccionSeleccionada();
      
-    List<DireccionDTO> obtenerDirecciones();
+    List<DireccionDTO> obtenerDirecciones(int idCliente);
     
-    boolean guardarDireccion(DireccionDTO direccion);
+    boolean guardarDireccion(int idCliente, DireccionDTO direccion);
     
     Date programarFechaEstimadaEntrega();
     

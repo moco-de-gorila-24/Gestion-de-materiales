@@ -53,12 +53,12 @@ public class GestorOrdenEntrega {
         return direccionActual;
     }
     
-    public List<DireccionDTO> obtenerDirecciones() {
-        return ordenEntregaBO.consultarDirecciones();
+    public List<DireccionDTO> obtenerDirecciones(int idCliente) {
+        return ordenEntregaBO.consultarDirecciones(idCliente);
     }
     
-    public boolean guardarDireccion(DireccionDTO direccion) {
-        return ordenEntregaBO.guardarDireccion(direccion);
+    public boolean guardarDireccion(int idCliente, DireccionDTO direccion) {
+        return ordenEntregaBO.guardarDireccion(idCliente, direccion);
     }
     
     public Date programarFechaEstimadaEntrega() {

@@ -39,7 +39,7 @@ public class Almacen {
 
     static {
         clientes.add(new ClienteDTO(1, "Michelle", "Castillo", "Vizcarra", "1234567890"));
-        direcciones.add(new DireccionDTO("Mar amarillo", "Prados del Tepeyac", 123, 54678));
+        direcciones.add(new DireccionDTO(1, "Mar amarillo", "Prados del Tepeyac", 123, 54678));
         materiales.add(new MaterialDTO(1, "Block de construccion", "cualquiera", 12f, "pieza", 500, "Block"));
         materiales.add(new MaterialDTO(2, "Varilla metalica corrugada 3/8", "cualquiera", 20f, "m", 300, "Varilla"));
         materiales.add(new MaterialDTO(3, "Bulto de cemento 25kg", "Cemex", 50f, "bulto", 9, "Cemento"));
@@ -146,13 +146,25 @@ public class Almacen {
         return new PropuestaMaterialesDTO(1100f, 60, detallesPropuestaDto);
     }
     
-    public static List<DireccionDTO> obtenerDirecciones() {
-        return new ArrayList<>(direcciones);
-    }
-    public static boolean guardarDireccion(DireccionDTO direccion) {
-        if (direccion == null) {
+    public static List<DireccionDTO> obtenerDirecciones(int idCliente) {
+        List<DireccionDTO> direccionesCliente = new ArrayList<>();
+        
+        for(int i = 0; i< direcciones.size(); i++) {
+            DireccionDTO direccion = direcciones.get(i);           
+            if(direccion.getIdCliente() == idCliente) {
+                direccionesCliente.add(direccion);
+            }
+        }
+
+        return direccionesCliente;
+     }
+    
+    
+    public static boolean guardarDireccion(int idCliente, DireccionDTO direccion) {
+        if (idCliente<= 0 || direccion == null) {
             return false;
         }
+        direccion.setIdCliente(idCliente);
         return direcciones.add(direccion);
     }
     

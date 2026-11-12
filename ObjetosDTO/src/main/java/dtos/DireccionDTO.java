@@ -9,12 +9,22 @@ package dtos;
  * @author cinca
  */
 public class DireccionDTO {
+    private int idCliente;
     private String calle;
     private String colonia;
     private int numero;
     private int cp;
 
     public DireccionDTO(String calle, String colonia, int numero, int cp) {
+        this.calle = calle;
+        this.colonia = colonia;
+        this.numero = numero;
+        this.cp = cp;
+    }
+    
+
+    public DireccionDTO(int idCliente, String calle, String colonia, int numero, int cp) {
+        this.idCliente = idCliente;
         this.calle = calle;
         this.colonia = colonia;
         this.numero = numero;
@@ -51,6 +61,14 @@ public class DireccionDTO {
 
     public void setCp(int cp) {
         this.cp = cp;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
     
     
