@@ -190,7 +190,7 @@ public class Almacen {
         return orden;
     }
     
-    public PedidoDTO guardarPedido(PedidoDTO pedido) {
+    public static PedidoDTO guardarPedido(PedidoDTO pedido) {
         if(pedido == null) {           
            return null;
         }

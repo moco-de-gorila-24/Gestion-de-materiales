@@ -4,9 +4,15 @@
  */
 package creacionPedido;
 
+import dtos.CotizacionDTO;
 import dtos.DetallePropuestaDTO;
+import dtos.DireccionDTO;
 import dtos.MaterialDTO;
+import dtos.OrdenEntregaDTO;
+import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
+import excepciones.CreacionPedidoException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,4 +53,26 @@ public interface ISubsistemaCrearPedido {
     float obtenerSubtotal();
     
     void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal);
+    
+    void establecerTipoEntrega(String tipo);
+
+    String obtenerTipoEntrega();
+    
+    void seleccionarDireccion(DireccionDTO direccion);
+    
+    DireccionDTO obtenerDireccionSeleccionada();
+     
+    List<DireccionDTO> obtenerDirecciones();
+    
+    boolean guardarDireccion(DireccionDTO direccion);
+    
+    Date programarFechaEstimadaEntrega();
+    
+    Date programarFechaEstimadaLimiteRecoger();
+    
+    OrdenEntregaDTO confirmarOrdenEntrega(PedidoDTO pedido);
+    
+    PedidoDTO confirmarPedido() throws CreacionPedidoException;
+    
+    CotizacionDTO generarCotizacion();
 }

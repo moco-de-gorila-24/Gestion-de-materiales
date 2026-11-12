@@ -4,10 +4,12 @@
  */
 package interfaces;
 
+import dtos.PedidoDTO;
+
 /**
  * Interfaz/Contrato de pedidoBo.
  * @author cinca
  */
 public interface IPedidoBO {
-    
+    PedidoDTO guardarPedido(PedidoDTO pedido);
 }

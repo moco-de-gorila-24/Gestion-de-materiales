@@ -306,6 +306,11 @@ public class ordenEntrega extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    public void marcarPedidoConfirmado() {
+        btnConfirar.setEnabled(false);
+        btnCancelar.setEnabled(false);
+        btnEditarDireccion.setEnabled(false);
+    }
     public void cargarDatos(ClienteDTO cliente, DireccionDTO direccion, String estadoPedido, List<DetallePropuestaDTO> detalles, String tipoEntrega) {
 
         if (estadoPedido != null) {

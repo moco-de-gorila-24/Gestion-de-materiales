@@ -4,9 +4,15 @@
  */
 package creacionPedido;
 
+import dtos.CotizacionDTO;
 import dtos.DetallePropuestaDTO;
+import dtos.DireccionDTO;
 import dtos.MaterialDTO;
+import dtos.OrdenEntregaDTO;
+import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
+import excepciones.CreacionPedidoException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +23,8 @@ import java.util.List;
 public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     private ControlCarrito controlCarrito;
     private GestorOrdenEntrega gestorOrdenEntrega;
+    private GestorCotizacion gestorCotizacion;
+    private GestorPedido gestorPedido;
 
     /**
      * Crea la fachada del subsistema de creacion de pedidos e inicializa el
@@ -25,6 +33,8 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     public CrearPedidoFachada() {
         controlCarrito = new ControlCarrito();
         gestorOrdenEntrega = new GestorOrdenEntrega();
+        gestorCotizacion = new GestorCotizacion();
+        gestorPedido = new GestorPedido();
     }
    
     /**
@@ -50,8 +60,7 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
 
     @Override
     public boolean eliminarDelCarrito(DetallePropuestaDTO detalle) {
-        controlCarrito.eliminarDelCarrito(detalle);
-        return true;
+        return controlCarrito.eliminarDelCarrito(detalle);
     }
 
     @Override
@@ -67,8 +76,7 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
 
     @Override
     public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
-        controlCarrito.sustituirMaterial(detalle, nuevo);
-        return true;    
+        return controlCarrito.sustituirMaterial(detalle, nuevo);          
     }
 
     @Override
@@ -94,6 +102,68 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     @Override
     public void cambiarCantidad(DetallePropuestaDTO detalle, int cantidadCambiar, int cantidadOriginal) {
         controlCarrito.cambiarCantidad(detalle, cantidadCambiar, cantidadOriginal);
+    }
+
+    @Override
+    public void establecerTipoEntrega(String tipo) {
+        gestorOrdenEntrega.establecerTipoEntrega(tipo);
+    }
+
+    @Override
+    public String obtenerTipoEntrega() {
+        return gestorOrdenEntrega.obtenerTipoEntrega();
+    }
+
+    @Override
+    public void seleccionarDireccion(DireccionDTO direccion) {
+        gestorOrdenEntrega.seleccionarDireccion(direccion);
+    }
+
+    @Override
+    public DireccionDTO obtenerDireccionSeleccionada() {
+        return gestorOrdenEntrega.obtenerDireccionSeleccionada();
+    }
+
+    @Override
+    public List<DireccionDTO> obtenerDirecciones() {
+        return gestorOrdenEntrega.obtenerDirecciones();
+    }
+
+    @Override
+    public boolean guardarDireccion(DireccionDTO direccion) {
+        return gestorOrdenEntrega.guardarDireccion(direccion);
+    }
+
+    @Override
+    public Date programarFechaEstimadaEntrega() {
+        return gestorOrdenEntrega.programarFechaEstimadaEntrega();
+    }
+
+    @Override
+    public Date programarFechaEstimadaLimiteRecoger() {
+        return programarFechaEstimadaEntrega();
+    }
+
+    @Override
+    public OrdenEntregaDTO confirmarOrdenEntrega(PedidoDTO pedido) {
+        return gestorOrdenEntrega.confirmarOrdenEntrega(pedido);
+    }
+
+    @Override
+    public PedidoDTO confirmarPedido() throws CreacionPedidoException {
+        PedidoDTO pedido = gestorPedido.confirmarPedido(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega(),
+                           gestorOrdenEntrega.obtenerDireccionSeleccionada(), 
+                           gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega()));
+        
+        gestorOrdenEntrega.confirmarOrdenEntrega(pedido);
+        controlCarrito.finalizarPropuestaConfirmada();
+        return pedido;
+        
+    }
+
+    @Override
+    public CotizacionDTO generarCotizacion() {
+        return gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega());    
     }
     
     

@@ -10,9 +10,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import almacen.Almacen;
-import static almacen.Almacen.obtenerMateriales;
 import creacionPedido.CrearPedidoFachada;
 import creacionPedido.ISubsistemaCrearPedido;
+import excepciones.CreacionPedidoException;
 import gestionInventario.GestionInventarioFachada;
 import gestionInventario.ISubsistemaInventario;
 import java.util.Date;
@@ -37,8 +37,6 @@ public class Navegador {
     PanelGestionReposicion panelGestionReposicion;
     private Almacen almacen;
     private JPanel contenedorCarrito;
-    private Date fechaEntrega;
-    private Date fechaLimite;
     private ClienteDTO clienteActual;
     private PropuestaMaterialesDTO propuestaActual;
     private String tipoEntrega;
@@ -100,7 +98,7 @@ public class Navegador {
             dialogRegistroDireccion = new DialogRegistroDireccion(framePrincipal, this);
         }
         dialogRegistroDireccion.setVisible(true);
-        return direccionActual;
+        return subsistemaCrearPedido.obtenerDireccionSeleccionada();
     }
     
     public void mostrarOrdenEntrega() {
@@ -210,31 +208,28 @@ public class Navegador {
         if (contenedorCarrito == null) {
             return;
         }
-        if(panelRegistrarPedido != null) {
-            panelRegistrarPedido.actualizarSubtotal(subsistemaCrearPedido.obtenerSubtotal());
-        }
 
         contenedorCarrito.removeAll();
         List<DetallePropuestaDTO> detalles = subsistemaCrearPedido.getDetallesCarrito();
 
-        if (propuestaActual != null) {
-            for (int i = 0; i < detalles.size(); i++) {
-                DetallePropuestaDTO detalle = detalles.get(i);
-                MaterialDTO material = detalle.getMaterial();
 
-                PanelCarrito tarjeta = new PanelCarrito(this);
-                tarjeta.setDetalle(detalle);
-                tarjeta.setDatos(material.getNombre(), material.getPrecioUnitario(), material.getUnidadMedida(),detalle.getCantidad(), material.getMarca());
-                tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, tarjeta.getPreferredSize().height));
+        for (int i = 0; i < detalles.size(); i++) {
+            DetallePropuestaDTO detalle = detalles.get(i);
+            MaterialDTO material = detalle.getMaterial();
 
-                contenedorCarrito.add(tarjeta);
-                contenedorCarrito.add(Box.createVerticalStrut(8));
-            }
-            
-            if (panelRegistrarPedido != null) {
-                panelRegistrarPedido.actualizarSubtotal(propuestaActual != null ? propuestaActual.getSubtotal() : 0);
-            }
+            PanelCarrito tarjeta = new PanelCarrito(this);
+            tarjeta.setDetalle(detalle);
+            tarjeta.setDatos(material.getNombre(), material.getPrecioUnitario(), material.getUnidadMedida(),detalle.getCantidad(), material.getMarca());
+            tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, tarjeta.getPreferredSize().height));
+
+            contenedorCarrito.add(tarjeta);
+            contenedorCarrito.add(Box.createVerticalStrut(8));
         }
+            
+        if (panelRegistrarPedido != null) {
+            panelRegistrarPedido.actualizarSubtotal(subsistemaCrearPedido.obtenerSubtotal());
+        }
+        
         contenedorCarrito.revalidate();
         contenedorCarrito.repaint();
     }
@@ -257,7 +252,7 @@ public class Navegador {
     
     public void mostrarDialogoFechas() {
         DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this, 
-                tipoEntrega, programarFechaEstimadaEntrega(), programarFechaEstimadaLimiteRecoger());
+                subsistemaCrearPedido.obtenerTipoEntrega(), subsistemaCrearPedido.programarFechaEstimadaEntrega(), subsistemaCrearPedido.programarFechaEstimadaLimiteRecoger());
         dialogFechas.setVisible(true);
     }
 
@@ -267,10 +262,6 @@ public class Navegador {
     
     public List<DetallePropuestaDTO> getDetallesCarrito() {
         return subsistemaCrearPedido.getDetallesCarrito();
-    }
-    
-    public float obtenerSubtotal() {
-        return subsistemaCrearPedido.obtenerSubtotal();
     }
     
     public void cancelarVenta() {
@@ -292,15 +283,6 @@ public class Navegador {
     public void eliminarDelCarrito(DetallePropuestaDTO detalle) {
             subsistemaCrearPedido.eliminarDelCarrito(detalle);
             refrescarCarrito();
-    }
-    
-    public void limpiarPropuestaActual() {
-        subsistemaCrearPedido.limpiarPropuestaActual();
-        refrescarCarrito();
-    }
-    
-    public void limpiarCarrito() {
-        limpiarPropuestaActual();
     }
     
     public void mostrarSeleccionTipoEntrega() {
@@ -397,12 +379,12 @@ public class Navegador {
     }
     
     public void establecerTipoEntrega(String tipo) {
-        tipoEntrega = tipo;
+        subsistemaCrearPedido.establecerTipoEntrega(tipo);
     }
     
     public void mostrarCotizacionSuministro() {
         this.cotizacion = new CotizacionSuministro(this);
-        this.cotizacion.cargarDatos(generarCotizacion(), tipoEntrega);
+        this.cotizacion.cargarDatos(subsistemaCrearPedido.generarCotizacion(),subsistemaCrearPedido.obtenerTipoEntrega());
 
         cambiarPanel(this.cotizacion);
     }
@@ -416,81 +398,23 @@ public class Navegador {
             eliminarDelCarrito(detalle);        
         }
         
-        return generarCotizacion();
+        return subsistemaCrearPedido.generarCotizacion();
     }
            
-    public Date programarFechaEstimadaEntrega() {
-        if(fechaEntrega == null) {
-            GregorianCalendar fecha = new GregorianCalendar();
-            fecha.add(GregorianCalendar.DAY_OF_MONTH, 5);
-            fechaEntrega = fecha.getTime();
-        }
-        return fechaEntrega;
-    }
-    
-    public Date programarFechaEstimadaLimiteRecoger() {
-        if(fechaLimite == null) {
-            GregorianCalendar fecha = new GregorianCalendar();
-            fecha.add(GregorianCalendar.DAY_OF_MONTH, 10);
-            fechaLimite = fecha.getTime();
-        }
-        return fechaLimite;
-    }
-    
     public void confirmarPedido() {
-        if(propuestaActual == null || propuestaActual.getDetalles().isEmpty()) {
-            return;
-        }   
-        
-        if("DOMICILIO".equals(tipoEntrega) && direccionActual == null) {
-            return;
+        try {
+            PedidoDTO pedido= subsistemaCrearPedido.confirmarPedido();
+            
+            if(ordenEntrega != null) {
+                ordenEntrega.marcarPedidoConfirmado();
+            }
+            refrescarCarrito();
+            mostrarDialogoPedidoConfirmado(pedido);
+            
+        } catch (CreacionPedidoException e) {
+            JOptionPane.showMessageDialog(framePrincipal, e.getMessage());
         }
-        CotizacionDTO cotizacion = generarCotizacion();
-        
-        if(cotizacion == null) {
-            return;
-        }
-        List<DetallePedidoDTO> detalles = new ArrayList<>();
-        
-        for (int i = 0; i < propuestaActual.getDetalles().size(); i++) {
-            DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(i);
-           
-            detalles.add(new DetallePedidoDTO(detalle.getMaterial(), detalle.getCantidad(), 
-            detalle.getPrecioUnitario(), detalle.getCantidad() * detalle.getPrecioUnitario()));
-        }
-        
-        PedidoDTO pedido = new PedidoDTO(0, tipoEntrega, new Date(), "CONFIRMADO",
-                           cotizacion.getTotal(), propuestaActual.getCliente(), detalles);
-        
-        PedidoDTO pedidoAlmacenado = almacen.guardarPedido(pedido);
-        if (pedidoAlmacenado == null) {
-            return;
-        }
-
-        
-        if("DOMICILIO".equals(tipoEntrega)) {
-            almacen.crearOrdenEntrega(tipoEntrega, programarFechaEstimadaEntrega(), direccionActual, pedidoAlmacenado);
-        }
-        
-        mostrarDialogoPedidoConfirmado(pedidoAlmacenado);
-    }
     
-    public CotizacionDTO generarCotizacion() {
-        if (propuestaActual == null) {
-            return null;
-        }
-
-        float subtotal = propuestaActual.getSubtotal();
-        float impuesto = subtotal * 0.16f;
-        float costoEnvio = 0f;
-        
-        if("DOMICILIO".equals(tipoEntrega)) {
-           costoEnvio = 100f;
-        }
-        
-        float total = subtotal + impuesto + costoEnvio;
-
-        return new CotizacionDTO(subtotal, total, new Date(), impuesto, costoEnvio, propuestaActual);
     }
     
     public boolean iniciarVenta(String telefono) {
@@ -510,34 +434,14 @@ public class Navegador {
         return propuestaActual != null;        
     }
     
-    private void recalcularPropuesta() {
-        if(propuestaActual == null) {
-            return;
-        }
-        
-        float subtot = 0;
-        int cantidadTot = 0;
-        for(int i= 0; i < propuestaActual.getDetalles().size(); i++) {
-            DetallePropuestaDTO detalle = propuestaActual.getDetalles().get(i);
-            subtot += detalle.getCantidad() * detalle.getPrecioUnitario();
-            cantidadTot += detalle.getCantidad();
-        }
-        
-        propuestaActual.setSubtotal(subtot);
-        propuestaActual.setCantidadTotalProductos(cantidadTot);
-    }
-    
     public List<DireccionDTO> obtenerDirecciones() {
-        return Almacen.obtenerDirecciones();
+        return subsistemaCrearPedido.obtenerDirecciones();
     }
     
     public void seleccionarDireccion(DireccionDTO direccion) {
-        direccionActual = direccion;
+        subsistemaCrearPedido.seleccionarDireccion(direccion);
     }
     
-    public DireccionDTO obtenerDireccionSeleccionada() {
-        return direccionActual;
-    }
     
     public boolean registrarDireccion(String calle, String colonia, String numeroTxt, String cpTxt) {
         if(!validarTextoVacio(calle) || !validarTextoVacio(colonia) || !validarTextoVacio(numeroTxt) || !validarTextoVacio(cpTxt)) {
@@ -552,7 +456,7 @@ public class Navegador {
         }
         
         DireccionDTO direccion = new DireccionDTO(calle.trim(), colonia.trim(), numero, codigoP);
-        return almacen.guardarDireccion(direccion);
+        return subsistemaCrearPedido.guardarDireccion(direccion);
     }
     
     public void mostrarPanelGestionReposicion() {

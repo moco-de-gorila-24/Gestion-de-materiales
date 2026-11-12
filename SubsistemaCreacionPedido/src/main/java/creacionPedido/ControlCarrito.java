@@ -4,10 +4,11 @@
  */
 package creacionPedido;
 
-import almacen.Almacen;
+
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
 import dtos.PropuestaMaterialesDTO;
+import excepciones.CreacionPedidoException;
 import interfaces.IMaterialBO;
 import interfaces.IPropuestaMaterialesBO;
 import java.util.ArrayList;
@@ -38,6 +39,28 @@ public class ControlCarrito {
      */
     public void iniciarCarrito(PropuestaMaterialesDTO propuesta) {
         propuestaActual = propuesta;
+    }
+    
+    public PropuestaMaterialesDTO obtenerPropuestaActual() {
+        return propuestaActual;
+    }
+    
+    /**
+     * Metodo que sirve para finalizar la propuesta despues de cnofirmar el pedido.
+     * Para limpiarla, apunta a null.
+     * 
+     */
+    public void finalizarPropuestaConfirmada() throws CreacionPedidoException {
+        if(propuestaActual == null) {
+            throw new CreacionPedidoException("la propuesta esta vacia.");
+        }       
+        propuestaActual.setEstado("CONFIRMADA");
+        
+        if(!propuestaBO.actualizarPropuesta(propuestaActual)) {
+            propuestaActual.setEstado("PENDIENTE");
+            throw new CreacionPedidoException("No se pudo actualizar el estado de la propuesta");
+        }
+        propuestaActual = null;
     }
 
     /**
@@ -122,11 +145,13 @@ public class ControlCarrito {
     }
     
     public void cancelarVenta() {
-        if (propuestaActual != null) {
-            propuestaActual.setEstado("CANCELADA");
+        if (propuestaActual != null || !"PENDIENTE".equals(propuestaActual.getEstado())) {
+            return;
         }
-        propuestaBO.actualizarPropuesta(propuestaActual);
-        propuestaActual = null;
+        propuestaActual.setEstado("CANCELADA");
+        if(propuestaBO.actualizarPropuesta(propuestaActual)) {
+            propuestaActual = null;
+        }
     }
     
     public List<DetallePropuestaDTO> getDetallesCarrito() {
@@ -185,7 +210,7 @@ public class ControlCarrito {
         }
          
         recalcularPropuesta();
-        return true;
+        return propuestaBO.actualizarPropuesta(propuestaActual);
     }
 
     private int calcularCantidadTotal(List<DetallePropuestaDTO> detalles, DetallePropuestaDTO detalleActual, MaterialDTO candidato) {
@@ -275,4 +300,5 @@ public class ControlCarrito {
         recalcularPropuesta();
         propuestaBO.actualizarPropuesta(propuestaActual);
    }
+
 }

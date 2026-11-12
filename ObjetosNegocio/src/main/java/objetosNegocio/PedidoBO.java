@@ -4,6 +4,8 @@
  */
 package objetosNegocio;
 
+import almacen.Almacen;
+import dtos.PedidoDTO;
 import interfaces.IPedidoBO;
 
 /**
@@ -11,5 +13,10 @@ import interfaces.IPedidoBO;
  * @author cinca
  */
 public class PedidoBO implements IPedidoBO {
+    
+    @Override
+    public PedidoDTO guardarPedido(PedidoDTO pedido) {
+        return Almacen.guardarPedido(pedido);
+    }
     
 }

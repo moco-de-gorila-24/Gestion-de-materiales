@@ -8,6 +8,22 @@ package excepciones;
  *
  * @author cinca
  */
-public class CreacionPedidoException {
+public class CreacionPedidoException extends RuntimeException {
     
+    /**
+    *
+    * Constructor vacio
+    * 
+    */
+    public CreacionPedidoException() {
+        
+    }
+    
+    /**
+    * Constructor que inicializa la clase padre al valor de su parametro.
+    * @param mensaje mensaje.
+    */
+    public CreacionPedidoException(String mensaje) {
+        super(mensaje);
+    }
 }
