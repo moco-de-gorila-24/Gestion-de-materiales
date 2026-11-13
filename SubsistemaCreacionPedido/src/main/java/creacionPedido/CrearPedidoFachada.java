@@ -60,15 +60,8 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
      */
     @Override
     public void agregarAlCarrito(PaqueteDTO paqueteInstancia) {
+        controlCarrito.AgregarAlCarrito(paqueteInstancia);
 
-        PaqueteBO paqueteBO = new PaqueteBO();
-        List<PaqueteDTO> paquetes = paqueteBO.obtenerPaquetes();
-
-        for(int i = 0; i < paquetes.size(); i++){
-            if (paquetes.get(i).getIdPaquete() == paqueteInstancia.getIdPaquete()){
-                agregarAlCarrito(paquetes.get(i).getDetalles().get(i).getMaterial(), paquetes.get(i).getDetalles().get(i).getCantidadMaterial());
-            }
-        }
     }
 
     /**

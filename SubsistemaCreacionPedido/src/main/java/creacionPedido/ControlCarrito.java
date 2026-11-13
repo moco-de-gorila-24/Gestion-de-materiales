@@ -7,6 +7,7 @@ package creacionPedido;
 
 import dtos.DetallePropuestaDTO;
 import dtos.MaterialDTO;
+import dtos.PaqueteDTO;
 import dtos.PropuestaMaterialesDTO;
 import excepciones.CreacionPedidoException;
 import interfaces.IMaterialBO;
@@ -14,6 +15,7 @@ import interfaces.IPropuestaMaterialesBO;
 import java.util.ArrayList;
 import java.util.List;
 import objetosNegocio.MaterialBO;
+import objetosNegocio.PaqueteBO;
 import objetosNegocio.PropuestaMaterialesBO;
 
 /**
@@ -98,6 +100,20 @@ public class ControlCarrito {
         detalles.add(new DetallePropuestaDTO(material, cantidad, material.getPrecioUnitario()));
         recalcularPropuesta();   
         propuestaBO.actualizarPropuesta(propuestaActual);
+    }
+
+    public void AgregarAlCarrito(PaqueteDTO paqueteInstancia) {
+        PaqueteBO paqueteBO = new PaqueteBO();
+        List<PaqueteDTO> paquetes = paqueteBO.obtenerPaquetes();
+
+        for(int i = 0; i < paquetes.size(); i++){
+            if (paquetes.get(i).getIdPaquete() == paqueteInstancia.getIdPaquete()){
+                for (int j = 0; j < paqueteInstancia.getDetalles().size(); j++) {
+                    AgregarAlCarrito(paqueteInstancia.getDetalles().get(j).getMaterial(), paqueteInstancia.getDetalles().get(j).getCantidadMaterial());
+                }
+                return; // para salir en cuanto encuentre todos los materiales
+            }
+        }
     }
 
      /**
