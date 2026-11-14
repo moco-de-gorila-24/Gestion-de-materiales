@@ -56,18 +56,18 @@ public class PanelPaquete extends javax.swing.JPanel {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(lblImg)
-                .addContainerGap(76, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(64, 64, 64)
+                                .addComponent(lblImg)
+                                .addContainerGap(76, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addComponent(lblImg)
-                .addContainerGap(70, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(69, 69, 69)
+                                .addComponent(lblImg)
+                                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         lblNombre.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -103,51 +103,51 @@ public class PanelPaquete extends javax.swing.JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(lblMaterial)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblCantidad)
-                        .addGap(142, 142, 142)
-                        .addComponent(btnAgregarPaquete))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(lblNombre)
-                        .addGap(158, 158, 158)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap(42, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(23, 23, 23)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(lblMaterial)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(lblCantidad)
+                                                .addGap(142, 142, 142)
+                                                .addComponent(btnAgregarPaquete))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(lblNombre)
+                                                .addGap(158, 158, 158)
+                                                .addComponent(jLabel2)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblNombre)
-                            .addComponent(jLabel2)
-                            .addComponent(txtLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblMaterial)
-                            .addComponent(lblCantidad)
-                            .addComponent(btnAgregarPaquete, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(45, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(lblNombre)
+                                                        .addComponent(jLabel2)
+                                                        .addComponent(txtLongitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel1)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(lblMaterial)
+                                                        .addComponent(lblCantidad)
+                                                        .addComponent(btnAgregarPaquete, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(45, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPaqueteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPaqueteActionPerformed
-        if(txtLongitud.getText().isEmpty()){
+        if (txtLongitud.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "no puede quedar null la longitud");
             return;
         }
@@ -155,16 +155,63 @@ public class PanelPaquete extends javax.swing.JPanel {
         navegador.agregarPaqueteCarrito(this.paquete);
     }//GEN-LAST:event_btnAgregarPaqueteActionPerformed
 
-    public void setPaquete(PaqueteDTO p){
+    public void setPaquete(PaqueteDTO p) {
         setDatos(p.getDescripcion(), p.getDetalles().getFirst().getMaterial().getNombre(), p.getDetalles().getFirst().getCantidadMaterial());
         this.paquete = p;
+        cargarImagen(p);
     }
 
-    public void setDatos(String nombre, String materiales, int cantidad){
+    public void setDatos(String nombre, String materiales, int cantidad) {
         lblNombre.setText(nombre);
         lblMaterial.setText(materiales);
         lblCantidad.setText(String.valueOf(cantidad));
     }
+
+    private void cargarImagen(PaqueteDTO paquete) {
+        String ruta = null;
+        ruta = "/barda.png";
+
+        if (ruta == null) {
+            lblImg.setIcon(null);
+            lblImg.setText("");
+            return;
+        }
+
+        java.net.URL recurso = getClass().getResource(ruta);
+
+        if (recurso == null) {
+            lblImg.setIcon(null);
+            lblImg.setText("");
+            System.out.println("No se encontró la imagen: " + ruta);
+            return;
+        }
+
+        javax.swing.ImageIcon icono = new javax.swing.ImageIcon(recurso);
+
+        int anchoDisponible = 260;
+        int altoDisponible = 150;
+
+        double escala = Math.min(
+                (double) anchoDisponible / icono.getIconWidth(),
+                (double) altoDisponible / icono.getIconHeight()
+        );
+
+        int ancho = (int) (icono.getIconWidth() * escala);
+        int alto = (int) (icono.getIconHeight() * escala);
+
+        java.awt.Image imagen = icono.getImage().getScaledInstance(
+                ancho,
+                alto,
+                java.awt.Image.SCALE_SMOOTH
+        );
+
+        lblImg.setText("");
+        lblImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImg.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImg.setIcon(new javax.swing.ImageIcon(imagen));
+    }
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarPaquete;
