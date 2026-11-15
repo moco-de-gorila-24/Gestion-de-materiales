@@ -8,7 +8,9 @@ import dtos.DetalleReposicionDTO;
 import dtos.MaterialDTO;
 import dtos.PaqueteDTO;
 import dtos.SolicitudReposicionDTO;
+import interfaces.IReposicionBO;
 import java.util.List;
+import objetosNegocio.ReposicionBO;
 
 /**
  *
@@ -16,9 +18,12 @@ import java.util.List;
  */
 public class GestionInventarioFachada implements ISubsistemaInventario  {
     private ControlInventario controlInventario;
+    private final ControlReposicion controlReposicion;
     
     public GestionInventarioFachada() {
         controlInventario = new ControlInventario();
+        IReposicionBO reposicionBO = new ReposicionBO();
+        controlReposicion = new ControlReposicion(this, reposicionBO);
     }
 
     @Override
@@ -47,17 +52,21 @@ public class GestionInventarioFachada implements ISubsistemaInventario  {
     }
     
     @Override
-    public List<DetalleReposicionDTO> consultarMaterialesInsuficientes() {
-        return controlInventario.consultarMaterialesInsuficientes();
+    public List<DetalleReposicionDTO> consultarTodosLosMateriales() {
+        return controlReposicion.consultarTodosLosMateriales();
+    }
+    
+    public SolicitudReposicionDTO generarSolicitudReposicion(List<DetalleReposicionDTO> detalles) {
+        return controlReposicion.generarSolicitudReposicion(detalles);
     }
     
     @Override
-    public SolicitudReposicionDTO generarSolicitudReposicion() {
-        return controlInventario.generarSolicitudReposicion();
+    public List<SolicitudReposicionDTO> consultarSolicitudesReposicion() {
+        return controlReposicion.consultarSolicitudesReposicion();
     }
 
     @Override
-    public List<SolicitudReposicionDTO> consultarSolicitudesReposicion() {
-        return controlInventario.consultarSolicitudesReposicion();
+    public SolicitudReposicionDTO generarSolicitudReposicion() {
+        return controlReposicion.generarSolicitudReposicion(controlReposicion.consultarTodosLosMateriales());
     }
 }

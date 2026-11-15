@@ -19,64 +19,55 @@ import objetosNegocio.ReposicionBO;
  * @author Jorge
  */
 public class ControlReposicion {
+    private final ISubsistemaInventario subsistemaInventario;
+    private final IReposicionBO reposicionBO;
 
-    private IMaterialBO materialBO;
-    private IReposicionBO reposicionBO;
-
-    public ControlReposicion() {
-        materialBO = new MaterialBO();
-        reposicionBO = new ReposicionBO();
+    public ControlReposicion(ISubsistemaInventario subsistemaInventario, IReposicionBO reposicionBO) {
+        this.subsistemaInventario = subsistemaInventario;
+        this.reposicionBO = reposicionBO;
     }
 
     /**
-     * Identifica los materiales con existencias inferiores al minimo.
-     *
-     * @return lista de detalles de reposicion.
+     * Consulta todos los materiales del inventario.
+     * @return lista de materiales.
      */
-    public List<DetalleReposicionDTO> identificarMaterialesInsuficientes() {
-        List<DetalleReposicionDTO> materialesInsuficientes = new ArrayList<>();
-        List<MaterialDTO> materiales = materialBO.consultarMateriales();
+    public List<DetalleReposicionDTO> consultarTodosLosMateriales() {
+        List<DetalleReposicionDTO> detalles = new ArrayList<>();
+        List<MaterialDTO> materiales = subsistemaInventario.consultarMaterial();
+
+        if (materiales == null) {
+            return detalles;
+        }
 
         for (MaterialDTO material : materiales) {
-
             if (material == null) {
                 continue;
             }
 
-            int cantidadActual = material.getCantidadDisponible();
-            int stockMinimo = material.getStockMinimo();
-
-            if (cantidadActual < stockMinimo && !tieneSolicitudPendiente(material)) {
-
-                int cantidadNecesaria = stockMinimo - cantidadActual;
-                DetalleReposicionDTO detalle = new DetalleReposicionDTO(material, cantidadActual, stockMinimo, cantidadNecesaria);
-
-                if (reposicionBO.validarDetalle(detalle)) {
-                    materialesInsuficientes.add(detalle);
-                }
-            }
+            DetalleReposicionDTO detalle = new DetalleReposicionDTO(material, material.getCantidadDisponible(), material.getStockMinimo(),0);
+            detalles.add(detalle);
         }
 
-        return materialesInsuficientes;
+        return detalles;
     }
 
+    /**
+     * Comprueba si un material ya tiene una solicitud pendiente.
+     */
     private boolean tieneSolicitudPendiente(MaterialDTO material) {
-
         List<SolicitudReposicionDTO> solicitudes = reposicionBO.consultarSolicitudes();
 
+        if (solicitudes == null) {
+            return false;
+        }
+
         for (SolicitudReposicionDTO solicitud : solicitudes) {
-
-            if (solicitud == null || !"PENDIENTE".equalsIgnoreCase(solicitud.getEstado())) {
-                continue;
-            }
-
-            if (solicitud.getDetalles() == null) {
+            if (solicitud == null || !"PENDIENTE".equalsIgnoreCase(solicitud.getEstado()) || solicitud.getDetalles() == null) {
                 continue;
             }
 
             for (DetalleReposicionDTO detalle : solicitud.getDetalles()) {
-
-                if (detalle != null && detalle.getMaterial() == material) {
+                if (detalle != null && detalle.getMaterial() != null && detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
                     return true;
                 }
             }
@@ -84,21 +75,52 @@ public class ControlReposicion {
 
         return false;
     }
-    
-    public SolicitudReposicionDTO generarSolicitudReposicion() {
-        List<DetalleReposicionDTO> detalles = identificarMaterialesInsuficientes();
 
-        if (detalles.isEmpty()) {
+    /**
+     * Genera una solicitud con los materiales y cantidades seleccionados.
+     * @param detallesSeleccionados materiales que se desean reponer.
+     * @return solicitud generada o null si no se pudo generar.
+     */
+    public SolicitudReposicionDTO generarSolicitudReposicion(List<DetalleReposicionDTO> detallesSeleccionados) {
+        if (detallesSeleccionados == null || detallesSeleccionados.isEmpty()) {
+            return null;
+        }
+
+        List<DetalleReposicionDTO> detallesValidos = new ArrayList<>();
+        
+        for (DetalleReposicionDTO detalle : detallesSeleccionados) {
+            if (detalle == null || detalle.getMaterial() == null) {
+                continue;
+            }
+
+            if (detalle.getCantidadSolicitada() <= 0) {
+                continue;
+            }
+
+            if (tieneSolicitudPendiente(detalle.getMaterial())) {
+                return null;
+            }
+
+            if (!reposicionBO.validarDetalle(detalle)) {
+                return null;
+            }
+
+            detallesValidos.add(detalle);
+        }
+
+        if (detallesValidos.isEmpty()) {
             return null;
         }
 
         SolicitudReposicionDTO solicitud = new SolicitudReposicionDTO();
-        solicitud.setDetalles(detalles);
+        solicitud.setDetalles(detallesValidos);
         return reposicionBO.guardarSolicitud(solicitud);
     }
 
+    /**
+     * Consulta las solicitudes de reposición.
+     */
     public List<SolicitudReposicionDTO> consultarSolicitudesReposicion() {
         return reposicionBO.consultarSolicitudes();
     }
-
 }

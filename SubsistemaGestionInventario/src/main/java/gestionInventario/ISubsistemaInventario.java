@@ -21,8 +21,9 @@ public interface ISubsistemaInventario {
     MaterialDTO consultarMaterial(String nombre);
     boolean agregarMaterial(MaterialDTO material);
     List<PaqueteDTO> consultarPaquetes();
-    List<DetalleReposicionDTO> consultarMaterialesInsuficientes();
+    List<DetalleReposicionDTO> consultarTodosLosMateriales();
     SolicitudReposicionDTO generarSolicitudReposicion();
+    SolicitudReposicionDTO generarSolicitudReposicion(List<DetalleReposicionDTO> detalles);
     List<SolicitudReposicionDTO> consultarSolicitudesReposicion();
        
 }

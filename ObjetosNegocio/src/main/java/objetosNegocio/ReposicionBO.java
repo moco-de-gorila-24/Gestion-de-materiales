@@ -18,7 +18,6 @@ public class ReposicionBO implements IReposicionBO {
 
     @Override
     public boolean validarDetalle(DetalleReposicionDTO detalle) {
-
         if (detalle == null || detalle.getMaterial() == null) {
             return false;
         }
@@ -27,12 +26,7 @@ public class ReposicionBO implements IReposicionBO {
             return false;
         }
 
-        if (detalle.getCantidadActual() >= detalle.getStockMinimo()) {
-            return false;
-        }
-
-        int cantidadNecesaria = detalle.getStockMinimo() - detalle.getCantidadActual();
-        return detalle.getCantidadSolicitada() == cantidadNecesaria;
+        return true;
     }
 
     @Override
