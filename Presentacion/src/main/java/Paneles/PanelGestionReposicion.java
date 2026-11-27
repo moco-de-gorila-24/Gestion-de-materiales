@@ -154,7 +154,7 @@ public class PanelGestionReposicion extends JPanel {
         guardarCantidadesIngresadas();
         filas.removeAll();
         camposCantidad.clear();
-        materiales = navegador.consultarTodosLosMateriales();
+      //  materiales = navegador.consultarTodosLosMateriales();
         cargarMaterialesPendientes();
 
         if (materiales == null || materiales.isEmpty()) {
@@ -330,17 +330,17 @@ public class PanelGestionReposicion extends JPanel {
             return;
         }
 
-        SolicitudReposicionDTO solicitud = navegador.generarSolicitudReposicion(detallesSeleccionados);
+      //  SolicitudReposicionDTO solicitud = navegador.generarSolicitudReposicion(detallesSeleccionados);
 
-        if (solicitud == null) {
+       /// if (solicitud == null) {
             JOptionPane.showMessageDialog(this, "No fue posible generar la solicitud. Verifica que los materiales no tengan otra solicitud pendiente.");
             return;
         }
 
-        JOptionPane.showMessageDialog(this, "Solicitud generada correctamente.\nNúmero de solicitud: " + solicitud.getIdSolicitud() + "\nEstado: " + solicitud.getEstado());
-        cantidadesIngresadas.clear();
-        actualizarMateriales();
-    }
+      //  JOptionPane.showMessageDialog(this, "Solicitud generada correctamente.\nNúmero de solicitud: " + solicitud.getIdSolicitud() + "\nEstado: " + solicitud.getEstado());
+      //  cantidadesIngresadas.clear();
+      //  actualizarMateriales();
+   // }
 
     /**
      * Muestra las solicitudes registradas.

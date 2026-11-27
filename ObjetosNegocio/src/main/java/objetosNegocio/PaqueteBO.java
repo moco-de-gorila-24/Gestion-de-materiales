@@ -14,6 +14,20 @@ import java.util.List;
  * @author cinca
  */
 public class PaqueteBO implements IPaqueteBO {
+    
+    private static PaqueteBO instancia;
+    
+    private PaqueteBO() {
+        
+    }
+    
+    public static PaqueteBO getInstance() {
+        if(instancia == null) {
+            instancia = new PaqueteBO();
+        }
+        return instancia;
+    }
+    
     @Override
     public List<PaqueteDTO> obtenerPaquetes() {
         return Almacen.obtenerPaquetes();

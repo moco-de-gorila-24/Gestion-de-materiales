@@ -11,6 +11,7 @@ import dtos.PaqueteDTO;
 import dtos.PropuestaMaterialesDTO;
 import excepciones.CreacionPedidoException;
 import interfaces.IMaterialBO;
+import interfaces.IPaqueteBO;
 import interfaces.IPropuestaMaterialesBO;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,13 @@ import objetosNegocio.PropuestaMaterialesBO;
 public class ControlCarrito {
     private IPropuestaMaterialesBO propuestaBO;
     private IMaterialBO materialBO;
+    private IPaqueteBO paqueteBO;
     private PropuestaMaterialesDTO propuestaActual;
     
     public ControlCarrito() {
         propuestaBO = new PropuestaMaterialesBO();
-        materialBO = new MaterialBO();
+        this.paqueteBO = PaqueteBO.getInstance();
+        this.materialBO = MaterialBO.getInstance();
     }   
 
     /**
@@ -103,7 +106,6 @@ public class ControlCarrito {
     }
 
     public void AgregarAlCarrito(PaqueteDTO paqueteInstancia) {
-        PaqueteBO paqueteBO = new PaqueteBO();
         List<PaqueteDTO> paquetes = paqueteBO.obtenerPaquetes();
 
         for(int i = 0; i < paquetes.size(); i++){

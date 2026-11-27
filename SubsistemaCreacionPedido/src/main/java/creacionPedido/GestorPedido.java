@@ -26,7 +26,7 @@ public class GestorPedido {
     private IPedidoBO pedidoBO;
     
     public GestorPedido() {
-        pedidoBO = new PedidoBO();
+        this.pedidoBO = PedidoBO.getInstance();
     }
     
     public PedidoDTO confirmarPedido(PropuestaMaterialesDTO propuesta, String tipoEntrega,DireccionDTO direccion, CotizacionDTO cotizacion) throws CreacionPedidoException {

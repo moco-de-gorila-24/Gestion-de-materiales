@@ -11,5 +11,17 @@ import interfaces.IClienteBO;
  * @author cinca
  */
 public class ClienteBO implements IClienteBO {
+        private static ClienteBO instancia;
+    
+    private ClienteBO() {
+        
+    }
+    
+    public static ClienteBO getInstance() {
+        if(instancia == null) {
+            instancia = new ClienteBO();
+        }
+        return instancia;
+    }
     
 }

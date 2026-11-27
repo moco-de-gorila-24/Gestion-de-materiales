@@ -473,13 +473,13 @@ public class Navegador {
         cambiarPanel(panelGestionReposicion);
     }
     
-    public List<DetalleReposicionDTO> consultarTodosLosMateriales() {
-        return subsistemaInventario.consultarTodosLosMateriales();
-    }
+    //public List<DetalleReposicionDTO> consultarTodosLosMateriales() {
+     //   return subsistemaInventario.consultarTodosLosMateriales();
+   // }
 
-    public SolicitudReposicionDTO generarSolicitudReposicion(List<DetalleReposicionDTO> detalles) {
-        return subsistemaInventario.generarSolicitudReposicion(detalles);
-    }
+   // public SolicitudReposicionDTO generarSolicitudReposicion(List<DetalleReposicionDTO> detalles) {
+     //   return subsistemaInventario.generarSolicitudReposicion(detalles);
+    //}
 
     public List<SolicitudReposicionDTO> consultarSolicitudesReposicion() {
         return subsistemaInventario.consultarSolicitudesReposicion();

@@ -13,7 +13,19 @@ import interfaces.IPedidoBO;
  * @author cinca
  */
 public class PedidoBO implements IPedidoBO {
+    private static PedidoBO instancia;
     
+    private PedidoBO() {
+        
+    }
+    
+    public static PedidoBO getInstance() {
+        if(instancia == null) {
+            instancia = new PedidoBO();
+        }
+        return instancia;
+    }
+       
     @Override
     public PedidoDTO guardarPedido(PedidoDTO pedido) {
         return Almacen.guardarPedido(pedido);

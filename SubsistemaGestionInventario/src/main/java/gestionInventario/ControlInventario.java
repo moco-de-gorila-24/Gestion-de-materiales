@@ -22,8 +22,8 @@ public class ControlInventario {
     private IMaterialBO materialBO;
     
     public ControlInventario() {
-        materialBO = new MaterialBO();
-        paqueteBO = new PaqueteBO();
+        this.materialBO = MaterialBO.getInstance();
+        this.paqueteBO = PaqueteBO.getInstance();
     }
     
     public boolean validarMaterialDisponible(MaterialDTO material) {

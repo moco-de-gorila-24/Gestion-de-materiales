@@ -15,6 +15,19 @@ import java.util.List;
  */
 public class MaterialBO implements IMaterialBO {
     
+    private static MaterialBO instancia;
+    
+    private MaterialBO() {
+        
+    }
+    
+    public static MaterialBO getInstance() {
+        if(instancia == null) {
+            instancia = new MaterialBO();
+        }
+        return instancia;
+    }
+    
     @Override
     public boolean validarMaterialDisponible(MaterialDTO material) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
