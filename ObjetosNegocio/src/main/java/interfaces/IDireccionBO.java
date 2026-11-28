@@ -4,10 +4,16 @@
  */
 package interfaces;
 
+import dtos.DireccionDTO;
+import java.util.List;
+
 /**
- * Interfaz/Contrato de CotizacionBO.
+ *
  * @author cinca
  */
-public interface ICotizacionBO {
+public interface IDireccionBO {
+        
+    List<DireccionDTO> consultarDirecciones(int idCliente);
     
+    boolean guardarDireccion(int idCliente, DireccionDTO direccion);
 }

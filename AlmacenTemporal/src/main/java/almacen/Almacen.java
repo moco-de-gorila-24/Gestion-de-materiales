@@ -169,19 +169,6 @@ public class Almacen {
         return direcciones.add(direccion);
     }
     
-    public PropuestaMaterialesDTO guardarPropuesta(ClienteDTO cliente) {
-        if (cliente == null) {
-            return null;
-        }
-
-        PropuestaMaterialesDTO nuevaPropuesta = new PropuestaMaterialesDTO(siguienteIdPropuesta, cliente, "PENDIENTE", 0f, 0, new ArrayList<>());
-
-        siguienteIdPropuesta++;
-        propuestas.add(nuevaPropuesta);
-
-        return nuevaPropuesta;
-    }
-    
     public static boolean actualizarPropuesta(PropuestaMaterialesDTO propuestaActualizada) {
         if(propuestaActualizada == null) {
             return false;
