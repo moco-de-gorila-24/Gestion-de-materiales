@@ -8,7 +8,6 @@ import dtos.CotizacionDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
 import dtos.MaterialDTO;
-import dtos.OrdenEntregaDTO;
 import dtos.PedidoDTO;
 import dtos.PaqueteDTO;
 import dtos.PropuestaMaterialesDTO;
@@ -69,13 +68,9 @@ public interface ISubsistemaCrearPedido {
 
     boolean guardarDireccion(int idCliente, DireccionDTO direccion);
 
-    Date programarFechaEstimadaEntrega();
-
-    Date programarFechaEstimadaLimiteRecoger();
-
-    OrdenEntregaDTO confirmarOrdenEntrega(PedidoDTO pedido);
-
     PedidoDTO confirmarPedido() throws CreacionPedidoException;
 
     CotizacionDTO generarCotizacion();
+    
+    CotizacionDTO obtenerCotizacionActual();
 }

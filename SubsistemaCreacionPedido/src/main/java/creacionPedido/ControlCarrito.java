@@ -12,12 +12,10 @@ import dtos.PropuestaMaterialesDTO;
 import excepciones.CreacionPedidoException;
 import interfaces.IMaterialBO;
 import interfaces.IPaqueteBO;
-import interfaces.IPropuestaMaterialesBO;
 import java.util.ArrayList;
 import java.util.List;
 import objetosNegocio.MaterialBO;
 import objetosNegocio.PaqueteBO;
-import objetosNegocio.PropuestaMaterialesBO;
 
 /**
  * Controlador del carrito (propuesta). Se comunica con las BO.
@@ -25,13 +23,11 @@ import objetosNegocio.PropuestaMaterialesBO;
  * @author cinca
  */
 public class ControlCarrito {
-    private IPropuestaMaterialesBO propuestaBO;
     private IMaterialBO materialBO;
     private IPaqueteBO paqueteBO;
     private PropuestaMaterialesDTO propuestaActual;
     
     public ControlCarrito() {
-        propuestaBO = new PropuestaMaterialesBO();
         this.paqueteBO = PaqueteBO.getInstance();
         this.materialBO = MaterialBO.getInstance();
     }   
@@ -60,11 +56,6 @@ public class ControlCarrito {
             throw new CreacionPedidoException("la propuesta esta vacia.");
         }       
         propuestaActual.setEstado("CONFIRMADA");
-        
-        if(!propuestaBO.actualizarPropuesta(propuestaActual)) {
-            propuestaActual.setEstado("PENDIENTE");
-            throw new CreacionPedidoException("No se pudo actualizar el estado de la propuesta");
-        }
         propuestaActual = null;
     }
 
@@ -95,14 +86,13 @@ public class ControlCarrito {
             if (detalle.getMaterial().getIdMaterial() == material.getIdMaterial()) {
                 detalle.setCantidad(detalle.getCantidad() + cantidad);
                 recalcularPropuesta();
-                propuestaBO.actualizarPropuesta(propuestaActual);
+                actualizarPropuesta();
                 return;
             }
         }
 
-        detalles.add(new DetallePropuestaDTO(material, cantidad, material.getPrecioUnitario()));
-        recalcularPropuesta();   
-        propuestaBO.actualizarPropuesta(propuestaActual);
+        detalles.add(new DetallePropuestaDTO(material, cantidad, material.getPrecioUnitario()));  
+        actualizarPropuesta();
     }
 
     public void AgregarAlCarrito(PaqueteDTO paqueteInstancia) {
@@ -148,7 +138,7 @@ public class ControlCarrito {
             return false;
         }
         recalcularPropuesta();
-        propuestaBO.actualizarPropuesta(propuestaActual);
+        actualizarPropuesta();
         return true;
     }
     
@@ -159,17 +149,17 @@ public class ControlCarrito {
 
         propuestaActual.setDetalles(new ArrayList<>());
         recalcularPropuesta();
-        propuestaBO.actualizarPropuesta(propuestaActual);
+        actualizarPropuesta();
     }
     
     public void cancelarVenta() {
-        if (propuestaActual != null || !"PENDIENTE".equals(propuestaActual.getEstado())) {
+        if (propuestaActual == null || !"PENDIENTE".equals(propuestaActual.getEstado())) {
             return;
         }
         propuestaActual.setEstado("CANCELADA");
-        if(propuestaBO.actualizarPropuesta(propuestaActual)) {
-            propuestaActual = null;
-        }
+
+        propuestaActual = null;
+        
     }
     
     public List<DetallePropuestaDTO> getDetallesCarrito() {
@@ -226,9 +216,8 @@ public class ControlCarrito {
             detalle.setMaterial(nuevo);
             detalle.setPrecioUnitario(nuevo.getPrecioUnitario()); 
         }
-         
-        recalcularPropuesta();
-        return propuestaBO.actualizarPropuesta(propuestaActual);
+        actualizarPropuesta();
+        return true;
     }
 
     private int calcularCantidadTotal(List<DetallePropuestaDTO> detalles, DetallePropuestaDTO detalleActual, MaterialDTO candidato) {
@@ -316,7 +305,15 @@ public class ControlCarrito {
 
         detalle.setCantidad(nueva);
         recalcularPropuesta();
-        propuestaBO.actualizarPropuesta(propuestaActual);
+        actualizarPropuesta();
    }
+    
+    private void actualizarPropuesta() {
+        if(propuestaActual == null) {
+            return;
+        }
+        
+        recalcularPropuesta();
+    }
 
 }

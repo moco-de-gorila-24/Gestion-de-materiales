@@ -14,7 +14,9 @@ import creacionPedido.ISubsistemaCrearPedido;
 import excepciones.CreacionPedidoException;
 import gestionInventario.GestionInventarioFachada;
 import gestionInventario.ISubsistemaInventario;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Navegador {
     FramePrincipal framePrincipal;
@@ -257,8 +259,33 @@ public class Navegador {
     }
     
     public void mostrarDialogoFechas() {
-        DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this, 
-                subsistemaCrearPedido.obtenerTipoEntrega(), subsistemaCrearPedido.programarFechaEstimadaEntrega(), subsistemaCrearPedido.programarFechaEstimadaLimiteRecoger());
+        CotizacionDTO cotizacionActual = subsistemaCrearPedido.obtenerCotizacionActual();
+        
+        String entrega = "";
+        String recoger = "";
+        String limite = "";
+        
+        SimpleDateFormat formato= new SimpleDateFormat("dd/MM/yyyy");
+        
+        if("DOMICILIO".equals(cotizacionActual.getTipoEntrega())) {
+            if(cotizacionActual.getFechaEntrega() != null) {
+               entrega = formato.format(cotizacionActual.getFechaEntrega());
+            }           
+        }
+
+        if ("TIENDA".equals(cotizacionActual.getTipoEntrega())) {
+            if(cotizacionActual.getFechaEntrega() != null) {
+               recoger = formato.format(cotizacionActual.getFechaEntrega());
+            
+               
+            }
+                
+            if(cotizacionActual.getFechaLimite()!= null) {
+                limite = formato.format(cotizacionActual.getFechaLimite());
+            }
+        }
+
+        DialogFechasEntrega dialogFechas = new DialogFechasEntrega(framePrincipal, this, entrega, recoger, limite);
         dialogFechas.setVisible(true);
     }
 
@@ -431,10 +458,9 @@ public class Navegador {
             return false;
         }
         
-        propuestaActual = almacen.buscarPropuestaPendiente(clienteActual);
-        if(propuestaActual == null) {
-            propuestaActual = almacen.guardarPropuesta(clienteActual);
-        }
+        propuestaActual = new PropuestaMaterialesDTO(0f, 0, new ArrayList<>());
+        
+        System.out.println("Propuesta encontrada: " + propuestaActual);
         subsistemaCrearPedido.iniciarCarrito(propuestaActual);
         refrescarCarrito();
         return propuestaActual != null;        

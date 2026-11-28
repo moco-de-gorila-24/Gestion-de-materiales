@@ -11,10 +11,12 @@ import dtos.DireccionDTO;
 import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
 import excepciones.CreacionPedidoException;
+import interfaces.IDireccionBO;
 import interfaces.IPedidoBO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import objetosNegocio.DireccionBO;
 import objetosNegocio.PedidoBO;
 
 /**
@@ -24,23 +26,32 @@ import objetosNegocio.PedidoBO;
 public class GestorPedido {
     
     private IPedidoBO pedidoBO;
+    private IDireccionBO direccionBO;
+    private DireccionDTO direccionActual;
     
     public GestorPedido() {
         this.pedidoBO = PedidoBO.getInstance();
+        this.direccionBO = DireccionBO.getInstance();
     }
     
-    public PedidoDTO confirmarPedido(PropuestaMaterialesDTO propuesta, String tipoEntrega,DireccionDTO direccion, CotizacionDTO cotizacion) throws CreacionPedidoException {
-        validarDatosConfirmacionPedido(propuesta, tipoEntrega, direccion, cotizacion);
+    public PedidoDTO confirmarPedido(CotizacionDTO cotizacion) throws CreacionPedidoException {
+        if(cotizacion == null || cotizacion.getPropuesta() == null) {
+            throw new CreacionPedidoException("No hay una cotizacion disponible.");
+        }
+        
+        PropuestaMaterialesDTO propuesta = cotizacion.getPropuesta();
+        
         List<DetallePedidoDTO> detalles = new ArrayList<>();
         
+        // creacion del pedido
         for (int i = 0; i < propuesta.getDetalles().size(); i++) {
             DetallePropuestaDTO detalle = propuesta.getDetalles().get(i);
            
             detalles.add(new DetallePedidoDTO(detalle.getMaterial(), detalle.getCantidad(), 
-            detalle.getPrecioUnitario(), detalle.getCantidad() * detalle.getPrecioUnitario()));
+                detalle.getPrecioUnitario(), detalle.getCantidad() * detalle.getPrecioUnitario()));
         }
         
-        PedidoDTO pedido = new PedidoDTO(0, tipoEntrega, new Date(), "CONFIRMADO",
+        PedidoDTO pedido = new PedidoDTO(0, cotizacion.getTipoEntrega(), new Date(), "CONFIRMADO",
                            cotizacion.getTotal(), propuesta.getCliente(), detalles);
         
         PedidoDTO pedidoAlmacenado = pedidoBO.guardarPedido(pedido);
@@ -70,5 +81,21 @@ public class GestorPedido {
             throw new CreacionPedidoException("No hay una propuesta pendiente para confirmar");
         }   
         
+    }
+    
+    public void seleccionarDireccion(DireccionDTO direccion) {
+        direccionActual = direccion;
+    }
+    
+    public DireccionDTO obtenerDireccionSeleccionada() {
+        return direccionActual;
+    }
+    
+    public List<DireccionDTO> obtenerDirecciones(int idCliente) {
+        return direccionBO.consultarDirecciones(idCliente);
+    }
+    
+    public boolean guardarDireccion(int idCliente, DireccionDTO direccion) {
+        return direccionBO.guardarDireccion(idCliente, direccion);
     }
 }

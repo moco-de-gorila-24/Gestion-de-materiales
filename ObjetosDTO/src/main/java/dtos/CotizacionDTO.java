@@ -13,18 +13,22 @@ import java.util.Date;
 public class CotizacionDTO {
     private float subtotal;
     private float total;
-    private Date fecha;
+    private Date fechaEntrega;
+    private Date fechaLimite;
     private float impuesto;
     private float costoEnvio;
     private PropuestaMaterialesDTO propuesta;
+    private String tipoEntrega;
 
-    public CotizacionDTO(float subtotal, float total, Date fecha, float impuesto, float costoEnvio, PropuestaMaterialesDTO propuesta) {
+    public CotizacionDTO(float subtotal, float total, Date fechaEntrega, Date fechaLimite, float impuesto, float costoEnvio, PropuestaMaterialesDTO propuesta, String tipoEntrega) {
         this.subtotal = subtotal;
         this.total = total;
-        this.fecha = fecha;
+        this.fechaEntrega = fechaEntrega;
+        this.fechaLimite= fechaLimite;
         this.impuesto = impuesto;
         this.costoEnvio = costoEnvio;
         this.propuesta = propuesta;
+        this.tipoEntrega = tipoEntrega;
     }
 
     public float getSubtotal() {
@@ -43,12 +47,12 @@ public class CotizacionDTO {
         this.total = total;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public Date getFechaEntrega() {
+        return fechaEntrega;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 
     public float getImpuesto() {
@@ -73,6 +77,22 @@ public class CotizacionDTO {
 
     public void setPropuesta(PropuestaMaterialesDTO propuesta) {
         this.propuesta = propuesta;
+    }
+
+    public String getTipoEntrega() {
+        return tipoEntrega;
+    }
+
+    public void setTipoEntrega(String tipoEntrega) {
+        this.tipoEntrega = tipoEntrega;
+    }
+
+    public Date getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public void setFechaLimite(Date fechaLimite) {
+        this.fechaLimite = fechaLimite;
     }
     
     

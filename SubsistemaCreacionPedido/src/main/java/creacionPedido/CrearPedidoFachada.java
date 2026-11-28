@@ -4,19 +4,15 @@
  */
 package creacionPedido;
 
-import dtos.ClienteDTO;
 import dtos.CotizacionDTO;
 import dtos.DetallePropuestaDTO;
 import dtos.DireccionDTO;
 import dtos.MaterialDTO;
-import dtos.OrdenEntregaDTO;
-import dtos.PedidoDTO;
 import dtos.PaqueteDTO;
+import dtos.PedidoDTO;
 import dtos.PropuestaMaterialesDTO;
 import excepciones.CreacionPedidoException;
-import java.util.Date;
-import java.util.List;
-import objetosNegocio.PaqueteBO;
+
 
 import java.util.List;
 
@@ -27,17 +23,17 @@ import java.util.List;
  */
 public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     private ControlCarrito controlCarrito;
-    private GestorOrdenEntrega gestorOrdenEntrega;
+   
     private GestorCotizacion gestorCotizacion;
     private GestorPedido gestorPedido;
 
     /**
-     * Crea la fachada del subsistema de creacion de pedidos e inicializa el
+     * Crea la fachade creacion de pedidos e inicializa el
      * control del las clases de control.
      */
     public CrearPedidoFachada() {
         controlCarrito = new ControlCarrito();
-        gestorOrdenEntrega = new GestorOrdenEntrega();
+  
         gestorCotizacion = new GestorCotizacion();
         gestorPedido = new GestorPedido();
     }
@@ -87,12 +83,11 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
     @Override
     public void cancelarVenta() {
         controlCarrito.cancelarVenta();
-        gestorOrdenEntrega.limpiarDatos();
     }
 
     @Override
     public boolean sustituirMaterial(DetallePropuestaDTO detalle, MaterialDTO nuevo) {
-        return controlCarrito.sustituirMaterial(detalle, nuevo);
+        return controlCarrito.sustituirMaterial(detalle, nuevo);          
     }
 
     @Override
@@ -122,66 +117,68 @@ public class CrearPedidoFachada implements ISubsistemaCrearPedido {
 
     @Override
     public void establecerTipoEntrega(String tipo) {
-        gestorOrdenEntrega.establecerTipoEntrega(tipo);
+        gestorCotizacion.establecerTipoEntrega(tipo);
     }
 
     @Override
     public String obtenerTipoEntrega() {
-        return gestorOrdenEntrega.obtenerTipoEntrega();
+        return gestorCotizacion.obtenerTipoEntrega();
     }
 
     @Override
     public void seleccionarDireccion(DireccionDTO direccion) {
-        gestorOrdenEntrega.seleccionarDireccion(direccion);
+        gestorPedido.seleccionarDireccion(direccion);
     }
 
     @Override
     public DireccionDTO obtenerDireccionSeleccionada() {
-        return gestorOrdenEntrega.obtenerDireccionSeleccionada();
+        return gestorPedido.obtenerDireccionSeleccionada();
     }
 
     @Override
     public List<DireccionDTO> obtenerDirecciones(int idCliente) {
-        return gestorOrdenEntrega.obtenerDirecciones(idCliente);
+        return gestorPedido.obtenerDirecciones(idCliente);
     }
 
     @Override
     public boolean guardarDireccion(int idCliente, DireccionDTO direccion) {
-        return gestorOrdenEntrega.guardarDireccion(idCliente, direccion);
+        return gestorPedido.guardarDireccion(idCliente, direccion);
     }
 
-    @Override
-    public Date programarFechaEstimadaEntrega() {
-        return gestorOrdenEntrega.programarFechaEstimadaEntrega();
-    }
-
-    @Override
-    public Date programarFechaEstimadaLimiteRecoger() {
-        return programarFechaEstimadaEntrega();
-    }
-
-    @Override
-    public OrdenEntregaDTO confirmarOrdenEntrega(PedidoDTO pedido) {
-        return gestorOrdenEntrega.confirmarOrdenEntrega(pedido);
-    }
-
+    /**
+     * Metodo encargado de confirmar el pedido a partir de la cotizacion actual, 
+     * donde se obtiene la cotizacion generada del GestorCotizacion
+     * y se envia al GestorPedido para realizar el proceso de confirmacion y 
+     * almacenado del pedido.
+     * 
+     * @return el pedido almacenado y confirmado.
+     * @throws CreacionPedidoExcepption si ocurre un error durante la confirmacion del pedido.
+     */
     @Override
     public PedidoDTO confirmarPedido() throws CreacionPedidoException {
-        PedidoDTO pedido = gestorPedido.confirmarPedido(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega(),
-                           gestorOrdenEntrega.obtenerDireccionSeleccionada(),
-                           gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega()));
-
-        gestorOrdenEntrega.confirmarOrdenEntrega(pedido);
-        controlCarrito.finalizarPropuestaConfirmada();
-        return pedido;
-
+        return gestorPedido.confirmarPedido(gestorCotizacion.obtenerCotizacionActual());       
     }
-
+    
+    /**
+     * Metodo encargado de generar la cotizacion a partir de la propuesta actual y
+     * su tipo de entrega actual, donde se obtiene la propuesta actual desde el
+     * control carrito y el tipo de entrega desde el gestor de cotizacion.
+     * 
+     * @return la cotizacion generada con los materiales cargados desde la propuesta
+     * y el tipo de entrega seleccionado.
+     */
     @Override
     public CotizacionDTO generarCotizacion() {
-        return gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorOrdenEntrega.obtenerTipoEntrega());
+        return gestorCotizacion.generarCotizacion(controlCarrito.obtenerPropuestaActual(), gestorCotizacion.obtenerTipoEntrega());    
     }
-
-
-
+    /**
+     * Metodo encargado de obtener la cotizacion actual desde el gestor cotizacion.
+     * 
+     * @return la cotizacion actual.
+     */
+    @Override
+    public CotizacionDTO obtenerCotizacionActual() {
+        return gestorCotizacion.obtenerCotizacionActual();
+    }
+    
 }
